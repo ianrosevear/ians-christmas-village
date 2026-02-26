@@ -6,9 +6,9 @@ export default function Home() {
       <h1 className="text-5xl text-[var(--color-snow)] text-center" style={{ fontFamily: "var(--font-playfair-display)" }}>
         Welcome to Ian&apos;s Christmas Village
       </h1>
-      <p className="text-lg text-[var(--color-snow)]/60 text-center max-w-md">
+      {/* <p className="text-lg text-[var(--color-snow)]/60 text-center max-w-md">
         A collection of gifts from me to you.
-      </p>
+      </p> */}
       <ChristmasCountdown />
     </div>
   );
