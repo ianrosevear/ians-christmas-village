@@ -35,7 +35,7 @@ export default function ChristmasCountdown() {
             {days}
           </p>
           <p className="text-xl text-[var(--color-snow)]/70 mt-2">
-            {days === 1 ? "day" : "days"} until Christmas 🎄
+            {days === 1 ? "day" : "days"} until Christmas
           </p>
         </>
       )}
