@@ -17,7 +17,7 @@ export default function FavoritesPage() {
             {favorites
               .filter((f) => f.category === category)
               .map((f) => (
-                <li key={f.name} className="text-[var(--color-dark)]/80">
+                <li key={f.name} className="text-[var(--color-dark)] dark:text-[var(--color-snow)]/80">
                   {f.url ? (
                     <a href={f.url} target="_blank" rel="noopener noreferrer" className="text-[var(--color-gold)] hover:underline">
                       {f.name}
@@ -25,7 +25,7 @@ export default function FavoritesPage() {
                   ) : (
                     <span>{f.name}</span>
                   )}
-                  {f.note && <span className="text-[var(--color-dark)]/40 ml-2">— {f.note}</span>}
+                  {f.note && <span className="text-[var(--color-dark)] dark:text-[var(--color-snow)]/40 ml-2">— {f.note}</span>}
                 </li>
               ))}
           </ul>

@@ -1,0 +1,43 @@
+/* app/styles/snow.css */
+.snow-ground {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 250px;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.snow-ground::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -20%;
+  width: 85%;
+  height: 240px;
+  background: #edf0f3;
+  border-radius: 0 60% 0 0 / 0 100% 0 0;
+  transition: background 0.3s ease;
+}
+
+.dark .snow-ground::before {
+  background: #2a3040;
+}
+
+.snow-ground::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: -15%;
+  width: 100%;
+  height: 200px;
+  background: #e0e4e8;
+  border-radius: 60% 0 0 0 / 100% 0 0 0;
+  transition: background 0.3s ease;
+}
+
+.dark .snow-ground::after {
+  background: #232838;
+}

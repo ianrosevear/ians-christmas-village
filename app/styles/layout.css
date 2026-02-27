@@ -1,0 +1,24 @@
+/* app/styles/layout.css */
+body {
+  background-color: #c8d3da;
+  color: var(--text-primary);
+  font-family: var(--font-nunito), sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body,
+body:has(.dark) {
+  background-color: #1a1f2e;
+  color: var(--color-snow);
+}
+
+/* Subtle dot-grid texture on the background */
+.bg-texture {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.dark .bg-texture {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+}

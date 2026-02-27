@@ -43,7 +43,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const toggleDark = makeToggle("darkMode", false);
 
   return (
-    <div className={darkMode ? "dark" : ""}>
+    <div className={`${darkMode ? "dark" : ""} bg-texture bg-[#c8d3da] dark:bg-[#1a1f2e] transition-colors duration-300 min-h-screen`}>
       {/* Floating toggles */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <Toggle checked={darkMode} onChange={toggleDark} icon="🌙" />
@@ -54,23 +54,35 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <div className="snow-ground" />
 
       <main className="relative z-10 pt-12 pb-8 px-4 min-h-screen flex justify-center">
-        <div className="w-full max-w-3xl bg-white/80 dark:bg-white/10 backdrop-blur-sm rounded-2xl border border-white/50 dark:border-white/10 shadow-xl shadow-blue-900/10 p-8 h-fit">
-          <nav className="flex gap-4 mb-6 pb-4 border-b border-[var(--color-dark)]/10">
-            {routes.map((route) => (
-              <Link
-                key={route.href}
-                href={route.href}
-                className={`text-sm transition-colors hover:text-[var(--color-gold)] ${
-                  pathname === route.href
-                    ? "text-[var(--color-gold)]"
-                    : "text-[var(--color-dark)]/60"
-                }`}
-              >
-                {route.label}
-              </Link>
-            ))}
+        <div className="w-full max-w-3xl h-fit rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-2xl shadow-slate-300/60 dark:bg-slate-800/70 dark:backdrop-blur-md dark:border-slate-600/60 dark:shadow-slate-900/80">
+
+          {/* Nav bar */}
+          <nav className="flex items-center gap-1 px-6 py-3 bg-stone-100 border-b border-stone-200 dark:bg-slate-700/60 dark:border-slate-600/50">
+            {routes.map((route) => {
+              const isActive = pathname === route.href;
+              return (
+                <Link
+                  key={route.href}
+                  href={route.href}
+                  className={`relative px-3 py-1.5 text-sm rounded-md font-medium transition-all duration-200 ${
+                    isActive
+                      ? "text-[var(--color-gold)]"
+                      : "text-[var(--color-dark)]/60 hover:text-[var(--color-gold)] hover:bg-black/5 dark:text-[var(--color-snow)]/60 dark:hover:bg-white/5"
+                  }`}
+                >
+                  {route.label}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-[var(--color-gold)] opacity-80" />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
-          {children}
+
+          {/* Page content */}
+          <div className="p-8">
+            {children}
+          </div>
         </div>
       </main>
     </div>
