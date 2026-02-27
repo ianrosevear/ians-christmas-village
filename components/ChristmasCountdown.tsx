@@ -34,7 +34,7 @@ export default function ChristmasCountdown() {
           <p className="text-7xl font-bold text-[var(--color-gold)]" style={{ fontFamily: "var(--font-playfair-display)" }}>
             {days}
           </p>
-          <p className="text-xl text-[var(--color-snow)]/70 mt-2">
+          <p className="text-xl text-[var(--color-dark)]/70 mt-2">
             {days === 1 ? "day" : "days"} until Christmas
           </p>
         </>

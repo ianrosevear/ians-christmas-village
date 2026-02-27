@@ -20,7 +20,7 @@ export default function Nav({ snowEnabled, toggleSnow }: NavProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-pine)]/90 backdrop-blur-sm border-b border-[var(--color-gold)]/20">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-pine)]/95 backdrop-blur-sm border-b border-[var(--color-gold)]/20">
       <div className="flex items-center justify-between px-6 py-3">
         <Link href="/" className="text-lg font-bold text-[var(--color-gold)]" style={{ fontFamily: "var(--font-playfair-display)" }}>
           🎄 Ian&apos;s Christmas Village
@@ -33,7 +33,7 @@ export default function Nav({ snowEnabled, toggleSnow }: NavProps) {
               key={route.href}
               href={route.href}
               className={`text-sm transition-colors hover:text-[var(--color-gold)] ${
-                pathname === route.href ? "text-[var(--color-gold)]" : "text-[var(--color-snow)]/70"
+                pathname === route.href ? "text-[var(--color-gold)]" : "text-[var(--color-dark)]/70"
               }`}
             >
               {route.label}
@@ -71,7 +71,7 @@ export default function Nav({ snowEnabled, toggleSnow }: NavProps) {
           </Switch>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="cursor-pointer text-[var(--color-snow)] text-2xl leading-none"
+            className="cursor-pointer text-[var(--color-dark)] text-2xl leading-none"
           >
             {menuOpen ? "✕" : "☰"}
           </button>
@@ -87,7 +87,7 @@ export default function Nav({ snowEnabled, toggleSnow }: NavProps) {
               href={route.href}
               onClick={() => setMenuOpen(false)}
               className={`text-sm py-1 transition-colors hover:text-[var(--color-gold)] ${
-                pathname === route.href ? "text-[var(--color-gold)]" : "text-[var(--color-snow)]/70"
+                pathname === route.href ? "text-[var(--color-gold)]" : "text-[var(--color-dark)]/70"
               }`}
             >
               {route.label}

@@ -32,7 +32,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <>
       <Nav snowEnabled={snowEnabled} toggleSnow={toggleSnow} />
       {snowEnabled && <Snowflakes />}
-      <main className="pt-16 min-h-screen">{children}</main>
+
+      <div className="snow-ground" />
+
+      <main className="relative z-10 pt-20 pb-0 px-4 min-h-screen flex justify-center">
+        <div className="w-full max-w-3xl bg-white/80 backdrop-blur-sm rounded-2xl border border-white/50 shadow-xl shadow-blue-900/10 p-8 h-fit">
+          {children}
+        </div>
+      </main>
     </>
   );
 }
