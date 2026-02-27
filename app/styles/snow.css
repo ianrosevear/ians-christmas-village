@@ -1,4 +1,10 @@
-/* app/styles/snow.css */
+:root {
+  --color-hill-1: #c8dfe8;
+  --color-hill-2: #b8d4e0;
+  --color-hill-1-dark: #2a3040;
+  --color-hill-2-dark: #232838;
+}
+
 .snow-ground {
   position: fixed;
   bottom: 0;
@@ -17,13 +23,13 @@
   left: -20%;
   width: 85%;
   height: 240px;
-  background: #edf0f3;
+  background: var(--color-hill-1);
   border-radius: 0 60% 0 0 / 0 100% 0 0;
   transition: background 0.3s ease;
 }
 
 .dark .snow-ground::before {
-  background: #2a3040;
+  background: var(--color-hill-1-dark);
 }
 
 .snow-ground::after {
@@ -33,11 +39,11 @@
   right: -15%;
   width: 100%;
   height: 200px;
-  background: #e0e4e8;
+  background: var(--color-hill-2);
   border-radius: 60% 0 0 0 / 100% 0 0 0;
   transition: background 0.3s ease;
 }
 
 .dark .snow-ground::after {
-  background: #232838;
+  background: var(--color-hill-2-dark);
 }

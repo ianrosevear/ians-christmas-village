@@ -43,8 +43,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const toggleDark = makeToggle("darkMode", false);
 
   return (
-    <div className={`${darkMode ? "dark" : ""} bg-texture bg-[#c8d3da] dark:bg-[#1a1f2e] transition-colors duration-300 min-h-screen`}>
-      {/* Floating toggles */}
+    <div className={`${darkMode ? "dark" : ""} bg-texture bg-[var(--color-sky)] dark:bg-[var(--color-sky-dark)] transition-colors duration-300 min-h-screen`}>      {/* Floating toggles */}
       <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
         <Toggle checked={darkMode} onChange={toggleDark} icon="🌙" />
         <Toggle checked={snowEnabled} onChange={toggleSnow} icon="❄️" />
