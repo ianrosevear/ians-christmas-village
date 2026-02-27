@@ -31,7 +31,7 @@ export default function Snowflakes() {
         font-size: ${size}px;
         opacity: ${Math.random() * 0.5 + 0.15};
         pointer-events: none;
-        z-index: 40;
+        z-index: 5;
         animation: snowfall ${duration}s ${delay}s linear infinite;
         --drift: ${drift}px;
         color: white;
@@ -46,5 +46,5 @@ export default function Snowflakes() {
     };
   }, []);
 
-  return <div ref={containerRef} className="fixed inset-0 pointer-events-none z-40" />;
+  return <div ref={containerRef} className="fixed inset-0 pointer-events-none" />;
 }
