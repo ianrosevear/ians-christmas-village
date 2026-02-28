@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Nunito } from "next/font/google";
+import { Playfair_Display, Nunito, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 
@@ -10,6 +10,11 @@ const playfairDisplay = Playfair_Display({
 
 const nunito = Nunito({
   variable: "--font-nunito",
+  subsets: ["latin"],
+});
+
+const pixelifySans = Pixelify_Sans({
+  variable: "--font-pixelify-sans",
   subsets: ["latin"],
 });
 
@@ -33,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${playfairDisplay.variable} ${nunito.variable} antialiased`}>
+      <body className={`${playfairDisplay.variable} ${nunito.variable} ${pixelifySans.variable} antialiased`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

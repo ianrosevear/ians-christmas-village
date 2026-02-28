@@ -5,7 +5,7 @@ export default function Home() {
     <div className="flex flex-col items-center gap-8 py-12">
       <h1
         className="text-5xl text-[var(--color-dark)] dark:text-[var(--color-snow)] text-center"
-        style={{ fontFamily: "var(--font-playfair-display)" }}
+        style={{ fontFamily: "var(--font-pixelify-sans)" }}
       >
         Welcome to Ian&apos;s Christmas Village
       </h1>

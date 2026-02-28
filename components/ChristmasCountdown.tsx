@@ -31,10 +31,10 @@ export default function ChristmasCountdown() {
         </p>
       ) : (
         <>
-          <p className="text-7xl font-bold text-[var(--color-gold)]" style={{ fontFamily: "var(--font-playfair-display)" }}>
+          <p className="text-7xl font-bold text-[var(--color-gold)]" style={{ fontFamily: "var(--font-pixelify-sans)" }}>
             {days}
           </p>
-          <p className="text-xl text-[var(--color-dark)] dark:text-[var(--color-snow)]/70 mt-2">
+          <p className="text-xl text-[var(--color-dark)] dark:text-[var(--color-snow)] mt-2" style={{ fontFamily: "var(--font-pixelify-sans)" }}>
             {days === 1 ? "day" : "days"} until Christmas
           </p>
         </>
