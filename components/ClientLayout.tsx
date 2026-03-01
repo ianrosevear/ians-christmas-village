@@ -51,7 +51,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <div
       className={`${darkMode ? "dark" : ""} bg-texture min-h-screen transition-colors duration-300`}
       style={{
-        backgroundImage: darkMode ? "url('/cabin-night.png')" : "url('/cabin-day.png')",
+        backgroundImage: darkMode ? "url('/cabin-background-dark.png')" : "url('/cabin-background.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
