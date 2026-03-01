@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" shape-rendering="crispEdges">
+  <!-- White background -->
+  <rect width="16" height="16" fill="#f5f0eb"/>
+  <!-- Red staircase stripes (/ direction, 2-pixel steps) -->
+  <rect x="0"  y="0"  width="8" height="4" fill="#9b1b30"/>
+  <rect x="0"  y="4"  width="4" height="4" fill="#9b1b30"/>
+  <rect x="12" y="4"  width="4" height="4" fill="#9b1b30"/>
+  <rect x="8"  y="8"  width="8" height="4" fill="#9b1b30"/>
+  <rect x="4"  y="12" width="8" height="4" fill="#9b1b30"/>
+</svg>

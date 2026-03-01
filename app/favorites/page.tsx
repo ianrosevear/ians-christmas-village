@@ -5,12 +5,12 @@ export default function FavoritesPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-4xl text-[var(--color-gold)] mb-8" style={{ fontFamily: "var(--font-playfair-display)" }}>
+      <h1 className="text-4xl text-[var(--color-gold)] mb-8">
         Stuff I Like
       </h1>
       {categories.map((category) => (
         <section key={category} className="mb-8">
-          <h2 className="text-xl text-[var(--color-cranberry)] mb-3 border-b border-[var(--color-gold)]/20 pb-1" style={{ fontFamily: "var(--font-playfair-display)" }}>
+          <h2 className="text-xl text-[var(--color-cranberry)] mb-3 border-b border-[var(--color-gold)]/20 pb-1">
             {category}
           </h2>
           <ul className="space-y-2">

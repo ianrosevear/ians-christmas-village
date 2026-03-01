@@ -26,15 +26,15 @@ export default function ChristmasCountdown() {
   return (
     <div className="text-center">
       {isChristmas ? (
-        <p className="text-4xl text-[var(--color-gold)]" style={{ fontFamily: "var(--font-playfair-display)" }}>
+        <p className="font-playfair text-4xl text-[var(--color-gold)]">
           🎅 Merry Christmas! 🎅
         </p>
       ) : (
         <>
-          <p className="text-7xl font-bold text-[var(--color-gold)]" style={{ fontFamily: "var(--font-pixelify-sans)" }}>
+          <p className="font-pixel text-7xl font-bold text-[var(--color-gold)]">
             {days}
           </p>
-          <p className="text-xl text-[var(--color-dark)] dark:text-[var(--color-snow)] mt-2" style={{ fontFamily: "var(--font-pixelify-sans)" }}>
+          <p className="font-pixel text-xl text-[var(--color-dark)] dark:text-[var(--color-snow)] mt-2">
             {days === 1 ? "day" : "days"} until Christmas
           </p>
         </>

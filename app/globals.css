@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
+@import "./styles/layout.css";
 @import "./styles/snow.css";
 @import "./styles/animations.css";
 
@@ -13,3 +14,12 @@ body {
 h1, h2, h3 {
   font-family: var(--font-playfair-display), serif;
 }
+
+.font-pixel {
+  font-family: var(--font-pixelify-sans);
+}
+
+.font-playfair {
+  font-family: var(--font-playfair-display), serif;
+}
+
