@@ -1,16 +1,16 @@
 .bg-scene {
-  background-image: url('/cabin-background.png');
+  background-image: url('/images/cabin-background.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
 }
 
 .dark .bg-scene {
-  background-image: url('/cabin-background-dark.png');
+  background-image: url('/images/cabin-background-dark.png');
 }
 
 .candy-cane-border {
-  background-image: url('/candy-cane.svg');
+  background-image: url('/images/candy-cane.svg');
   background-size: 14px 14px;
   background-repeat: round;
   padding: 10px;
