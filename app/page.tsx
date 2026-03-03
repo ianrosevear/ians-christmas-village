@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className="font-playfair">
       <h2 className="text-3xl italic text-[var(--color-dark)] dark:text-[var(--color-snow)] mb-1">
-        A collection of gifts from me to you
+        A collection of things I've made
       </h2>
 
       <hr className="border-[var(--color-dark)]/15 dark:border-[var(--color-snow)]/15 mb-6" />

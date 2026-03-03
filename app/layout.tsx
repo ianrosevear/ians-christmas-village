@@ -20,7 +20,7 @@ const pixelifySans = Pixelify_Sans({
 
 export const metadata: Metadata = {
   title: "Ian's Christmas Village",
-  description: "A collection of gifts from me to you.",
+  description: "A collection of things I've made.",
   icons: {
     icon: [
       { url: "/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
