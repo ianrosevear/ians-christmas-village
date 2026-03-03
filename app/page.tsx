@@ -15,10 +15,10 @@ export default function Home() {
             href="/favorites"
             className="text-lg text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline"
           >
-            → Stuff i like
+            → Stuff I Like
           </Link>
           <p className="text-sm text-[var(--color-dark)]/45 dark:text-[var(--color-snow)]/40 mt-0.5 ml-4">
-            A curated list of things i recommend
+            I think you should check this stuff out
           </p>
         </li>
         <li>

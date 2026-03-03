@@ -6,5 +6,5 @@ export type Favorite = {
 };
 
 export const favorites: Favorite[] = [
-  { category: "Music", name: "A Home for Roaches - Quip Trade", url: "https://open.spotify.com/track/5nkEIoNyAwfxRW9Nc3jX66" }
+  { category: "In Progress", name: "Coming soon" }
 ];
