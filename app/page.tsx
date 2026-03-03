@@ -8,7 +8,7 @@ const items = [
   },
   {
     href: "/crossword",
-    title: "Crossword",
+    title: "Crossword: Solid Start",
     description: "A cryptic crossword puzzle",
   },
   {
