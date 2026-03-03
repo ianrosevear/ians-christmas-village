@@ -1,0 +1,90 @@
+.crossword-grid {
+  display: grid;
+  gap: 0;
+  border: 2px solid var(--color-dark);
+  width: fit-content;
+}
+
+.dark .crossword-grid {
+  border-color: var(--color-snow);
+}
+
+.crossword-cell {
+  width: var(--cell-size, 40px);
+  height: var(--cell-size, 40px);
+  position: relative;
+  border: 1px solid var(--color-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-nunito), sans-serif;
+  font-size: calc(var(--cell-size, 40px) * 0.55);
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  color: var(--color-dark);
+  background: var(--color-snow);
+}
+
+.dark .crossword-cell {
+  border-color: rgba(245, 240, 235, 0.3);
+  color: var(--color-snow);
+  background: #1c1a14;
+}
+
+/* Bar borders — green thick lines to mark word boundaries */
+.crossword-cell[data-bar-right="true"] {
+  border-right: 4px solid var(--color-pine);
+}
+
+.crossword-cell[data-bar-bottom="true"] {
+  border-bottom: 4px solid var(--color-pine);
+}
+
+.dark .crossword-cell[data-bar-right="true"] {
+  border-right-color: #4ade80;
+}
+
+.dark .crossword-cell[data-bar-bottom="true"] {
+  border-bottom-color: #4ade80;
+}
+
+/* Active word highlight */
+.crossword-cell--active-word {
+  background: color-mix(in srgb, var(--color-gold) 20%, var(--color-snow));
+}
+
+.dark .crossword-cell--active-word {
+  background: color-mix(in srgb, var(--color-gold) 15%, #1c1a14);
+}
+
+/* Selected cell (cursor) */
+.crossword-cell--selected {
+  background: color-mix(in srgb, var(--color-gold) 45%, var(--color-snow));
+}
+
+.dark .crossword-cell--selected {
+  background: color-mix(in srgb, var(--color-gold) 35%, #1c1a14);
+}
+
+/* Clue number overlay */
+.crossword-cell__number {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  font-size: calc(var(--cell-size, 40px) * 0.25);
+  font-weight: 400;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Active clue in the clue list */
+.crossword-clue--active {
+  background: color-mix(in srgb, var(--color-gold) 15%, var(--color-snow));
+  border-radius: 4px;
+}
+
+.dark .crossword-clue--active {
+  background: color-mix(in srgb, var(--color-gold) 12%, #1c1a14);
+}

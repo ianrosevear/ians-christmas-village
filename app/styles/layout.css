@@ -5,14 +5,16 @@
   background-attachment: fixed;
 }
 
+.dark.bg-scene,
 .dark .bg-scene {
   background-image: url('/images/cabin-background-dark.png');
 }
 
 .candy-cane-border {
   background-image: url('/images/candy-cane.svg');
-  background-size: 14px 14px;
+  background-size: 16px 16px;
   background-repeat: round;
-  padding: 10px;
+  image-rendering: pixelated;
+  padding: 16px;
 }
 
