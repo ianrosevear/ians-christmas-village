@@ -1,5 +1,23 @@
 import Link from "next/link";
 
+const items = [
+  {
+    href: "/favorites",
+    title: "Stuff I Like",
+    description: "I think you should check this stuff out",
+  },
+  {
+    href: "/crossword",
+    title: "Crossword",
+    description: "A cryptic crossword puzzle",
+  },
+  {
+    href: null,
+    title: "How to Solve Cryptic Crosswords",
+    description: "A beginner's guide — coming soon",
+  },
+];
+
 export default function Home() {
   return (
     <div className="font-playfair">
@@ -10,28 +28,22 @@ export default function Home() {
       <hr className="border-[var(--color-dark)]/15 dark:border-[var(--color-snow)]/15 mb-6" />
 
       <ul className="space-y-5">
-        <li>
-          <Link
-            href="/favorites"
-            className="text-lg text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline"
-          >
-            → Stuff I Like
-          </Link>
-          <p className="text-sm text-[var(--color-dark)]/45 dark:text-[var(--color-snow)]/40 mt-0.5 ml-4">
-            I think you should check this stuff out
-          </p>
-        </li>
-        <li>
-          <Link
-            href="/crossword"
-            className="text-lg text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline"
-          >
-            → Crossword
-          </Link>
-          <p className="text-sm text-[var(--color-dark)]/45 dark:text-[var(--color-snow)]/40 mt-0.5 ml-4">
-            A cryptic crossword puzzle
-          </p>
-        </li>
+        {items.map(({ href, title, description }) => (
+          <li key={title}>
+            {href ? (
+              <Link href={href} className="text-lg text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline">
+                → {title}
+              </Link>
+            ) : (
+              <span className="text-lg text-[var(--color-dark)]/30 dark:text-[var(--color-snow)]/30">
+                → {title}
+              </span>
+            )}
+            <p className="text-sm text-[var(--color-dark)]/45 dark:text-[var(--color-snow)]/40 mt-0.5 ml-4">
+              {description}
+            </p>
+          </li>
+        ))}
       </ul>
     </div>
   );
