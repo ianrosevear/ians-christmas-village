@@ -103,6 +103,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           </div>
         </main>
       )}
+      {/* Freepik attribution — required by license */}
+      <div className="fixed bottom-2 left-1/2 -translate-x-1/2 z-50 text-[10px] text-[var(--color-dark)]/30 dark:text-[var(--color-snow)]/20">
+        <a href="http://www.freepik.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-60">
+          Favicon by Freepik
+        </a>
+      </div>
     </div>
   );
 }
