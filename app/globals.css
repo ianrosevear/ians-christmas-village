@@ -13,14 +13,14 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: var(--font-playfair-display), serif;
+  font-family: var(--font-raleway), sans-serif;
 }
 
 .font-pixel {
   font-family: var(--font-pixelify-sans);
 }
 
-.font-playfair {
-  font-family: var(--font-playfair-display), serif;
+.font-raleway {
+  font-family: var(--font-raleway), sans-serif;
 }
 

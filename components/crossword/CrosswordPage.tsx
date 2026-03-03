@@ -145,7 +145,7 @@ export default function CrosswordPage({ puzzle }: CrosswordPageProps) {
   const activeClue = getActiveClue(puzzle, state.cursor.row, state.cursor.col, state.direction);
 
   return (
-    <div className="font-playfair">
+    <div className="font-raleway">
       <div className="mb-3 flex items-start justify-between">
         <div>
           <h2 className="text-2xl italic text-[var(--color-dark)] dark:text-[var(--color-snow)] mb-0.5">
@@ -163,13 +163,13 @@ export default function CrosswordPage({ puzzle }: CrosswordPageProps) {
               </span>
               <button
                 onClick={onReset}
-                className="font-playfair text-xs cursor-pointer text-[var(--color-cranberry)] hover:text-[var(--color-cranberry)]/80 tracking-widest uppercase font-bold"
+                className="font-raleway text-xs cursor-pointer text-[var(--color-cranberry)] hover:text-[var(--color-cranberry)]/80 tracking-widest uppercase font-bold"
               >
                 Yes
               </button>
               <button
                 onClick={onCancelReset}
-                className="font-playfair text-xs cursor-pointer text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
+                className="font-raleway text-xs cursor-pointer text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
               >
                 No
               </button>
@@ -177,7 +177,7 @@ export default function CrosswordPage({ puzzle }: CrosswordPageProps) {
           ) : (
             <button
               onClick={onReset}
-              className="font-playfair text-xs cursor-pointer text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
+              className="font-raleway text-xs cursor-pointer text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
             >
               Reset
             </button>

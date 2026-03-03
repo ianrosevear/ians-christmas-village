@@ -31,7 +31,7 @@ export default function CrosswordClues({ puzzle, state, onClueClick }: Crossword
   return (
     <div className="flex flex-col gap-4 text-sm text-[var(--color-dark)] dark:text-[var(--color-snow)] min-w-0">
       <div>
-        <h3 className="font-playfair text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
+        <h3 className="font-raleway text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
           Across
         </h3>
         <ol className="space-y-1">
@@ -51,7 +51,7 @@ export default function CrosswordClues({ puzzle, state, onClueClick }: Crossword
         </ol>
       </div>
       <div>
-        <h3 className="font-playfair text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
+        <h3 className="font-raleway text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
           Down
         </h3>
         <ol className="space-y-1">

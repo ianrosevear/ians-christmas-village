@@ -82,14 +82,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               {isHome ? (
                 <button
                   onClick={toggleWindow}
-                  className="font-playfair cursor-pointer text-xs text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
+                  className="font-raleway cursor-pointer text-xs text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
                 >
                   ← countdown
                 </button>
               ) : (
                 <Link
                   href="/"
-                  className="font-playfair text-xs text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
+                  className="font-raleway text-xs text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
                 >
                   ← back
                 </Link>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Nunito, Pixelify_Sans } from "next/font/google";
+import { Raleway, Nunito, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair-display",
+const raleway = Raleway({
+  variable: "--font-raleway",
   subsets: ["latin"],
 });
 
@@ -38,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${playfairDisplay.variable} ${nunito.variable} ${pixelifySans.variable} antialiased`}>
+      <body className={`${raleway.variable} ${nunito.variable} ${pixelifySans.variable} antialiased`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

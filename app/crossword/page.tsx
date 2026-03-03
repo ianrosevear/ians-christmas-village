@@ -21,7 +21,7 @@ export default function CrosswordRoute() {
 
   if (error) {
     return (
-      <div className="font-playfair text-[var(--color-dark)] dark:text-[var(--color-snow)]">
+      <div className="font-raleway text-[var(--color-dark)] dark:text-[var(--color-snow)]">
         <p>Could not load the crossword puzzle.</p>
       </div>
     );
@@ -29,7 +29,7 @@ export default function CrosswordRoute() {
 
   if (!puzzle) {
     return (
-      <div className="font-playfair text-[var(--color-dark)]/40 dark:text-[var(--color-snow)]/35">
+      <div className="font-raleway text-[var(--color-dark)]/40 dark:text-[var(--color-snow)]/35">
         Loading puzzle...
       </div>
     );

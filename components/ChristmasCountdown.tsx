@@ -26,7 +26,7 @@ export default function ChristmasCountdown() {
   return (
     <div className="text-center">
       {isChristmas ? (
-        <p className="font-playfair text-4xl text-[var(--color-gold)]">
+        <p className="font-raleway text-4xl text-[var(--color-gold)]">
           🎅 Merry Christmas! 🎅
         </p>
       ) : (
