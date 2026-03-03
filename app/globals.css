@@ -3,6 +3,7 @@
 @import "./styles/layout.css";
 @import "./styles/snow.css";
 @import "./styles/animations.css";
+@import "./styles/crossword.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

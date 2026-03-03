@@ -21,13 +21,15 @@ export default function Home() {
             A curated list of things i recommend
           </p>
         </li>
-        <li className="opacity-35 select-none">
-          <span className="text-lg text-[var(--color-dark)] dark:text-[var(--color-snow)]">
-            → Crossword{" "}
-            <span className="text-sm not-italic">[soon]</span>
-          </span>
+        <li>
+          <Link
+            href="/crossword"
+            className="text-lg text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline"
+          >
+            → Crossword
+          </Link>
           <p className="text-sm text-[var(--color-dark)]/45 dark:text-[var(--color-snow)]/40 mt-0.5 ml-4">
-            Coming soon
+            A cryptic crossword puzzle
           </p>
         </li>
       </ul>

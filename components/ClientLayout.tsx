@@ -42,6 +42,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const toggleWindow = makeToggle("windowOpen", false);
 
   const isHome = pathname === "/";
+  const isCrossword = pathname.startsWith("/crossword");
   const showWindow = !isHome || windowOpen;
 
   return (
@@ -74,7 +75,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       {/* Main window */}
       {showWindow && (
         <main className="relative z-10 pt-12 pb-8 px-4 min-h-screen flex justify-center">
-          <div className="candy-cane-border w-full max-w-3xl h-fit">
+          <div className={`candy-cane-border w-full ${isCrossword ? "max-w-5xl" : "max-w-3xl"} h-fit`}>
           <div className="bg-[var(--color-snow)] dark:bg-[#1c1a14]">
             {/* Back / Countdown button */}
             <div className="px-8 pt-6 pb-0">
@@ -95,7 +96,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
               )}
             </div>
 
-            <div className="px-8 py-8">
+            <div className={isCrossword ? "px-6 py-4" : "px-8 py-8"}>
               {children}
             </div>
           </div>
