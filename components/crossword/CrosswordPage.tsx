@@ -59,7 +59,6 @@ export default function CrosswordPage({ puzzle }: CrosswordPageProps) {
   }, [puzzle.title, state]);
 
   // Focus management
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
   const focusInput = useCallback(() => {
@@ -210,7 +209,6 @@ export default function CrosswordPage({ puzzle }: CrosswordPageProps) {
       )}
 
       <div
-        ref={wrapperRef}
         className="flex flex-col md:flex-row gap-6 outline-none relative"
         onClick={focusInput}
       >
