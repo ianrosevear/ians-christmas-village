@@ -11,9 +11,9 @@ export default function CrosswordRoute() {
 
   useEffect(() => {
     fetch("/crosswords/Solid Start.ipuz")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load puzzle");
-        return res.json();
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load puzzle");
+        return response.json();
       })
       .then((json) => setPuzzle(parseiPUZ(json)))
       .catch((err) => setError(err.message));
