@@ -2,19 +2,24 @@ import Link from "next/link";
 
 const items = [
   {
-    href: "/favorites",
-    title: "Stuff I Like",
-    description: "I think you should check this stuff out",
-  },
-  {
-    href: "/crossword",
+    href: "/crossword/solid-start",
     title: "Crossword: Solid Start",
     description: "A cryptic crossword puzzle",
+  },
+  {
+    href: "/crossword/beginner-cryptic",
+    title: "Crossword: Beginner Cryptic",
+    description: "A beginner-friendly cryptic crossword",
   },
   {
     href: "/guide",
     title: "How to Solve Cryptic Crosswords",
     description: "A beginner's guide",
+  },
+  {
+    href: "/favorites",
+    title: "Stuff I Like",
+    description: "I think you should check this stuff out",
   },
 ];
 
