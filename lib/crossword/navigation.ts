@@ -25,6 +25,9 @@ export function handleCellClick(
   row: number,
   col: number,
 ): CrosswordState {
+  // Ignore clicks on blocked cells
+  if (puzzle.grid[row]?.[col]?.blocked) return state;
+
   const sameCell = state.cursor.row === row && state.cursor.col === col;
 
   if (sameCell) {
@@ -133,12 +136,23 @@ export function handleArrowKey(
     // No clue in that direction — move anyway
   }
 
-  // Move one cell in the arrow direction
+  // Move one cell in the arrow direction, skipping blocked cells
   let { row, col } = state.cursor;
-  if (arrow === "ArrowUp") row--;
-  if (arrow === "ArrowDown") row++;
-  if (arrow === "ArrowLeft") col--;
-  if (arrow === "ArrowRight") col++;
+  const dr = arrow === "ArrowUp" ? -1 : arrow === "ArrowDown" ? 1 : 0;
+  const dc = arrow === "ArrowLeft" ? -1 : arrow === "ArrowRight" ? 1 : 0;
+
+  row += dr;
+  col += dc;
+
+  // Skip over blocked cells
+  while (
+    row >= 0 && row < puzzle.height &&
+    col >= 0 && col < puzzle.width &&
+    puzzle.grid[row][col].blocked
+  ) {
+    row += dr;
+    col += dc;
+  }
 
   // Clamp to grid bounds
   if (row < 0 || row >= puzzle.height || col < 0 || col >= puzzle.width) {

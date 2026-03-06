@@ -18,11 +18,17 @@ interface iPUZData {
 }
 
 function parseCell(raw: iPUZCell | number | string, row: number, col: number, solution: string): CellDef {
+  // Black/blocked square
+  if (raw === "#") {
+    return { row, col, blocked: true, clueNumber: null, bars: { right: false, bottom: false }, solution: "" };
+  }
+
   if (typeof raw === "number" || typeof raw === "string") {
     const num = typeof raw === "number" ? raw : parseInt(raw, 10);
     return {
       row,
       col,
+      blocked: false,
       clueNumber: num > 0 ? num : null,
       bars: { right: false, bottom: false },
       solution,
@@ -33,6 +39,7 @@ function parseCell(raw: iPUZCell | number | string, row: number, col: number, so
   return {
     row,
     col,
+    blocked: false,
     clueNumber: raw.cell > 0 ? raw.cell : null,
     bars: {
       right: barred.includes("R"),
@@ -73,7 +80,7 @@ function buildClueEntries(
     let r = startRow;
     let c = startCol;
 
-    while (r < height && c < width) {
+    while (r < height && c < width && !grid[r][c].blocked) {
       cells.push([r, c]);
       const cell = grid[r][c];
 

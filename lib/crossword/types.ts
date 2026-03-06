@@ -3,6 +3,7 @@ export type Direction = "across" | "down";
 export interface CellDef {
   row: number;
   col: number;
+  blocked: boolean;
   clueNumber: number | null;
   bars: { right: boolean; bottom: boolean };
   solution: string;
