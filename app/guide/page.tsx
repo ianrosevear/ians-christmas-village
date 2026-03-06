@@ -4,6 +4,28 @@ import { useState } from "react";
 import Link from "next/link";
 import { Def, Ind, Fod, Cha, SmallToggle } from "@/lib/crossword/annotations";
 
+function AnchorLink({ id }: { id: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleClick = () => {
+    const url = `${window.location.origin}${window.location.pathname}#${id}`;
+    window.history.replaceState(null, "", `#${id}`);
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      aria-label="Copy link to section"
+      className="cursor-pointer ml-2 opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-dark)]/30 dark:text-[var(--color-snow)]/30 hover:text-[var(--color-dark)]/60 dark:hover:text-[var(--color-snow)]/60 text-base font-normal align-middle"
+    >
+      {copied ? "✓" : "#"}
+    </button>
+  );
+}
+
 function Clue({
   children,
   length,
@@ -45,8 +67,8 @@ export default function GuidePage() {
 
       <div className="space-y-6 text-[var(--color-dark)] dark:text-[var(--color-snow)] leading-relaxed">
         {/* Intro */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">What is a cryptic crossword?</h3>
+        <section id="intro" className="space-y-3">
+          <h3 className="group text-xl font-bold">What is a cryptic crossword?<AnchorLink id="intro" /></h3>
           <p>
             A cryptic crossword is a special type of crossword in which each clue is itself a
             little wordplay puzzle. Unlike a regular crossword clue, which just gives you a
@@ -162,8 +184,8 @@ export default function GuidePage() {
         </section>
 
         {/* Anagrams */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Anagrams</h3>
+        <section id="anagrams" className="space-y-3">
+          <h3 className="group text-xl font-bold">Anagrams<AnchorLink id="anagrams" /></h3>
           <p>
             Anagrams are a very common kind of clue. An indicator word will clue to anagram an
             adjacent word or phrase. Anagram indicators can be very broad. Any word that suggests
@@ -203,8 +225,8 @@ export default function GuidePage() {
         </section>
 
         {/* Charades */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Charades</h3>
+        <section id="charades" className="space-y-3">
+          <h3 className="group text-xl font-bold">Charades<AnchorLink id="charades" /></h3>
           <p>
             Charades are perhaps the most common kind of clue, and are often encountered
             alongside other types of clues. A charade clue is much like the party game it is
@@ -264,8 +286,8 @@ export default function GuidePage() {
         </section>
 
         {/* Containers */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Containers</h3>
+        <section id="containers" className="space-y-3">
+          <h3 className="group text-xl font-bold">Containers<AnchorLink id="containers" /></h3>
           <p>
             Containers are a type of clue in which a word is placed inside another word. This can
             be clued either via one word surrounding another (with words like &ldquo;around&rdquo;,
@@ -288,8 +310,8 @@ export default function GuidePage() {
         </section>
 
         {/* Reversals */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Reversals</h3>
+        <section id="reversals" className="space-y-3">
+          <h3 className="group text-xl font-bold">Reversals<AnchorLink id="reversals" /></h3>
           <p>
             Reversals are a self explanatory kind of clue where a word or phrase is read
             backwards. Indicators for a reversal suggest changing direction or retreating. Look
@@ -312,8 +334,8 @@ export default function GuidePage() {
         </section>
 
         {/* Deletions */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Deletions</h3>
+        <section id="deletions" className="space-y-3">
+          <h3 className="group text-xl font-bold">Deletions<AnchorLink id="deletions" /></h3>
           <p>
             Deletions remove one or more letters from fodder to create a new word. Deletion
             indicators will often not only indicate a removal, but also what to remove or where
@@ -367,8 +389,8 @@ export default function GuidePage() {
         </section>
 
         {/* Selections */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Selections</h3>
+        <section id="selections" className="space-y-3">
+          <h3 className="group text-xl font-bold">Selections<AnchorLink id="selections" /></h3>
           <p>
             Selections are a natural complement to deletions. Deletions indicate to remove a
             word, while selections indicate to use a specific subset of a word for constructing
@@ -415,8 +437,8 @@ export default function GuidePage() {
         </section>
 
         {/* Homophones */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Homophones</h3>
+        <section id="homophones" className="space-y-3">
+          <h3 className="group text-xl font-bold">Homophones<AnchorLink id="homophones" /></h3>
           <p>
             Homophones are a fairly rare type of indicator, and usually aren&rsquo;t too
             difficult to spot. They indicate to treat a word or phrase as spoken or heard.
@@ -440,8 +462,8 @@ export default function GuidePage() {
         </section>
 
         {/* Hidden Words */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Hidden Words</h3>
+        <section id="hidden-words" className="space-y-3">
+          <h3 className="group text-xl font-bold">Hidden Words<AnchorLink id="hidden-words" /></h3>
           <p>
             Hidden words can be some of the easiest wordplay devices to spot, but can be
             maddening if you miss them. A hidden words indicator tells you to look for a word or
@@ -464,8 +486,8 @@ export default function GuidePage() {
         </section>
 
         {/* Positioners */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Positioners</h3>
+        <section id="positioners" className="space-y-3">
+          <h3 className="group text-xl font-bold">Positioners<AnchorLink id="positioners" /></h3>
           <p>
             While almost never used alone, positioners are a powerful tool for constructors to
             improve the surface of their clues. The recipe of wordplay is always done in order,
@@ -490,8 +512,8 @@ export default function GuidePage() {
         </section>
 
         {/* Double Definition */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Double Definition</h3>
+        <section id="double-definition" className="space-y-3">
+          <h3 className="group text-xl font-bold">Double Definition<AnchorLink id="double-definition" /></h3>
           <p>
             Double definition clues break the mold by eschewing the standard framework of fodder
             and indicators for&mdash;you guessed it&mdash;two definitions!
@@ -517,8 +539,8 @@ export default function GuidePage() {
         </section>
 
         {/* Additional Notes */}
-        <section className="space-y-3">
-          <h3 className="text-xl font-bold">Additional Notes</h3>
+        <section id="notes" className="space-y-3">
+          <h3 className="group text-xl font-bold">Additional Notes<AnchorLink id="notes" /></h3>
           <p>
             You may have noticed the occasional word that wasn&rsquo;t highlighted and
             didn&rsquo;t seem to contribute to the solving recipe or the definition. These are
@@ -562,7 +584,7 @@ export default function GuidePage() {
         </section>
 
         {/* Conclusion */}
-        <section className="space-y-3">
+        <section id="conclusion" className="space-y-3">
           <h3 className="text-xl font-bold">Conclusion</h3>
           <p>
             You should now be ready to start solving cryptic crosswords! I recommend trying{" "}
@@ -578,7 +600,7 @@ export default function GuidePage() {
         </section>
 
         {/* Credits */}
-        <section className="pt-2 border-t border-[var(--color-dark)]/10 dark:border-[var(--color-snow)]/10">
+        <section id="credits" className="pt-2 border-t border-[var(--color-dark)]/10 dark:border-[var(--color-snow)]/10">
           <h3 className="text-xl font-bold mb-2">Credits</h3>
           <ul className="space-y-1 text-sm text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
             <li>
