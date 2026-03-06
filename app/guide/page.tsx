@@ -49,13 +49,15 @@ export default function GuidePage() {
           <h3 className="text-xl font-bold">What is a cryptic crossword?</h3>
           <p>
             A cryptic crossword is a special type of crossword in which each clue is itself a
-            little wordplay puzzle. Most cryptic crossword clues are composed of two parts: a
-            definition&mdash;basically a regular crossword clue&mdash;joined with tricky word
-            play. Both parts will independently resolve to the same thing: the answer that goes
-            in the grid. An additional wrinkle is that it will often not be clear where the
-            definition ends and the wordplay begins.
+            little wordplay puzzle. Unlike a regular crossword clue, which just gives you a
+            definition, a cryptic clue contains two paths to the same answer: a straightforward
+            definition joined with tricky wordplay. Both parts will independently resolve to the
+            same thing: the answer that goes in the grid.
           </p>
-          <p>Let&rsquo;s look at an example. Don't worry, I&rsquo;ll explain everything soon!</p>
+          <p>
+            If that sounds confusing, let&rsquo;s look at an example. I&rsquo;ll walk you
+            through it.
+          </p>
 
           <div className="my-4 ml-6">
             <p className="font-bold">
@@ -71,13 +73,38 @@ export default function GuidePage() {
 
           <p>
             The &ldquo;surface&rdquo; of the clue is the straightforward reading of the phrase.
-            This surface gives us an impression of a Christmas carol uncannily offering pearls 
+            This surface gives us an impression of a Christmas carol uncannily offering pearls
             of wisdom. But to solve a cryptic crossword, we have to look below the surface.
           </p>
           <p>
-            In this example, we are looking for a phrase made of a six and five letter word which
-            can have the definition &ldquo;Christmas carol&rdquo; (the number at the end of the
-            clue tells us the length of the answer).
+            We&rsquo;re looking for a phrase made of a six and five letter word (the number at
+            the end of the clue tells us the length of the answer). The{" "}
+            <span className="rounded px-1 bg-blue-200/60 dark:bg-blue-500/30 font-semibold">
+              definition
+            </span>{" "}
+            is &ldquo;Christmas carol&rdquo;&mdash;that&rsquo;s the straightforward part of the
+            clue, basically a regular crossword clue. Definitions are almost always at the front
+            or end of the clue. An additional wrinkle is that it will often not be clear where the
+            definition ends and the wordplay begins.
+          </p>
+          <p>
+            Next, &ldquo;uniquely&rdquo; is an{" "}
+            <span className="rounded px-1 bg-pink-200/70 dark:bg-pink-400/30 font-semibold">
+              indicator
+            </span>
+            &mdash;a word or phrase that directs you to modify adjacent fodder in some way.
+            There are several classes of indicator that tell you to perform different
+            modifications. In this case &ldquo;uniquely&rdquo; is an anagram indicator.
+          </p>
+          <p>
+            That tells us to anagram the adjacent{" "}
+            <span className="rounded px-1 bg-amber-200/70 dark:bg-amber-400/30 font-semibold">
+              fodder
+            </span>{" "}
+            &ldquo;lent insight&rdquo;. If the clue is a recipe, fodder are ingredients&mdash;the
+            words that get modified by indicators. Anagramming &ldquo;lent insight&rdquo; gives us
+            &ldquo;Silent Night&rdquo;. Silent Night could have the definition &ldquo;Christmas
+            Carol&rdquo;, so we can confirm that&rsquo;s our answer!
           </p>
 
           <div className="ml-6 space-y-2 text-sm">
@@ -107,18 +134,11 @@ export default function GuidePage() {
               <span className="rounded px-1 bg-orange-200/70 dark:bg-orange-400/30 font-semibold">
                 Charade
               </span>{" "}
-              &mdash; words substituted with a synonym or abbreviation to build the answer. 
+              &mdash; words substituted with a synonym or abbreviation to build the answer.
               More on charades later.
             </p>
           </div>
 
-          <p>
-            There are several classes of indicator that tell you to perform different
-            modifications to fodder. In this case &ldquo;uniquely&rdquo; is an anagram indicator.
-            We can anagram the adjacent fodder &ldquo;lent insight&rdquo; to get &ldquo;Silent
-            Night&rdquo;. Silent Night could have the definition &ldquo;Christmas Carol&rdquo;,
-            so we can confirm that&rsquo;s our answer!
-          </p>
           <p>
             If that seems tricky to you, that&rsquo;s okay. It&rsquo;s a totally new way of
             looking at crosswords where the words don&rsquo;t mean what they usually mean. One
