@@ -44,23 +44,24 @@ type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
 
 interface CrosswordPageProps {
   puzzle: CrosswordPuzzle;
+  slug: string;
   annotations?: AnnotationMap;
 }
 
-export default function CrosswordPage({ puzzle, annotations }: CrosswordPageProps) {
+export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPageProps) {
   const [state, dispatch] = useReducer(
     makeReducer(puzzle),
     null,
     () => {
       if (typeof window === "undefined") return emptyState(puzzle.height, puzzle.width);
-      return loadProgress(puzzle.title, puzzle.height, puzzle.width);
+      return loadProgress(slug, puzzle.height, puzzle.width);
     },
   );
 
   // Persist state to localStorage
   useEffect(() => {
-    saveProgress(puzzle.title, state);
-  }, [puzzle.title, state]);
+    saveProgress(slug, state);
+  }, [slug, state]);
 
   // Focus management
   const hiddenInputRef = useRef<HTMLInputElement>(null);
