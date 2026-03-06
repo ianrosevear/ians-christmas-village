@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 // Color components for the four annotation types
 function Def({ children, show }: { children: React.ReactNode; show: boolean }) {
@@ -603,8 +604,14 @@ export default function GuidePage() {
         <section className="space-y-3">
           <h3 className="text-xl font-bold">Conclusion</h3>
           <p>
-            You should now be ready to start solving cryptic crosswords! I recommend trying the
-            crossword on this site to help you get your feet wet. Once you solve that, check out
+            You should now be ready to start solving cryptic crosswords! I recommend trying{" "}
+            <Link
+              href="/crossword/beginner-cryptic"
+              className="text-[var(--color-cranberry)] dark:text-[var(--color-gold)] underline"
+            >
+              the beginner crossword on this site
+            </Link>{" "}
+            to help you get your feet wet. Once you solve that, check out
             other publications such as Minute Cryptic, the New Yorker, and the Guardian.
           </p>
         </section>
