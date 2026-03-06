@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Raleway, Nunito, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
+import { Analytics } from "@vercel/analytics/next";
 
 const raleway = Raleway({
   variable: "--font-raleway",
@@ -40,6 +41,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${raleway.variable} ${nunito.variable} ${pixelifySans.variable} antialiased`}>
         <ClientLayout>{children}</ClientLayout>
+        <Analytics />
       </body>
     </html>
   );
