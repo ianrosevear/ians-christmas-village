@@ -33,6 +33,16 @@
   background: #1c1a14;
 }
 
+/* Blocked (black) squares */
+.crossword-cell--blocked {
+  background: var(--color-dark);
+  cursor: default;
+}
+
+.dark .crossword-cell--blocked {
+  background: var(--color-snow);
+}
+
 /* Bar borders — green thick lines to mark word boundaries */
 .crossword-cell[data-bar-right="true"] {
   border-right: 4px solid var(--color-pine);

@@ -17,6 +17,10 @@ export default function CrosswordCell({
   isActiveWord,
   onClick,
 }: CrosswordCellProps) {
+  if (cell.blocked) {
+    return <div className="crossword-cell crossword-cell--blocked" />;
+  }
+
   const className = [
     "crossword-cell",
     isSelected && "crossword-cell--selected",
