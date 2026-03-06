@@ -7,6 +7,39 @@ import { SmallToggle } from "@/lib/crossword/annotations";
 
 type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
 
+const LEGEND_ITEMS = [
+  { key: "definition", label: "Definition", className: "bg-blue-200/60 dark:bg-blue-500/30", desc: "The straightforward definition of the answer. Almost always at the front or end of the clue." },
+  { key: "indicator", label: "Indicator", className: "bg-pink-200/70 dark:bg-pink-400/30", desc: "A word or phrase that directs you to modify adjacent fodder in some way." },
+  { key: "fodder", label: "Fodder", className: "bg-amber-200/70 dark:bg-amber-400/30", desc: "Words that are modified by indicators. If the clue is a recipe, fodder are ingredients." },
+  { key: "charade", label: "Charade", className: "bg-orange-200/70 dark:bg-orange-400/30", desc: "Words substituted with a synonym or abbreviation to build the answer." },
+] as const;
+
+function ColorLegend() {
+  const [active, setActive] = useState<string | null>(null);
+  const activeItem = LEGEND_ITEMS.find((i) => i.key === active);
+
+  return (
+    <div className="text-xs">
+      <div className="flex flex-wrap gap-x-3 gap-y-1">
+        {LEGEND_ITEMS.map((item) => (
+          <button
+            key={item.key}
+            onClick={() => setActive(active === item.key ? null : item.key)}
+            className={`cursor-pointer rounded px-1 ${item.className} ${active === item.key ? "ring-1 ring-[var(--color-dark)]/30 dark:ring-[var(--color-snow)]/30" : ""}`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+      {activeItem && (
+        <p className="mt-1.5 text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
+          {activeItem.desc}
+        </p>
+      )}
+    </div>
+  );
+}
+
 interface CrosswordCluesProps {
   puzzle: CrosswordPuzzle;
   state: CrosswordState;
@@ -80,14 +113,7 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
 
   return (
     <div className="flex flex-col gap-4 text-sm text-[var(--color-dark)] dark:text-[var(--color-snow)] min-w-0">
-      {annotations && (
-        <div className="cursor-default flex flex-wrap gap-x-3 gap-y-1 text-xs">
-          <span className="rounded px-1 bg-blue-200/60 dark:bg-blue-500/30">Definition</span>
-          <span className="rounded px-1 bg-pink-200/70 dark:bg-pink-400/30">Indicator</span>
-          <span className="rounded px-1 bg-amber-200/70 dark:bg-amber-400/30">Fodder</span>
-          <span className="rounded px-1 bg-orange-200/70 dark:bg-orange-400/30">Charade</span>
-        </div>
-      )}
+      {annotations && <ColorLegend />}
       <div>
         <h3 className="font-raleway text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
           Across
