@@ -80,6 +80,14 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
 
   return (
     <div className="flex flex-col gap-4 text-sm text-[var(--color-dark)] dark:text-[var(--color-snow)] min-w-0">
+      {annotations && (
+        <div className="cursor-default flex flex-wrap gap-x-3 gap-y-1 text-xs">
+          <span className="rounded px-1 bg-blue-200/60 dark:bg-blue-500/30">Definition</span>
+          <span className="rounded px-1 bg-pink-200/70 dark:bg-pink-400/30">Indicator</span>
+          <span className="rounded px-1 bg-amber-200/70 dark:bg-amber-400/30">Fodder</span>
+          <span className="rounded px-1 bg-orange-200/70 dark:bg-orange-400/30">Charade</span>
+        </div>
+      )}
       <div>
         <h3 className="font-raleway text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
           Across
