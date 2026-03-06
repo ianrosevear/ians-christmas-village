@@ -4,6 +4,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { CrosswordPuzzle, CrosswordState, Direction } from "@/lib/crossword/types";
 import { getActiveClue, handleArrowKey, handleBackspace, handleCellClick, handleClueClick, handleLetterInput, handleTab } from "@/lib/crossword/navigation";
 import { loadProgress, saveProgress, emptyState } from "@/lib/crossword/storage";
+import Link from "next/link";
 import CrosswordGrid from "./CrosswordGrid";
 import CrosswordClues from "./CrosswordClues";
 
@@ -155,6 +156,13 @@ export default function CrosswordPage({ puzzle, annotations }: CrosswordPageProp
           </h2>
           <p className="text-xs text-[var(--color-dark)]/40 dark:text-[var(--color-snow)]/35">
             By {puzzle.author}
+          </p>
+          <p className="text-xs text-[var(--color-dark)]/40 dark:text-[var(--color-snow)]/35 mt-1">
+            Note: This is a cryptic crossword. New to cryptics?{" "}
+            <Link href="/guide" className="text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline">
+              Here&apos;s a guide
+            </Link>
+            .
           </p>
         </div>
         <div className="flex items-center gap-2 mt-1">
