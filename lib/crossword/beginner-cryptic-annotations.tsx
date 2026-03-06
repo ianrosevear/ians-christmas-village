@@ -17,8 +17,8 @@ const annotations: Record<string, AnnotationRenderer> = {
   ),
   "6A": (s) => (
     <>
-      <Def show={s}>Long ago, you</Def> <Ind show={s}>embraced</Ind>{" "}
-      <Fod show={s}>my</Fod> <Ind show={s}>first</Ind> <Cha show={s}>recurring idea</Cha>
+      <Cha show={s}>Long ago, you</Cha> <Ind show={s}>embraced</Ind>{" "}
+      <Fod show={s}>my</Fod> <Ind show={s}>first</Ind> <Def show={s}>recurring idea</Def>
     </>
   ),
   "8A": (s) => (
@@ -42,8 +42,8 @@ const annotations: Record<string, AnnotationRenderer> = {
   // Down
   "1D": (s) => (
     <>
-      <Def show={s}>Good fortune</Def> <Ind show={s}>follows</Ind>{" "}
-      <Cha show={s}>dope</Cha> <Cha show={s}>dinner party</Cha>
+      <Cha show={s}>Good fortune</Cha> <Ind show={s}>follows</Ind>{" "}
+      <Cha show={s}>dope</Cha> <Def show={s}>dinner party</Def>
     </>
   ),
   "2D": (s) => (
@@ -59,7 +59,7 @@ const annotations: Record<string, AnnotationRenderer> = {
   ),
   "4D": (s) => (
     <>
-      <Fod show={s}>Indiana</Fod> <Cha show={s}>led</Cha>{" "}
+      <Cha show={s}>Indiana</Cha> <Fod show={s}>led</Fod>{" "}
       <Ind show={s}>without head</Ind>, <Def show={s}>wanted it bad</Def>
     </>
   ),
