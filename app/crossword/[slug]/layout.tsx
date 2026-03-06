@@ -5,12 +5,13 @@ export function generateStaticParams() {
   return getAllPuzzles().map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const info = getPuzzleBySlug(params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const info = getPuzzleBySlug(slug);
   const title = info ? `${info.title} — Crossword` : "Crossword";
   const description = info?.description ?? "A crossword puzzle by Ian Rosevear.";
 
