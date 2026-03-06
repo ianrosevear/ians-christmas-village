@@ -12,9 +12,9 @@ const items = [
     description: "A cryptic crossword puzzle",
   },
   {
-    href: null,
+    href: "/guide",
     title: "How to Solve Cryptic Crosswords",
-    description: "A beginner's guide — coming soon",
+    description: "A beginner's guide",
   },
 ];
 
