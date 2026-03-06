@@ -6,6 +6,7 @@ import { parseiPUZ } from "@/lib/crossword/ipuz";
 import { CrosswordPuzzle } from "@/lib/crossword/types";
 import { getPuzzleBySlug } from "@/lib/crossword/puzzles";
 import CrosswordPage from "@/components/crossword/CrosswordPage";
+import beginnerCrypticAnnotations from "@/lib/crossword/beginner-cryptic-annotations";
 
 export default function CrosswordRoute() {
   const { slug } = useParams<{ slug: string }>();
@@ -45,5 +46,7 @@ export default function CrosswordRoute() {
     );
   }
 
-  return <CrosswordPage puzzle={puzzle} />;
+  const annotations = slug === "beginner-cryptic" ? beginnerCrypticAnnotations : undefined;
+
+  return <CrosswordPage puzzle={puzzle} annotations={annotations} />;
 }

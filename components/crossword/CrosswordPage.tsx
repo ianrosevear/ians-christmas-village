@@ -39,11 +39,14 @@ function makeReducer(puzzle: CrosswordPuzzle) {
   };
 }
 
+type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
+
 interface CrosswordPageProps {
   puzzle: CrosswordPuzzle;
+  annotations?: AnnotationMap;
 }
 
-export default function CrosswordPage({ puzzle }: CrosswordPageProps) {
+export default function CrosswordPage({ puzzle, annotations }: CrosswordPageProps) {
   const [state, dispatch] = useReducer(
     makeReducer(puzzle),
     null,
@@ -243,7 +246,7 @@ export default function CrosswordPage({ puzzle }: CrosswordPageProps) {
         </div>
 
         <div className="flex-1 min-w-0 max-h-[420px] overflow-y-auto">
-          <CrosswordClues puzzle={puzzle} state={state} onClueClick={onClueClick} />
+          <CrosswordClues puzzle={puzzle} state={state} onClueClick={onClueClick} annotations={annotations} />
         </div>
       </div>
     </div>

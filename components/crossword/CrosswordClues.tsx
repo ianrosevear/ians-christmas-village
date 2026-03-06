@@ -1,16 +1,63 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { CrosswordPuzzle, CrosswordState, Direction } from "@/lib/crossword/types";
+import { useEffect, useRef, useState } from "react";
+import { CrosswordPuzzle, CrosswordState, ClueDef, Direction } from "@/lib/crossword/types";
 import { getActiveClue } from "@/lib/crossword/navigation";
+import { SmallToggle } from "@/lib/crossword/annotations";
+
+type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
 
 interface CrosswordCluesProps {
   puzzle: CrosswordPuzzle;
   state: CrosswordState;
   onClueClick: (clueNumber: number, direction: Direction) => void;
+  annotations?: AnnotationMap;
 }
 
-export default function CrosswordClues({ puzzle, state, onClueClick }: CrosswordCluesProps) {
+function ClueItem({
+  clue,
+  direction,
+  isActive,
+  activeRef,
+  onClick,
+  annotation,
+}: {
+  clue: ClueDef;
+  direction: Direction;
+  isActive: boolean;
+  activeRef: React.RefObject<HTMLLIElement | null>;
+  onClick: () => void;
+  annotation?: (show: boolean) => React.ReactNode;
+}) {
+  const [showColors, setShowColors] = useState(false);
+
+  return (
+    <li
+      ref={isActive ? activeRef : undefined}
+      className={`px-2 py-1 cursor-pointer rounded hover:bg-[var(--color-dark)]/5 dark:hover:bg-[var(--color-snow)]/5 ${
+        isActive ? "crossword-clue--active" : ""
+      }`}
+      onClick={onClick}
+    >
+      <span className="font-bold mr-2">{clue.number}</span>
+      {annotation ? (
+        <>
+          {annotation(showColors)}
+          {" "}
+          <SmallToggle
+            label="colors"
+            active={showColors}
+            onClick={() => setShowColors(!showColors)}
+          />
+        </>
+      ) : (
+        clue.text
+      )}
+    </li>
+  );
+}
+
+export default function CrosswordClues({ puzzle, state, onClueClick, annotations }: CrosswordCluesProps) {
   const activeClue = getActiveClue(puzzle, state.cursor.row, state.cursor.col, state.direction);
   const activeRef = useRef<HTMLLIElement>(null);
 
@@ -28,6 +75,9 @@ export default function CrosswordClues({ puzzle, state, onClueClick }: Crossword
   const isActive = (num: number, dir: Direction) =>
     activeClue?.number === num && activeClue?.direction === dir;
 
+  const clueKey = (num: number, dir: Direction) =>
+    `${num}${dir === "across" ? "A" : "D"}`;
+
   return (
     <div className="flex flex-col gap-4 text-sm text-[var(--color-dark)] dark:text-[var(--color-snow)] min-w-0">
       <div>
@@ -36,17 +86,15 @@ export default function CrosswordClues({ puzzle, state, onClueClick }: Crossword
         </h3>
         <ol className="space-y-1">
           {acrossClues.map((clue) => (
-            <li
+            <ClueItem
               key={`a${clue.number}`}
-              ref={isActive(clue.number, "across") ? activeRef : undefined}
-              className={`px-2 py-1 cursor-pointer rounded hover:bg-[var(--color-dark)]/5 dark:hover:bg-[var(--color-snow)]/5 ${
-                isActive(clue.number, "across") ? "crossword-clue--active" : ""
-              }`}
+              clue={clue}
+              direction="across"
+              isActive={isActive(clue.number, "across")}
+              activeRef={activeRef}
               onClick={() => onClueClick(clue.number, "across")}
-            >
-              <span className="font-bold mr-2">{clue.number}</span>
-              {clue.text}
-            </li>
+              annotation={annotations?.[clueKey(clue.number, "across")]}
+            />
           ))}
         </ol>
       </div>
@@ -56,17 +104,15 @@ export default function CrosswordClues({ puzzle, state, onClueClick }: Crossword
         </h3>
         <ol className="space-y-1">
           {downClues.map((clue) => (
-            <li
+            <ClueItem
               key={`d${clue.number}`}
-              ref={isActive(clue.number, "down") ? activeRef : undefined}
-              className={`px-2 py-1 cursor-pointer rounded hover:bg-[var(--color-dark)]/5 dark:hover:bg-[var(--color-snow)]/5 ${
-                isActive(clue.number, "down") ? "crossword-clue--active" : ""
-              }`}
+              clue={clue}
+              direction="down"
+              isActive={isActive(clue.number, "down")}
+              activeRef={activeRef}
               onClick={() => onClueClick(clue.number, "down")}
-            >
-              <span className="font-bold mr-2">{clue.number}</span>
-              {clue.text}
-            </li>
+              annotation={annotations?.[clueKey(clue.number, "down")]}
+            />
           ))}
         </ol>
       </div>
