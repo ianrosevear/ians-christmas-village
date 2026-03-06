@@ -55,7 +55,7 @@ export default function GuidePage() {
             in the grid. An additional wrinkle is that it will often not be clear where the
             definition ends and the wordplay begins.
           </p>
-          <p>Let&rsquo;s look at an example:</p>
+          <p>Let&rsquo;s look at an example. Don't worry, I&rsquo;ll explain everything soon!</p>
 
           <div className="my-4 ml-6">
             <p className="font-bold">
@@ -71,11 +71,8 @@ export default function GuidePage() {
 
           <p>
             The &ldquo;surface&rdquo; of the clue is the straightforward reading of the phrase.
-            Cryptic crossword constructors have fun trying to get the surface reading to look
-            like a regular sentence. Due to the specific constraints of cryptic crosswords this
-            can be tricky, so make sure to appreciate a normal looking sentence! This surface
-            gives us an impression of a Christmas carol uncannily offering pearls of wisdom. But
-            to solve a cryptic crossword, we have to look below the surface.
+            This surface gives us an impression of a Christmas carol uncannily offering pearls 
+            of wisdom. But to solve a cryptic crossword, we have to look below the surface.
           </p>
           <p>
             In this example, we are looking for a phrase made of a six and five letter word which
