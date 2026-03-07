@@ -402,7 +402,7 @@ export default function GuidePage() {
             or &ldquo;evenly&rdquo; indicating to take every odd or even letter.
           </p>
 
-          <Clue length="4" diagram="STAR (T)OPPER → T + TREE → ASH = SASH">
+          <Clue length="4" diagram="(S)TAR TOPPER → S + TREE → ASH = SASH">
             {(show) => (
               <>
                 <Def show={show}>Ribbon</Def>,{" "}
