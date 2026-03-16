@@ -60,6 +60,7 @@ export function handleLetterInput(
   letter: string,
 ): CrosswordState {
   const { row, col } = state.cursor;
+  const wasEmpty = !state.entries[row][col];
   const newEntries = state.entries.map((r) => [...r]);
   newEntries[row][col] = letter.toUpperCase();
 
@@ -68,17 +69,24 @@ export function handleLetterInput(
   if (clue) {
     const idx = clue.cells.findIndex(([r, c]) => r === row && c === col);
 
-    // Find the next empty cell after the current position
-    const nextEmpty = clue.cells.slice(idx + 1).find(([r, c]) => !newEntries[r][c]);
-    if (nextEmpty) {
-      const [nr, nc] = nextEmpty;
-      return { ...state, entries: newEntries, cursor: { row: nr, col: nc } };
-    }
-
-    // No empty cells remaining in this word — auto-jump to the next clue
     if (idx >= 0) {
-      const newState = { ...state, entries: newEntries };
-      return handleTab(puzzle, newState, false);
+      if (wasEmpty) {
+        // Typed into an empty cell — skip to next unfilled cell
+        const nextEmpty = clue.cells.slice(idx + 1).find(([r, c]) => !newEntries[r][c]);
+        if (nextEmpty) {
+          const [nr, nc] = nextEmpty;
+          return { ...state, entries: newEntries, cursor: { row: nr, col: nc } };
+        }
+      } else {
+        // Overwrote a filled cell — advance to the immediately next cell
+        if (idx + 1 < clue.cells.length) {
+          const [nr, nc] = clue.cells[idx + 1];
+          return { ...state, entries: newEntries, cursor: { row: nr, col: nc } };
+        }
+      }
+
+      // End of word (or no empty cells left) — auto-jump to the next clue
+      return handleTab(puzzle, { ...state, entries: newEntries }, false);
     }
   }
 
