@@ -1,21 +1,23 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CrosswordPuzzle, CrosswordState, ClueDef, Direction } from "@/lib/crossword/types";
 import { getActiveClue } from "@/lib/crossword/navigation";
-import { SmallToggle } from "@/lib/crossword/annotations";
+import { SmallToggle, ANNOTATION_COLORS } from "@/lib/crossword/annotations";
 
 type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
 
 const LEGEND_ITEMS = [
-  { key: "definition", label: "Definition", className: "bg-blue-200/60 dark:bg-blue-500/30", desc: "The straightforward definition of the answer. Almost always at the front or end of the clue." },
-  { key: "indicator", label: "Indicator", className: "bg-pink-200/70 dark:bg-pink-400/30", desc: "A word or phrase that directs you to modify adjacent fodder in some way." },
-  { key: "fodder", label: "Fodder", className: "bg-amber-200/70 dark:bg-amber-400/30", desc: "Words that are modified by indicators. If the clue is a recipe, fodder are ingredients." },
-  { key: "charade", label: "Charade", className: "bg-orange-200/70 dark:bg-orange-400/30", desc: "Words substituted with a synonym or abbreviation to build the answer." },
+  { key: "definition", label: "Definition", className: ANNOTATION_COLORS.def, desc: "The straightforward definition of the answer. Almost always at the front or end of the clue." },
+  { key: "indicator", label: "Indicator", className: ANNOTATION_COLORS.ind, desc: "A word or phrase that directs you to modify adjacent fodder in some way." },
+  { key: "fodder", label: "Fodder", className: ANNOTATION_COLORS.fod, desc: "Words that are modified by indicators. If the clue is a recipe, fodder are ingredients." },
+  { key: "charade", label: "Charade", className: ANNOTATION_COLORS.cha, desc: "Words substituted with a synonym or abbreviation to build the answer." },
 ] as const;
 
+type LegendKey = typeof LEGEND_ITEMS[number]["key"];
+
 function ColorLegend() {
-  const [active, setActive] = useState<string | null>(null);
+  const [active, setActive] = useState<LegendKey | null>(null);
   const activeItem = LEGEND_ITEMS.find((i) => i.key === active);
 
   return (
@@ -98,12 +100,14 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
     activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [activeClue?.number, activeClue?.direction]);
 
-  const acrossClues = puzzle.clues
-    .filter((c) => c.direction === "across")
-    .sort((a, b) => a.number - b.number);
-  const downClues = puzzle.clues
-    .filter((c) => c.direction === "down")
-    .sort((a, b) => a.number - b.number);
+  const acrossClues = useMemo(
+    () => puzzle.clues.filter((c) => c.direction === "across").sort((a, b) => a.number - b.number),
+    [puzzle.clues]
+  );
+  const downClues = useMemo(
+    () => puzzle.clues.filter((c) => c.direction === "down").sort((a, b) => a.number - b.number),
+    [puzzle.clues]
+  );
 
   const isActive = (num: number, dir: Direction) =>
     activeClue?.number === num && activeClue?.direction === dir;

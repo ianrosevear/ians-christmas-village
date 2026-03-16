@@ -10,9 +10,10 @@ function AnchorLink({ id }: { id: string }) {
   const handleClick = () => {
     const url = `${window.location.origin}${window.location.pathname}#${id}`;
     window.history.replaceState(null, "", `#${id}`);
-    navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
   };
 
   return (
