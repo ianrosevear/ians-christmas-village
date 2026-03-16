@@ -26,7 +26,7 @@ function ColorLegend() {
         {LEGEND_ITEMS.map((item) => (
           <button
             key={item.key}
-            onClick={() => setActive(active === item.key ? null : item.key)}
+            onClick={(e) => { e.stopPropagation(); setActive(active === item.key ? null : item.key); }}
             className={`cursor-pointer rounded px-1 ${item.className} ${active === item.key ? "ring-1 ring-[var(--color-dark)]/30 dark:ring-[var(--color-snow)]/30" : ""}`}
           >
             {item.label}
@@ -72,7 +72,7 @@ function ClueItem({
       className={`px-2 py-1 cursor-pointer rounded hover:bg-[var(--color-dark)]/5 dark:hover:bg-[var(--color-snow)]/5 ${
         isActive ? "crossword-clue--active" : ""
       }`}
-      onClick={onClick}
+      onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
       <span className="font-bold mr-2">{clue.number}</span>
       {annotation ? (

@@ -95,7 +95,8 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
   const onClueClick = useCallback(
     (clueNumber: number, direction: Direction) => {
       dispatch({ type: "CLUE_CLICK", clueNumber, direction });
-      focusInput();
+      const isTouchDevice = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+      if (!isTouchDevice) focusInput();
     },
     [focusInput],
   );
