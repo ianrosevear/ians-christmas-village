@@ -18,6 +18,12 @@ const puzzles: PuzzleInfo[] = [
     file: "Beginner Cryptic.ipuz",
     description: "A beginner-friendly cryptic crossword",
   },
+  {
+    slug: "little-ice-age",
+    title: "Little Ice Age",
+    file: "Little Ice Age.ipuz",
+    description: "A more difficult cryptic crossword puzzle",
+  },
 ];
 
 export function getAllPuzzles(): PuzzleInfo[] {

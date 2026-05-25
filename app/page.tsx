@@ -2,14 +2,19 @@ import Link from "next/link";
 
 const items = [
   {
+    href: "/crossword/beginner-cryptic",
+    title: "Crossword: Beginner Cryptic",
+    description: "A beginner-friendly cryptic crossword",
+  },
+  {
     href: "/crossword/solid-start",
     title: "Crossword: Solid Start",
     description: "A cryptic crossword puzzle",
   },
   {
-    href: "/crossword/beginner-cryptic",
-    title: "Crossword: Beginner Cryptic",
-    description: "A beginner-friendly cryptic crossword",
+    href: "/crossword/little-ice-age",
+    title: "Crossword: Little Ice Age",
+    description: "A more difficult cryptic crossword puzzle",
   },
   {
     href: "/guide",
