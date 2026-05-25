@@ -132,6 +132,20 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
 
   const [confirmingReset, setConfirmingReset] = useState(false);
 
+  // Track grid height so the clue column can fill it exactly
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [gridHeight, setGridHeight] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      setGridHeight(el.getBoundingClientRect().height);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const onReset = useCallback(() => {
     if (!confirmingReset) {
       setConfirmingReset(true);
@@ -248,14 +262,17 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
           }}
         />
 
-        <div className="shrink-0 relative w-fit h-fit">
+        <div ref={gridRef} className="shrink-0 relative w-fit h-fit">
           <CrosswordGrid puzzle={puzzle} state={state} onCellClick={onCellClick} />
           {locked && (
             <div className="absolute inset-0 bg-[var(--color-pine)]/8 dark:bg-green-400/8 rounded pointer-events-none" />
           )}
         </div>
 
-        <div className="flex-1 min-w-0 max-h-[420px] overflow-y-auto">
+        <div
+          className="flex-1 min-w-0 overflow-y-auto"
+          style={gridHeight ? { maxHeight: gridHeight } : undefined}
+        >
           <CrosswordClues puzzle={puzzle} state={state} onClueClick={onClueClick} annotations={annotations} />
         </div>
       </div>
