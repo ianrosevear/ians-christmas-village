@@ -16,10 +16,7 @@ export default function CrosswordRoute() {
   const info = getPuzzleBySlug(slug);
 
   useEffect(() => {
-    if (!info) {
-      setError("Puzzle not found");
-      return;
-    }
+    if (!info) return;
 
     fetch(`/crosswords/${info.file}`)
       .then((response) => {
@@ -30,7 +27,7 @@ export default function CrosswordRoute() {
       .catch((err) => setError(err.message));
   }, [info]);
 
-  if (error) {
+  if (!info || error) {
     return (
       <div className="font-raleway text-[var(--color-dark)] dark:text-[var(--color-snow)]">
         <p>Could not load the crossword puzzle.</p>

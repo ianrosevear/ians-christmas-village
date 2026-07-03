@@ -7,6 +7,7 @@ interface CrosswordCellProps {
   letter: string;
   isSelected: boolean;
   isActiveWord: boolean;
+  isIncorrect?: boolean;
   onClick: (row: number, col: number) => void;
 }
 
@@ -15,6 +16,7 @@ export default function CrosswordCell({
   letter,
   isSelected,
   isActiveWord,
+  isIncorrect,
   onClick,
 }: CrosswordCellProps) {
   if (cell.blocked) {
@@ -25,6 +27,7 @@ export default function CrosswordCell({
     "crossword-cell",
     isSelected && "crossword-cell--selected",
     !isSelected && isActiveWord && "crossword-cell--active-word",
+    isIncorrect && "crossword-cell--incorrect",
   ]
     .filter(Boolean)
     .join(" ");

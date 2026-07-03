@@ -51,14 +51,12 @@ interface CrosswordCluesProps {
 
 function ClueItem({
   clue,
-  direction,
   isActive,
   activeRef,
   onClick,
   annotation,
 }: {
   clue: ClueDef;
-  direction: Direction;
   isActive: boolean;
   activeRef: React.RefObject<HTMLLIElement | null>;
   onClick: () => void;
@@ -127,7 +125,6 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
             <ClueItem
               key={`a${clue.number}`}
               clue={clue}
-              direction="across"
               isActive={isActive(clue.number, "across")}
               activeRef={activeRef}
               onClick={() => onClueClick(clue.number, "across")}
@@ -145,7 +142,6 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
             <ClueItem
               key={`d${clue.number}`}
               clue={clue}
-              direction="down"
               isActive={isActive(clue.number, "down")}
               activeRef={activeRef}
               onClick={() => onClueClick(clue.number, "down")}

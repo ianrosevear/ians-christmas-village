@@ -8,9 +8,11 @@ interface CrosswordGridProps {
   puzzle: CrosswordPuzzle;
   state: CrosswordState;
   onCellClick: (row: number, col: number) => void;
+  incorrectCells?: Set<string>;
+  showIncorrect?: boolean;
 }
 
-export default function CrosswordGrid({ puzzle, state, onCellClick }: CrosswordGridProps) {
+export default function CrosswordGrid({ puzzle, state, onCellClick, incorrectCells, showIncorrect }: CrosswordGridProps) {
   // Determine which cells are in the active word
   const activeClue = getActiveClue(puzzle, state.cursor.row, state.cursor.col, state.direction);
   const activeCells = new Set<string>();
@@ -36,6 +38,7 @@ export default function CrosswordGrid({ puzzle, state, onCellClick }: CrosswordG
             letter={state.entries[cell.row][cell.col]}
             isSelected={state.cursor.row === cell.row && state.cursor.col === cell.col}
             isActiveWord={activeCells.has(key)}
+            isIncorrect={showIncorrect && incorrectCells?.has(key)}
             onClick={onCellClick}
           />
         );

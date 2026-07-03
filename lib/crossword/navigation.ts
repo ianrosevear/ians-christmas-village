@@ -197,7 +197,7 @@ export function handleTab(
 
   // Move to next/prev clue
   const step = shift ? -1 : 1;
-  let nextIdx = (currentIdx + step + all.length) % all.length;
+  const nextIdx = (currentIdx + step + all.length) % all.length;
 
   const targetClue = all[nextIdx];
 

@@ -144,7 +144,7 @@ export default function GuidePage() {
                 Indicator
               </span>{" "}
               &mdash; a word or phrase that directs you to modify adjacent fodder in some way.
-              We'll cover several types of indicator later in the guide.
+              We&apos;ll cover several types of indicator later in the guide.
             </p>
             <p>
               <span className="rounded px-1 bg-amber-200/70 dark:bg-amber-400/30 font-semibold">

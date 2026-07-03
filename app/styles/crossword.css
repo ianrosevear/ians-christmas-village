@@ -78,6 +78,17 @@
   background: color-mix(in srgb, var(--color-gold) 35%, #1c1a14);
 }
 
+/* Incorrect letters from the check action */
+.crossword-cell--incorrect {
+  background: color-mix(in srgb, var(--color-cranberry) 18%, var(--color-snow));
+  color: var(--color-cranberry);
+}
+
+.dark .crossword-cell--incorrect {
+  background: color-mix(in srgb, var(--color-cranberry) 22%, #1c1a14);
+  color: #fda4af;
+}
+
 /* Clue number overlay */
 .crossword-cell__number {
   position: absolute;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { CrosswordPuzzle, CrosswordState, Direction } from "@/lib/crossword/types";
+import { CrosswordPuzzle, CrosswordState, Direction, cellKey } from "@/lib/crossword/types";
 import { getActiveClue, handleArrowKey, handleBackspace, handleCellClick, handleClueClick, handleLetterInput, handleTab } from "@/lib/crossword/navigation";
 import { loadProgress, saveProgress, emptyState } from "@/lib/crossword/storage";
 import Link from "next/link";
@@ -15,7 +15,8 @@ type Action =
   | { type: "BACKSPACE" }
   | { type: "ARROW"; arrow: "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight" }
   | { type: "TAB"; shift: boolean }
-  | { type: "CLUE_CLICK"; clueNumber: number; direction: Direction };
+  | { type: "CLUE_CLICK"; clueNumber: number; direction: Direction }
+  | { type: "REVEAL" };
 
 function makeReducer(puzzle: CrosswordPuzzle) {
   return function reducer(state: CrosswordState, action: Action): CrosswordState {
@@ -34,6 +35,16 @@ function makeReducer(puzzle: CrosswordPuzzle) {
         return handleTab(puzzle, state, action.shift);
       case "CLUE_CLICK":
         return handleClueClick(puzzle, state, action.clueNumber, action.direction);
+      case "REVEAL":
+        return {
+          ...state,
+          entries: state.entries.map((row, rowIndex) =>
+            row.map((_, colIndex) => {
+              const cell = puzzle.grid[rowIndex][colIndex];
+              return cell.blocked ? "" : cell.solution;
+            }),
+          ),
+        };
       default:
         return state;
     }
@@ -131,6 +142,8 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
   }, [locked]);
 
   const [confirmingReset, setConfirmingReset] = useState(false);
+  const [confirmingReveal, setConfirmingReveal] = useState(false);
+  const [showIncorrect, setShowIncorrect] = useState(false);
 
   // Track grid height so the clue column can fill it exactly
   const gridRef = useRef<HTMLDivElement>(null);
@@ -149,6 +162,7 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
   const onReset = useCallback(() => {
     if (!confirmingReset) {
       setConfirmingReset(true);
+      setConfirmingReveal(false);
       return;
     }
     setConfirmingReset(false);
@@ -159,6 +173,32 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
   const onCancelReset = useCallback(() => {
     setConfirmingReset(false);
   }, []);
+
+  const onReveal = useCallback(() => {
+    if (!confirmingReveal) {
+      setConfirmingReveal(true);
+      setConfirmingReset(false);
+      return;
+    }
+    setConfirmingReveal(false);
+    dispatch({ type: "REVEAL" });
+    setShowIncorrect(false);
+    focusInput();
+  }, [confirmingReveal, focusInput]);
+
+  const onCancelReveal = useCallback(() => {
+    setConfirmingReveal(false);
+  }, []);
+
+  const incorrectCells = new Set<string>(
+    puzzle.grid.flat().flatMap((cell) => {
+      const entry = state.entries[cell.row][cell.col];
+      if (cell.blocked || entry === "" || entry === cell.solution) {
+        return [];
+      }
+      return [cellKey(cell.row, cell.col)];
+    }),
+  );
 
   // Current clue for the bar display above the grid
   const activeClue = getActiveClue(puzzle, state.cursor.row, state.cursor.col, state.direction);
@@ -208,6 +248,43 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
               Reset
             </button>
           )}
+
+          {confirmingReveal ? (
+            <>
+              <span className="text-xs text-[var(--color-cranberry)] tracking-widest uppercase">
+                Reveal?
+              </span>
+              <button
+                onClick={onReveal}
+                className="font-raleway text-xs cursor-pointer text-[var(--color-cranberry)] hover:text-[var(--color-cranberry)]/80 tracking-widest uppercase font-bold"
+              >
+                Yes
+              </button>
+              <button
+                onClick={onCancelReveal}
+                className="font-raleway text-xs cursor-pointer text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
+              >
+                No
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={onReveal}
+              className="font-raleway text-xs cursor-pointer text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60 tracking-widest uppercase"
+            >
+              Reveal
+            </button>
+          )}
+
+          <button
+            onClick={() => {
+              setShowIncorrect((value) => !value);
+              focusInput();
+            }}
+            className={`font-raleway text-xs cursor-pointer tracking-widest uppercase ${showIncorrect ? "text-[var(--color-cranberry)]" : "text-[var(--color-dark)]/40 hover:text-[var(--color-dark)]/70 dark:text-[var(--color-snow)]/30 dark:hover:text-[var(--color-snow)]/60"}`}
+          >
+            {showIncorrect ? "Hide Check" : "Check"}
+          </button>
         </div>
       </div>
 
@@ -263,7 +340,13 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
         />
 
         <div ref={gridRef} className="shrink-0 relative w-fit h-fit">
-          <CrosswordGrid puzzle={puzzle} state={state} onCellClick={onCellClick} />
+          <CrosswordGrid
+            puzzle={puzzle}
+            state={state}
+            onCellClick={onCellClick}
+            incorrectCells={showIncorrect ? incorrectCells : undefined}
+            showIncorrect={showIncorrect}
+          />
           {locked && (
             <div className="absolute inset-0 bg-[var(--color-pine)]/8 dark:bg-green-400/8 rounded pointer-events-none" />
           )}
