@@ -57,9 +57,10 @@ interface CrosswordPageProps {
   puzzle: CrosswordPuzzle;
   slug: string;
   annotations?: AnnotationMap;
+  mixedCryptic?: boolean;
 }
 
-export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPageProps) {
+export default function CrosswordPage({ puzzle, slug, annotations, mixedCryptic }: CrosswordPageProps) {
   const [state, dispatch] = useReducer(
     makeReducer(puzzle),
     null,
@@ -214,7 +215,10 @@ export default function CrosswordPage({ puzzle, slug, annotations }: CrosswordPa
             By {puzzle.author}
           </p>
           <p className="text-xs text-[var(--color-dark)]/40 dark:text-[var(--color-snow)]/35 mt-1">
-            Note: This is a cryptic crossword. New to cryptics?{" "}
+            Note: {mixedCryptic
+              ? "This crossword contains a few cryptic clues."
+              : "This is a cryptic crossword."}{" "}
+            New to cryptics?{" "}
             <Link href="/guide" className="text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline">
               Here&apos;s a guide
             </Link>

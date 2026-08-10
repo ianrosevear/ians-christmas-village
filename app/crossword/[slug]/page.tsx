@@ -45,5 +45,5 @@ export default function CrosswordRoute() {
 
   const annotations = slug === "beginner-cryptic" ? beginnerCrypticAnnotations : undefined;
 
-  return <CrosswordPage puzzle={puzzle} slug={slug} annotations={annotations} />;
+  return <CrosswordPage puzzle={puzzle} slug={slug} annotations={annotations} mixedCryptic={info.mixedCryptic} />;
 }

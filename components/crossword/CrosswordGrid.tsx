@@ -2,6 +2,7 @@
 
 import { CrosswordPuzzle, CrosswordState, cellKey } from "@/lib/crossword/types";
 import { getActiveClue } from "@/lib/crossword/navigation";
+import { getReferencedClues } from "@/lib/crossword/clueReferences";
 import CrosswordCell from "./CrosswordCell";
 
 interface CrosswordGridProps {
@@ -22,6 +23,15 @@ export default function CrosswordGrid({ puzzle, state, onCellClick, incorrectCel
     }
   }
 
+  const referencedCells = new Set<string>();
+  if (activeClue) {
+    for (const referenced of getReferencedClues(puzzle, activeClue)) {
+      for (const [r, c] of referenced.cells) {
+        referencedCells.add(cellKey(r, c));
+      }
+    }
+  }
+
   return (
     <div
       className="crossword-grid"
@@ -38,6 +48,7 @@ export default function CrosswordGrid({ puzzle, state, onCellClick, incorrectCel
             letter={state.entries[cell.row][cell.col]}
             isSelected={state.cursor.row === cell.row && state.cursor.col === cell.col}
             isActiveWord={activeCells.has(key)}
+            isReferenced={referencedCells.has(key)}
             isIncorrect={showIncorrect && incorrectCells?.has(key)}
             onClick={onCellClick}
           />

@@ -69,6 +69,15 @@
   background: color-mix(in srgb, var(--color-gold) 15%, #1c1a14);
 }
 
+/* Cells belonging to a clue referenced by the active clue (e.g. "one from 28-Down") */
+.crossword-cell--referenced {
+  background: color-mix(in srgb, var(--color-pine) 22%, var(--color-snow));
+}
+
+.dark .crossword-cell--referenced {
+  background: color-mix(in srgb, var(--color-pine) 30%, #1c1a14);
+}
+
 /* Selected cell (cursor) */
 .crossword-cell--selected {
   background: color-mix(in srgb, var(--color-gold) 45%, var(--color-snow));
@@ -108,4 +117,14 @@
 
 .dark .crossword-clue--active {
   background: color-mix(in srgb, var(--color-gold) 12%, #1c1a14);
+}
+
+/* Clue referenced by the active clue (e.g. "one from 28-Down") */
+.crossword-clue--referenced {
+  background: color-mix(in srgb, var(--color-pine) 15%, var(--color-snow));
+  border-radius: 4px;
+}
+
+.dark .crossword-clue--referenced {
+  background: color-mix(in srgb, var(--color-pine) 22%, #1c1a14);
 }

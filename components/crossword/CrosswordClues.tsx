@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CrosswordPuzzle, CrosswordState, ClueDef, Direction } from "@/lib/crossword/types";
 import { getActiveClue } from "@/lib/crossword/navigation";
+import { getReferencedClues } from "@/lib/crossword/clueReferences";
 import { SmallToggle, ANNOTATION_COLORS } from "@/lib/crossword/annotations";
 
 type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
@@ -52,12 +53,14 @@ interface CrosswordCluesProps {
 function ClueItem({
   clue,
   isActive,
+  isReferenced,
   activeRef,
   onClick,
   annotation,
 }: {
   clue: ClueDef;
   isActive: boolean;
+  isReferenced: boolean;
   activeRef: React.RefObject<HTMLLIElement | null>;
   onClick: () => void;
   annotation?: (show: boolean) => React.ReactNode;
@@ -68,7 +71,7 @@ function ClueItem({
     <li
       ref={isActive ? activeRef : undefined}
       className={`px-2 py-1 cursor-pointer rounded hover:bg-[var(--color-dark)]/5 dark:hover:bg-[var(--color-snow)]/5 ${
-        isActive ? "crossword-clue--active" : ""
+        isActive ? "crossword-clue--active" : isReferenced ? "crossword-clue--referenced" : ""
       }`}
       onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
@@ -110,6 +113,14 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
   const isActive = (num: number, dir: Direction) =>
     activeClue?.number === num && activeClue?.direction === dir;
 
+  const referencedClues = useMemo(
+    () => (activeClue ? getReferencedClues(puzzle, activeClue) : []),
+    [puzzle, activeClue]
+  );
+
+  const isReferenced = (num: number, dir: Direction) =>
+    referencedClues.some((c) => c.number === num && c.direction === dir);
+
   const clueKey = (num: number, dir: Direction) =>
     `${num}${dir === "across" ? "A" : "D"}`;
 
@@ -126,6 +137,7 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
               key={`a${clue.number}`}
               clue={clue}
               isActive={isActive(clue.number, "across")}
+              isReferenced={isReferenced(clue.number, "across")}
               activeRef={activeRef}
               onClick={() => onClueClick(clue.number, "across")}
               annotation={annotations?.[clueKey(clue.number, "across")]}
@@ -143,6 +155,7 @@ export default function CrosswordClues({ puzzle, state, onClueClick, annotations
               key={`d${clue.number}`}
               clue={clue}
               isActive={isActive(clue.number, "down")}
+              isReferenced={isReferenced(clue.number, "down")}
               activeRef={activeRef}
               onClick={() => onClueClick(clue.number, "down")}
               annotation={annotations?.[clueKey(clue.number, "down")]}

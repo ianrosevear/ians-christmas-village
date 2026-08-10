@@ -17,6 +17,11 @@ const items = [
     description: "A more difficult cryptic crossword puzzle",
   },
   {
+    href: "/crossword/yule-jewel",
+    title: "Crossword: Yule Jewel",
+    description: "A regular crossword with a few cryptic clues mixed in",
+  },
+  {
     href: "/guide",
     title: "How to Solve Cryptic Crosswords",
     description: "A beginner's guide",
@@ -42,11 +47,11 @@ export default function Home() {
           <li key={title}>
             {href ? (
               <Link href={href} className="text-lg text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline">
-                → {title}
+                {title}
               </Link>
             ) : (
               <span className="text-lg text-[var(--color-dark)]/30 dark:text-[var(--color-snow)]/30">
-                → {title}
+                {title}
               </span>
             )}
             <p className="text-sm text-[var(--color-dark)]/45 dark:text-[var(--color-snow)]/40 mt-0.5 ml-4">

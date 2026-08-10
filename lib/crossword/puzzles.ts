@@ -3,6 +3,7 @@ export type PuzzleInfo = {
   title: string;
   file: string;
   description: string;
+  mixedCryptic?: boolean;
 };
 
 const puzzles: PuzzleInfo[] = [
@@ -23,6 +24,13 @@ const puzzles: PuzzleInfo[] = [
     title: "Little Ice Age",
     file: "Little Ice Age.ipuz",
     description: "A more difficult cryptic crossword puzzle",
+  },
+  {
+    slug: "yule-jewel",
+    title: "Yule Jewel",
+    file: "Yule Jewel.ipuz",
+    description: "A regular crossword with a few cryptic clues mixed in",
+    mixedCryptic: true,
   },
 ];
 
