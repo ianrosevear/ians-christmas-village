@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { SitePrefsProvider, useSitePrefs } from "./SitePrefs";
 import Snowflakes from "./Snowflakes";
 import Footer from "./masthead/Footer";
+import { AmbienceControls, AmbienceScene } from "./Ambience";
 
 function Shell({ children }: { children: React.ReactNode }) {
   const { evening, snow, paperDown, setPaperDown } = useSitePrefs();
@@ -12,15 +13,11 @@ function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className={`site ${evening ? "dark" : ""}`}>
-      <div className="scene" aria-hidden="true" />
+      {paperDown ? <AmbienceScene /> : <div className="scene" aria-hidden="true" />}
       {snow && <Snowflakes />}
 
       {paperDown ? (
-        <div className="fixed inset-x-0 bottom-0 z-10 flex justify-center">
-          <button type="button" className="paper sc min-h-12 px-6 text-[18px]" onClick={() => setPaperDown(false)}>
-            Pick the paper up
-          </button>
-        </div>
+        <AmbienceControls />
       ) : (
         <main className={`relative z-10 flex justify-center sm:px-6 sm:pt-[88px] sm:pb-16 ${wide ? "pt-[52px]" : "pt-[168px]"}`}>
           <div className={`relative w-full ${wide ? "max-w-[1160px]" : "max-w-[1040px]"}`}>
