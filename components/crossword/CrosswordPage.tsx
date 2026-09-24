@@ -14,7 +14,7 @@ import {
 } from "@/lib/crossword/navigation";
 import { loadProgress, saveProgress, emptyState } from "@/lib/crossword/storage";
 import type { PuzzleInfo } from "@/lib/crossword/puzzles";
-import { useIsTouch } from "@/lib/useIsTouch";
+import { useIsTouch, useMediaQuery } from "@/lib/useIsTouch";
 import CrosswordGrid from "./CrosswordGrid";
 import CrosswordClues from "./CrosswordClues";
 import ClueBar from "./ClueBar";
@@ -233,6 +233,26 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
 
   const cellMax = Math.max(puzzle.width, puzzle.height) <= 10 ? 64 : 38;
   const gridWidth = puzzle.width * cellMax + 4;
+  // Grid and clues sit side by side once there's room; big grids need a wider screen.
+  const big = gridWidth > 480;
+  const layout = big
+    ? {
+        wrap: "xl:grid xl:grid-cols-[var(--grid-w)_minmax(0,1fr)] xl:gap-12",
+        left: "xl:sticky xl:top-4 xl:gap-3.5 xl:self-start",
+        bar: "xl:order-1",
+        grid: "xl:order-2",
+        clues: "xl:mt-0",
+        clueCols: "sm:grid-cols-2 xl:grid-cols-1",
+      }
+    : {
+        wrap: "lg:grid lg:grid-cols-[var(--grid-w)_minmax(0,1fr)] lg:gap-12",
+        left: "lg:sticky lg:top-4 lg:gap-3.5 lg:self-start",
+        bar: "lg:order-1",
+        grid: "lg:order-2",
+        clues: "lg:mt-0",
+        clueCols: "sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2",
+      };
+  const sideBySide = useMediaQuery(big ? "(min-width: 1280px)" : "(min-width: 1024px)");
   const activeAnnotation = activeClue ? annotations?.[clueKey(activeClue)] : undefined;
   const activeWordplayOn = activeClue ? isWordplayOn(clueKey(activeClue)) : false;
   const toolProps = {
@@ -280,9 +300,9 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
         </div>
       )}
 
-      <div className="md:grid md:grid-cols-[var(--grid-w)_minmax(0,1fr)] md:gap-12" style={{ "--grid-w": `${gridWidth}px` } as React.CSSProperties}>
-        <div className="-mx-4 flex flex-col sm:mx-0 md:sticky md:top-4 md:gap-3.5 md:self-start">
-          <div ref={clueBarRef} className="order-2 scroll-mb-[200px] md:order-1">
+      <div className={layout.wrap} style={{ "--grid-w": `${gridWidth}px` } as React.CSSProperties}>
+        <div className={`-mx-4 flex flex-col sm:mx-auto sm:max-w-[var(--grid-w)] sm:gap-3.5 ${layout.left}`}>
+          <div ref={clueBarRef} className={`order-2 scroll-mb-[200px] sm:order-1 ${layout.bar}`}>
             <ClueBar
               clue={activeClue}
               annotation={activeAnnotation}
@@ -299,13 +319,13 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
             tabIndex={0}
             onKeyDown={handleKey}
             aria-label={`${info.title}. Type letters to fill the grid; arrow keys move, Tab goes to the next clue, Space switches direction.`}
-            className="order-1 scroll-mt-4 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] md:order-2"
+            className={`order-1 scroll-mt-4 outline-none sm:order-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${layout.grid}`}
           >
             <CrosswordGrid puzzle={puzzle} state={state} onCellClick={onCellClick} incorrect={incorrect} revealed={revealed} solved={solved} />
           </div>
         </div>
 
-        <div id="clues" className="mt-7 md:mt-0">
+        <div id="clues" className={`mt-7 ${layout.clues}`}>
           <CrosswordClues
             puzzle={puzzle}
             state={state}
@@ -315,8 +335,8 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
             toggleWordplay={toggleWordplay}
             showAll={showAll}
             setShowAll={setShowAll}
-            twoColumns={gridWidth < 540}
-            scrollActiveIntoView={!isTouch}
+            columnsClass={layout.clueCols}
+            scrollActiveIntoView={!isTouch && sideBySide}
           />
         </div>
       </div>

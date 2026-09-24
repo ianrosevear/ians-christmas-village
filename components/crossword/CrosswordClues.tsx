@@ -55,7 +55,8 @@ interface CrosswordCluesProps {
   toggleWordplay: (key: string) => void;
   showAll: boolean;
   setShowAll: (on: boolean) => void;
-  twoColumns: boolean;
+  /** Responsive column classes for the Across and Down lists. */
+  columnsClass: string;
   scrollActiveIntoView: boolean;
 }
 
@@ -68,13 +69,19 @@ export default function CrosswordClues({
   toggleWordplay,
   showAll,
   setShowAll,
-  twoColumns,
+  columnsClass,
   scrollActiveIntoView,
 }: CrosswordCluesProps) {
   const activeClue = getActiveClue(puzzle, state.cursor.row, state.cursor.col, state.direction);
   const activeRef = useRef<HTMLLIElement>(null);
 
+  // Keep the active clue in view as you move around the grid (not on first load).
+  const mounted = useRef(false);
   useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
     if (scrollActiveIntoView) activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [activeClue?.number, activeClue?.direction, scrollActiveIntoView]);
 
@@ -94,7 +101,7 @@ export default function CrosswordClues({
         </div>
       )}
 
-      <div className={`grid grid-cols-1 gap-x-9 gap-y-6 ${twoColumns ? "lg:grid-cols-2" : ""}`}>
+      <div className={`grid grid-cols-1 gap-x-9 gap-y-6 ${columnsClass}`}>
         {lists.map(({ direction, clues }) => (
           <div key={direction}>
             <h2 className="sc mb-1.5 text-[18px] font-bold">{direction === "across" ? "Across" : "Down"}</h2>

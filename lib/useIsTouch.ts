@@ -2,17 +2,20 @@
 
 import { useSyncExternalStore } from "react";
 
-const QUERY = "(pointer: coarse)";
-
-/** True on devices whose main pointer is a finger. False during server rendering. */
-export function useIsTouch(): boolean {
+/** Whether a media query matches. False during server rendering. */
+export function useMediaQuery(query: string): boolean {
   return useSyncExternalStore(
     (callback) => {
-      const mq = window.matchMedia(QUERY);
+      const mq = window.matchMedia(query);
       mq.addEventListener("change", callback);
       return () => mq.removeEventListener("change", callback);
     },
-    () => window.matchMedia(QUERY).matches,
+    () => window.matchMedia(query).matches,
     () => false,
   );
+}
+
+/** True on devices whose main pointer is a finger. */
+export function useIsTouch(): boolean {
+  return useMediaQuery("(pointer: coarse)");
 }
