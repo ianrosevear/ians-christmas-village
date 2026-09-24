@@ -77,7 +77,7 @@ const annotations: Record<string, AnnotationRenderer> = {
   ),
   "9D": (s) => (
     <>
-      <Fod show={s}>Oriole</Fod> <Ind show={s}>regularly</Ind> makes{" "}
+      <Fod show={s}>Oriole</Fod> <Ind show={s}>evenly</Ind> makes{" "}
       <Def show={s}>eggs</Def>
     </>
   ),

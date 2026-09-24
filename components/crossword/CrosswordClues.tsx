@@ -1,45 +1,48 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CrosswordPuzzle, CrosswordState, ClueDef, Direction } from "@/lib/crossword/types";
+import { CrosswordPuzzle, CrosswordState, Direction } from "@/lib/crossword/types";
 import { getActiveClue } from "@/lib/crossword/navigation";
 import { getReferencedClues } from "@/lib/crossword/clueReferences";
-import { SmallToggle, ANNOTATION_CLASSES } from "@/lib/crossword/annotations";
+import { ANNOTATION_CLASSES, WORDPLAY_KEY } from "@/lib/crossword/annotations";
+import { ClueText, WordplayButton, clueKey, type AnnotationMap } from "./ClueText";
 
-type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
-
-const LEGEND_ITEMS = [
-  { key: "definition", label: "Definition", className: ANNOTATION_CLASSES.def, desc: "The straightforward definition of the answer. Almost always at the front or end of the clue." },
-  { key: "indicator", label: "Indicator", className: ANNOTATION_CLASSES.ind, desc: "A word or phrase that directs you to modify adjacent fodder in some way." },
-  { key: "fodder", label: "Fodder", className: ANNOTATION_CLASSES.fod, desc: "Words that are modified by indicators. If the clue is a recipe, fodder are ingredients." },
-  { key: "charade", label: "Charade", className: ANNOTATION_CLASSES.cha, desc: "Words substituted with a synonym or abbreviation to build the answer." },
-] as const;
-
-type LegendKey = typeof LEGEND_ITEMS[number]["key"];
-
-function ColorLegend() {
-  const [active, setActive] = useState<LegendKey | null>(null);
-  const activeItem = LEGEND_ITEMS.find((i) => i.key === active);
+/** The four highlighter colours; tap one to read what it means. */
+function WordplayKey() {
+  const [active, setActive] = useState<string | null>(null);
+  const item = WORDPLAY_KEY.find((k) => k.key === active);
 
   return (
-    <div className="text-xs">
-      <div className="flex flex-wrap gap-x-3 gap-y-1">
-        {LEGEND_ITEMS.map((item) => (
+    <div>
+      <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 text-[16px]">
+        <span className="sc text-[var(--ink-soft)]">Key</span>
+        {WORDPLAY_KEY.map((k) => (
           <button
-            key={item.key}
-            onClick={(e) => { e.stopPropagation(); setActive(active === item.key ? null : item.key); }}
-            className={`cursor-pointer rounded px-1 ${item.className} ${active === item.key ? "ring-1 ring-[var(--color-dark)]/30 dark:ring-[var(--color-snow)]/30" : ""}`}
+            key={k.key}
+            type="button"
+            aria-expanded={active === k.key}
+            onClick={() => setActive(active === k.key ? null : k.key)}
+            className={`${ANNOTATION_CLASSES[k.key]} min-h-8 ${active === k.key ? "underline underline-offset-4" : ""}`}
           >
-            {item.label}
+            {k.label}
           </button>
         ))}
       </div>
-      {activeItem && (
-        <p className="mt-1.5 text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
-          {activeItem.desc}
-        </p>
-      )}
+      {item && <p className="mt-1 text-[16px] text-[var(--ink-soft)]">{item.desc}</p>}
     </div>
+  );
+}
+
+export function ShowAllSwitch({ on, onChange }: { on: boolean; onChange: (on: boolean) => void }) {
+  return (
+    <button type="button" role="switch" aria-checked={on} onClick={() => onChange(!on)} className="sc flex min-h-10 items-center gap-2 text-[16px]">
+      Show all
+      <span className={`relative inline-block h-[17px] w-8 rounded-full border-[1.5px] border-[var(--ink)] ${on ? "bg-[var(--ink)]" : ""}`}>
+        <span
+          className={`absolute top-[1.5px] size-[11px] rounded-full transition-[left] ${on ? "left-[16.5px] bg-[var(--paper)]" : "left-[1.5px] bg-[var(--ink)]"}`}
+        />
+      </span>
+    </button>
   );
 }
 
@@ -48,120 +51,86 @@ interface CrosswordCluesProps {
   state: CrosswordState;
   onClueClick: (clueNumber: number, direction: Direction) => void;
   annotations?: AnnotationMap;
+  isWordplayOn: (key: string) => boolean;
+  toggleWordplay: (key: string) => void;
+  showAll: boolean;
+  setShowAll: (on: boolean) => void;
+  twoColumns: boolean;
+  scrollActiveIntoView: boolean;
 }
 
-function ClueItem({
-  clue,
-  isActive,
-  isReferenced,
-  activeRef,
-  onClick,
-  annotation,
-}: {
-  clue: ClueDef;
-  isActive: boolean;
-  isReferenced: boolean;
-  activeRef: React.RefObject<HTMLLIElement | null>;
-  onClick: () => void;
-  annotation?: (show: boolean) => React.ReactNode;
-}) {
-  const [showColors, setShowColors] = useState(false);
-
-  return (
-    <li
-      ref={isActive ? activeRef : undefined}
-      className={`px-2 py-1 cursor-pointer rounded hover:bg-[var(--color-dark)]/5 dark:hover:bg-[var(--color-snow)]/5 ${
-        isActive ? "crossword-clue--active" : isReferenced ? "crossword-clue--referenced" : ""
-      }`}
-      onClick={(e) => { e.stopPropagation(); onClick(); }}
-    >
-      <span className="font-bold mr-2">{clue.number}</span>
-      {annotation ? (
-        <>
-          {annotation(showColors)}
-          {" "}
-          <SmallToggle
-            label="colors"
-            active={showColors}
-            onClick={() => setShowColors(!showColors)}
-          />
-        </>
-      ) : (
-        clue.text
-      )}
-    </li>
-  );
-}
-
-export default function CrosswordClues({ puzzle, state, onClueClick, annotations }: CrosswordCluesProps) {
+export default function CrosswordClues({
+  puzzle,
+  state,
+  onClueClick,
+  annotations,
+  isWordplayOn,
+  toggleWordplay,
+  showAll,
+  setShowAll,
+  twoColumns,
+  scrollActiveIntoView,
+}: CrosswordCluesProps) {
   const activeClue = getActiveClue(puzzle, state.cursor.row, state.cursor.col, state.direction);
   const activeRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  }, [activeClue?.number, activeClue?.direction]);
+    if (scrollActiveIntoView) activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [activeClue?.number, activeClue?.direction, scrollActiveIntoView]);
 
-  const acrossClues = useMemo(
-    () => puzzle.clues.filter((c) => c.direction === "across").sort((a, b) => a.number - b.number),
-    [puzzle.clues]
-  );
-  const downClues = useMemo(
-    () => puzzle.clues.filter((c) => c.direction === "down").sort((a, b) => a.number - b.number),
-    [puzzle.clues]
-  );
+  const referenced = useMemo(() => (activeClue ? getReferencedClues(puzzle, activeClue) : []), [puzzle, activeClue]);
 
-  const isActive = (num: number, dir: Direction) =>
-    activeClue?.number === num && activeClue?.direction === dir;
-
-  const referencedClues = useMemo(
-    () => (activeClue ? getReferencedClues(puzzle, activeClue) : []),
-    [puzzle, activeClue]
-  );
-
-  const isReferenced = (num: number, dir: Direction) =>
-    referencedClues.some((c) => c.number === num && c.direction === dir);
-
-  const clueKey = (num: number, dir: Direction) =>
-    `${num}${dir === "across" ? "A" : "D"}`;
+  const lists = (["across", "down"] as const).map((direction) => ({
+    direction,
+    clues: puzzle.clues.filter((c) => c.direction === direction).sort((a, b) => a.number - b.number),
+  }));
 
   return (
-    <div className="flex flex-col gap-4 text-sm text-[var(--color-dark)] dark:text-[var(--color-snow)] min-w-0">
-      {annotations && <ColorLegend />}
-      <div>
-        <h3 className="font-raleway text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
-          Across
-        </h3>
-        <ol className="space-y-1">
-          {acrossClues.map((clue) => (
-            <ClueItem
-              key={`a${clue.number}`}
-              clue={clue}
-              isActive={isActive(clue.number, "across")}
-              isReferenced={isReferenced(clue.number, "across")}
-              activeRef={activeRef}
-              onClick={() => onClueClick(clue.number, "across")}
-              annotation={annotations?.[clueKey(clue.number, "across")]}
-            />
-          ))}
-        </ol>
-      </div>
-      <div>
-        <h3 className="font-raleway text-base font-bold mb-2 tracking-wide uppercase text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
-          Down
-        </h3>
-        <ol className="space-y-1">
-          {downClues.map((clue) => (
-            <ClueItem
-              key={`d${clue.number}`}
-              clue={clue}
-              isActive={isActive(clue.number, "down")}
-              isReferenced={isReferenced(clue.number, "down")}
-              activeRef={activeRef}
-              onClick={() => onClueClick(clue.number, "down")}
-              annotation={annotations?.[clueKey(clue.number, "down")]}
-            />
-          ))}
-        </ol>
+    <div>
+      {annotations && (
+        <div className="mb-3.5 flex flex-wrap items-center justify-between gap-x-4 border-b border-[var(--rule)] pb-2">
+          <WordplayKey />
+          <ShowAllSwitch on={showAll} onChange={setShowAll} />
+        </div>
+      )}
+
+      <div className={`grid grid-cols-1 gap-x-9 gap-y-6 ${twoColumns ? "lg:grid-cols-2" : ""}`}>
+        {lists.map(({ direction, clues }) => (
+          <div key={direction}>
+            <h2 className="sc mb-1.5 text-[18px] font-bold">{direction === "across" ? "Across" : "Down"}</h2>
+            <ol>
+              {clues.map((clue) => {
+                const key = clueKey(clue);
+                const isActive = activeClue === clue;
+                const isReferenced = referenced.includes(clue);
+                const annotation = annotations?.[key];
+                const on = isWordplayOn(key);
+                return (
+                  <li
+                    key={key}
+                    ref={isActive ? activeRef : undefined}
+                    className="xw-clue-row"
+                    data-active={isActive || undefined}
+                    data-referenced={(!isActive && isReferenced) || undefined}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => onClueClick(clue.number, clue.direction)}
+                      aria-current={isActive || undefined}
+                      className="flex min-w-0 grow gap-2.5 px-2.5 py-[7px] text-left text-[18px] leading-[1.45]"
+                    >
+                      <span className="min-w-6 shrink-0 text-right font-bold">{clue.number}</span>
+                      <span>
+                        <ClueText clue={clue} annotation={annotation} showWordplay={on} />
+                      </span>
+                    </button>
+                    {annotation && <WordplayButton on={on} label={`${clue.number} ${direction}`} onToggle={() => toggleWordplay(key)} />}
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        ))}
       </div>
     </div>
   );

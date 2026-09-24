@@ -6,7 +6,13 @@ import { parseiPUZ } from "@/lib/crossword/ipuz";
 import { CrosswordPuzzle } from "@/lib/crossword/types";
 import { getPuzzleBySlug } from "@/lib/crossword/puzzles";
 import CrosswordPage from "@/components/crossword/CrosswordPage";
+import Folio from "@/components/masthead/Folio";
 import beginnerCrypticAnnotations from "@/lib/crossword/beginner-cryptic-annotations";
+
+// Puzzles with wordplay colours, by slug.
+const ANNOTATIONS: Record<string, typeof beginnerCrypticAnnotations> = {
+  "beginner-cryptic": beginnerCrypticAnnotations,
+};
 
 export default function CrosswordRoute() {
   const { slug } = useParams<{ slug: string }>();
@@ -18,7 +24,7 @@ export default function CrosswordRoute() {
   useEffect(() => {
     if (!info) return;
 
-    fetch(`/crosswords/${info.file}`)
+    fetch(`/crosswords/${encodeURIComponent(info.file)}`)
       .then((response) => {
         if (!response.ok) throw new Error("Failed to load puzzle");
         return response.json();
@@ -27,23 +33,16 @@ export default function CrosswordRoute() {
       .catch((err) => setError(err.message));
   }, [info]);
 
-  if (!info || error) {
-    return (
-      <div className="font-raleway text-[var(--color-dark)] dark:text-[var(--color-snow)]">
-        <p>Could not load the crossword puzzle.</p>
-      </div>
-    );
-  }
-
-  if (!puzzle) {
-    return (
-      <div className="font-raleway text-[var(--color-dark)]/40 dark:text-[var(--color-snow)]/35">
-        Loading puzzle...
-      </div>
-    );
-  }
-
-  const annotations = slug === "beginner-cryptic" ? beginnerCrypticAnnotations : undefined;
-
-  return <CrosswordPage puzzle={puzzle} slug={slug} annotations={annotations} mixedCryptic={info.mixedCryptic} />;
+  return (
+    <>
+      <Folio current="puzzles" />
+      {!info || error ? (
+        <p className="mt-8 text-[19px]">Could not load the crossword puzzle.</p>
+      ) : !puzzle ? (
+        <p className="mt-8 text-[19px] text-[var(--ink-soft)] italic">Loading the puzzle&hellip;</p>
+      ) : (
+        <CrosswordPage puzzle={puzzle} info={info} annotations={ANNOTATIONS[slug]} />
+      )}
+    </>
+  );
 }

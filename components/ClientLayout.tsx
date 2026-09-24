@@ -22,12 +22,12 @@ function Shell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       ) : (
-        <main className="relative z-10 flex justify-center pt-[168px] sm:px-6 sm:pt-[88px] sm:pb-16">
+        <main className={`relative z-10 flex justify-center sm:px-6 sm:pt-[88px] sm:pb-16 ${wide ? "pt-[52px]" : "pt-[168px]"}`}>
           <div className={`relative w-full ${wide ? "max-w-[1160px]" : "max-w-[1040px]"}`}>
             <button type="button" className="paper-tab sc" onClick={() => setPaperDown(true)}>
               Put the paper down
             </button>
-            <div className="paper relative min-h-[calc(100dvh-168px)] px-4 pt-2 pb-8 sm:min-h-0 sm:px-12 sm:pt-6 sm:pb-10 lg:px-14">
+            <div className={`paper relative px-4 pt-2 pb-8 sm:min-h-0 sm:px-12 sm:pt-6 sm:pb-10 lg:px-14 ${wide ? "min-h-[calc(100dvh-52px)]" : "min-h-[calc(100dvh-168px)]"}`}>
               {children}
               <Footer />
             </div>

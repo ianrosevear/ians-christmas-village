@@ -1,130 +1,112 @@
-.crossword-grid {
+/* Crossword grid. Cell and type sizes scale with the grid's width (container units),
+   so the same grid runs edge to edge on a phone and sits at a fixed size on desktop. */
+
+.xw-grid {
+  container-type: inline-size;
   display: grid;
-  gap: 0;
-  border: 2px solid var(--color-dark);
-  width: fit-content;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 1px;
+  background: var(--grid-line);
+  border: 2px solid var(--grid-line);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.dark .crossword-grid {
-  border-color: var(--color-snow);
-}
-
-.crossword-cell {
-  width: var(--cell-size, 40px);
-  height: var(--cell-size, 40px);
+.xw-cell {
   position: relative;
-  border: 1px solid var(--color-dark);
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-nunito), sans-serif;
-  font-size: calc(var(--cell-size, 40px) * 0.55);
-  font-weight: 700;
-  text-transform: uppercase;
+  padding-top: 6%;
+  background: var(--grid-open);
+  color: var(--ink);
+  font-size: calc(100cqw / var(--cols) * 0.56);
+  font-weight: 500;
+  line-height: 1;
   cursor: pointer;
-  user-select: none;
-  color: var(--color-dark);
-  background: var(--color-snow);
 }
 
-.dark .crossword-cell {
-  border-color: rgba(245, 240, 235, 0.3);
-  color: var(--color-snow);
-  background: #1c1a14;
-}
-
-/* Blocked (black) squares */
-.crossword-cell--blocked {
-  background: var(--color-dark);
+.xw-cell--blocked {
+  background: var(--grid-block);
   cursor: default;
 }
 
-.dark .crossword-cell--blocked {
-  background: var(--color-snow);
+.xw-cell[data-bar-right="true"] {
+  box-shadow: inset -3px 0 0 var(--grid-bar);
+}
+.xw-cell[data-bar-bottom="true"] {
+  box-shadow: inset 0 -3px 0 var(--grid-bar);
+}
+.xw-cell[data-bar-right="true"][data-bar-bottom="true"] {
+  box-shadow: inset -3px 0 0 var(--grid-bar), inset 0 -3px 0 var(--grid-bar);
 }
 
-/* Bar borders — green thick lines to mark word boundaries */
-.crossword-cell[data-bar-right="true"] {
-  border-right: 4px solid var(--color-pine);
-}
+.xw-cell--referenced { background: var(--referenced); }
+.xw-cell--word { background: var(--active-word); }
+.xw-cell--selected { background: var(--selected); color: var(--selected-ink); }
+.xw-cell--incorrect { color: var(--incorrect-ink); background: var(--incorrect); }
+.xw-cell--selected.xw-cell--incorrect { background: var(--selected); color: var(--accent); }
 
-.crossword-cell[data-bar-bottom="true"] {
-  border-bottom: 4px solid var(--color-pine);
-}
-
-.dark .crossword-cell[data-bar-right="true"] {
-  border-right-color: #4ade80;
-}
-
-.dark .crossword-cell[data-bar-bottom="true"] {
-  border-bottom-color: #4ade80;
-}
-
-/* Active word highlight */
-.crossword-cell--active-word {
-  background: color-mix(in srgb, var(--color-gold) 20%, var(--color-snow));
-}
-
-.dark .crossword-cell--active-word {
-  background: color-mix(in srgb, var(--color-gold) 15%, #1c1a14);
-}
-
-/* Cells belonging to a clue referenced by the active clue (e.g. "one from 28-Down") */
-.crossword-cell--referenced {
-  background: color-mix(in srgb, var(--color-pine) 22%, var(--color-snow));
-}
-
-.dark .crossword-cell--referenced {
-  background: color-mix(in srgb, var(--color-pine) 30%, #1c1a14);
-}
-
-/* Selected cell (cursor) */
-.crossword-cell--selected {
-  background: color-mix(in srgb, var(--color-gold) 45%, var(--color-snow));
-}
-
-.dark .crossword-cell--selected {
-  background: color-mix(in srgb, var(--color-gold) 35%, #1c1a14);
-}
-
-/* Incorrect letters from the check action */
-.crossword-cell--incorrect {
-  background: color-mix(in srgb, var(--color-cranberry) 18%, var(--color-snow));
-  color: var(--color-cranberry);
-}
-
-.dark .crossword-cell--incorrect {
-  background: color-mix(in srgb, var(--color-cranberry) 22%, #1c1a14);
-  color: #fda4af;
-}
-
-/* Clue number overlay */
-.crossword-cell__number {
+/* A revealed letter gets a small corner mark */
+.xw-cell--revealed::after {
+  content: "";
   position: absolute;
-  top: 1px;
-  left: 2px;
-  font-size: calc(var(--cell-size, 40px) * 0.25);
-  font-weight: 400;
+  top: 0;
+  right: 0;
+  border-style: solid;
+  border-width: 0 calc(100cqw / var(--cols) * 0.22) calc(100cqw / var(--cols) * 0.22) 0;
+  border-color: transparent var(--accent) transparent transparent;
+}
+
+.xw-number {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: max(7px, calc(100cqw / var(--cols) * 0.23));
+  font-weight: 500;
   line-height: 1;
   pointer-events: none;
 }
 
-/* Active clue in the clue list */
-.crossword-clue--active {
-  background: color-mix(in srgb, var(--color-gold) 15%, var(--color-snow));
-  border-radius: 4px;
+.xw-solved .xw-cell {
+  cursor: default;
 }
 
-.dark .crossword-clue--active {
-  background: color-mix(in srgb, var(--color-gold) 12%, #1c1a14);
+/* Clue list rows */
+.xw-clue-row {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 -8px 0 -10px;
+}
+.xw-clue-row:hover {
+  background: var(--tint);
+}
+.xw-clue-row[data-active="true"] {
+  background: var(--active-word);
+}
+.xw-clue-row[data-referenced="true"] {
+  background: var(--referenced);
 }
 
-/* Clue referenced by the active clue (e.g. "one from 28-Down") */
-.crossword-clue--referenced {
-  background: color-mix(in srgb, var(--color-pine) 15%, var(--color-snow));
-  border-radius: 4px;
+/* On-screen keyboard (touch devices) */
+.xw-key {
+  height: 46px;
+  border-radius: 5px;
+  background: var(--key);
+  color: var(--ink);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+  font-size: 21px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
-
-.dark .crossword-clue--referenced {
-  background: color-mix(in srgb, var(--color-pine) 22%, #1c1a14);
+.xw-key:active {
+  background: var(--selected);
+  color: var(--selected-ink);
 }
