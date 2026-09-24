@@ -1,9 +1,111 @@
+/*
+ * Design tokens. Morning edition is the default; the evening edition
+ * overrides the same names under `.dark`.
+ */
 :root {
+  /* Legacy names, still used by a few older pages */
   --color-pine: #1a472a;
   --color-cranberry: #9b1b30;
   --color-gold: #d4a843;
   --color-snow: #f5f0eb;
   --color-dark: #0f1a12;
-  --color-sky: #9cd5f6;
-  --color-sky-dark: #1a1f2e;
+
+  --sky: #5d87c3;
+  --scene: url("/images/cabin-background.png");
+
+  --paper: #f5f0eb;
+  --paper-grain: url("/images/grain-light.png");
+  --ink: #1c1a14;
+  --ink-body: #3d3830;
+  --ink-soft: #5a5347;
+  --rule: #1c1a14;
+  --rule-soft: rgba(28, 26, 20, 0.22);
+  --accent: #9b1b30;
+  --accent-hover: #6e1322;
+  --tint: rgba(120, 100, 60, 0.09);
+  --tint-strong: #ebe4d8;
+  --tab: #e2d9c9;
+  --tab-hover: #ebe3d5;
+  --success: #1a472a;
+
+  --ribbon-red: #9b1b30;
+  --ribbon-green: #1a472a;
+  --ribbon-white: #f5f0eb;
+
+  --grid-open: #fbf8f3;
+  --grid-block: #1c1a14;
+  --grid-line: #1c1a14;
+  --grid-bar: #1c1a14;
+  --active-word: #efdca6;
+  --selected: #d4a843;
+  --selected-ink: #1c1a14;
+  --referenced: #dbe3d2;
+  --incorrect: #f3d6d9;
+  --incorrect-ink: #9b1b30;
+
+  --keyboard: #e2d9cb;
+  --key: #fbf8f3;
+  --key-special: #cfc5b4;
+
+  /* Wordplay highlighter colors (Tailwind 200s, matching Minute Cryptic) */
+  --hl-def: oklch(88.2% 0.059 254.128 / 0.6);
+  --hl-ind: oklch(89.9% 0.061 343.231 / 0.7);
+  --hl-fod: oklch(92.4% 0.12 95.746 / 0.7);
+  --hl-cha: oklch(90.1% 0.076 70.697 / 0.7);
+  /* Solid versions for the little wordplay toggle glyph */
+  --wp-def: #8ec5ff;
+  --wp-ind: #fda5d5;
+  --wp-fod: #ffd230;
+  --wp-cha: #ffb86a;
+  --wp-off: #c4bba9;
+}
+
+.dark {
+  --sky: #001430;
+  --scene: url("/images/cabin-background-dark.png");
+
+  --paper: #1d1b16;
+  --paper-grain: url("/images/grain-dark.png");
+  --ink: #ece5d8;
+  --ink-body: #d6cfc2;
+  --ink-soft: #a9a192;
+  --rule: #ece5d8;
+  --rule-soft: rgba(236, 229, 216, 0.22);
+  --accent: #d4a843;
+  --accent-hover: #e8c46a;
+  --tint: rgba(236, 229, 216, 0.06);
+  --tint-strong: #2a2720;
+  --tab: #34302a;
+  --tab-hover: #3d3831;
+  --success: #8cc79a;
+
+  --ribbon-red: #b8283f;
+  --ribbon-green: #2e6b45;
+  --ribbon-white: #ece5d8;
+
+  --grid-open: #2c2923;
+  --grid-block: #0f0e0b;
+  --grid-line: #5b554a;
+  --grid-bar: #ece5d8;
+  --active-word: #4d4125;
+  --selected: #d4a843;
+  --selected-ink: #1d1b16;
+  --referenced: #2c3a2e;
+  --incorrect: #4a2228;
+  --incorrect-ink: #fda4af;
+
+  --keyboard: #12110d;
+  --key: #3a362f;
+  --key-special: #2a2720;
+
+  /* Tailwind dark variants (blue-500, pink-400, amber-400, orange-400 at 30%) */
+  --hl-def: oklch(62.3% 0.214 259.815 / 0.3);
+  --hl-ind: oklch(71.8% 0.202 349.761 / 0.3);
+  --hl-fod: oklch(82.8% 0.189 84.429 / 0.3);
+  --hl-cha: oklch(75% 0.183 55.934 / 0.3);
+  --wp-def: #51a2ff;
+  --wp-ind: #fb64b6;
+  --wp-fod: #ffb900;
+  --wp-cha: #ff8904;
+  --wp-off: #5b554a;
 }

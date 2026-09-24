@@ -1,27 +1,22 @@
-import type { Metadata } from "next";
-import { Raleway, Nunito, Pixelify_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
 import { Analytics } from "@vercel/analytics/next";
 
-const raleway = Raleway({
-  variable: "--font-raleway",
-  subsets: ["latin"],
-});
-
-const nunito = Nunito({
-  variable: "--font-nunito",
-  subsets: ["latin"],
-});
-
-const pixelifySans = Pixelify_Sans({
-  variable: "--font-pixelify-sans",
-  subsets: ["latin"],
+// Newsreader (SIL Open Font License), self-hosted. Variable weight and optical size.
+const newsreader = localFont({
+  src: [
+    { path: "./fonts/newsreader-latin-opsz-normal.woff2", style: "normal", weight: "200 800" },
+    { path: "./fonts/newsreader-latin-opsz-italic.woff2", style: "italic", weight: "200 800" },
+  ],
+  variable: "--font-newsreader",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Ian's Christmas Village",
-  description: "A collection of things I've made.",
+  description: "Crosswords, writing, and other things I've made.",
   icons: {
     icon: [
       { url: "/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
@@ -32,14 +27,20 @@ export const metadata: Metadata = {
   manifest: "/icons/site.webmanifest",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${raleway.variable} ${nunito.variable} ${pixelifySans.variable} antialiased`}>
+    <html lang="en" className={newsreader.variable}>
+      <body>
         <ClientLayout>{children}</ClientLayout>
         <Analytics />
       </body>
