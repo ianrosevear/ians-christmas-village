@@ -1,7 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef } from "react";
-import { useStored } from "@/lib/localStore";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 /** Ambient sounds, looped, at the Volume slider's level. */
 const SOUNDS = {
@@ -30,15 +29,14 @@ const SoundsContext = createContext<Sounds | null>(null);
 
 /**
  * Owns the audio, so sounds can carry on while the paper is up and pages change.
- * Which sounds are on, the volume and "keep playing" are remembered between visits.
- * Browsers only allow sound after the visitor has interacted with the page, so on a return
- * visit remembered sounds start with the first click or key press.
+ * Unlike the other settings, sound settings are deliberately not remembered: every visit
+ * starts silent, so coming back to the site never surprises anyone with noise.
  */
 export function SoundsProvider({ children }: { children: React.ReactNode }) {
-  const [playing, setPlaying] = useStored<Playing>("soundsPlaying", NONE);
+  const [playing, setPlaying] = useState<Playing>(NONE);
   // Volume starts at zero, so nothing is ever heard until it's turned up.
-  const [volume, setVolume] = useStored<number>("soundsVolume", 0);
-  const [keepPlaying, setKeepPlaying] = useStored<boolean>("soundsKeepPlaying", true);
+  const [volume, setVolume] = useState(0);
+  const [keepPlaying, setKeepPlaying] = useState(true);
   const audio = useRef<Partial<Record<SoundKey, HTMLAudioElement>>>({});
 
   // Keep every sound at the right loudness as the controls change.
@@ -57,7 +55,7 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
         el.volume = Math.min(1, Math.max(0, level));
         if (level > 0 && el.paused) {
           el.play().catch(() => {
-            // Autoplay blocked until the visitor interacts: try again then.
+            // Blocked until the visitor interacts with the page: try again then.
             if (!blocked) {
               blocked = true;
               window.addEventListener("pointerdown", retry, { once: true });

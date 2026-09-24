@@ -4,7 +4,7 @@ import { useCallback, useSyncExternalStore } from "react";
 
 /**
  * The site's one place for remembering things in the browser: settings (edition, snow,
- * sounds…) and crossword progress all go through here. Values are stored as JSON in
+ * wind…) and crossword progress all go through here. Values are stored as JSON in
  * localStorage under their own keys. If storage isn't available (private browsing,
  * blocked cookies) reads fall back to the default and writes are quietly dropped.
  */
