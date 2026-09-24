@@ -104,6 +104,13 @@ export default function Snowflakes() {
       return img;
     };
 
+    // Where the paper (and the ambience strip) is on screen, refreshed a few times a second:
+    // flakes in front of it get a shadow so they show up on the cream; flakes over the sky don't.
+    let paperRects: DOMRect[] = [];
+    let rectsAt = -Infinity;
+    const onPaper = (x: number, y: number) =>
+      paperRects.some((r) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
+
     let wind = windTarget.current;
     let frame = 0;
     let last = performance.now();
@@ -120,7 +127,13 @@ export default function Snowflakes() {
       // Squared, so the low end of the slider stays gentle and the top end is a blizzard.
       const level = Math.min(1, Math.max(0.05, amount.current));
       const shown = Math.round(MAX_FLAKES * level * level);
-      const shadow = overPaper.current;
+      const inFront = overPaper.current;
+      if (inFront && now - rectsAt > 200) {
+        rectsAt = now;
+        paperRects = [...document.querySelectorAll(".paper")]
+          .map((el) => el.getBoundingClientRect())
+          .filter((r) => r.width > 0 && r.height > 0);
+      }
       const t = now * 0.001;
       const gust = 0.6 + 0.4 * Math.sin(now * 0.0006) + 0.25 * Math.sin(now * 0.0017);
 
@@ -138,6 +151,7 @@ export default function Snowflakes() {
 
         const sym = symmetry(f.char);
         const step = sym ? Math.round((((f.rotation % sym) + sym) % sym) / sym * STEPS) % STEPS : 0;
+        const shadow = inFront && onPaper(f.x, f.y);
         const img = sprite(f.char, f.size, shadow, step);
         const half = img.width / 2;
         // Heavier snow also reads a little brighter; snow in front of the paper more so.
