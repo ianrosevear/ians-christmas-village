@@ -126,29 +126,32 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
       role="region"
       aria-label="Ambience"
       // Positioned against the full window width (vw), so it doesn't shift when the scrollbar goes away.
-      className="paper rise-in fixed inset-x-0 bottom-0 z-20 w-full sm:right-auto sm:left-[calc(50vw-min(520px,50vw-24px))] sm:w-[min(1040px,calc(100vw-48px))]"
+      className="rise-in fixed inset-x-0 bottom-0 z-20 w-full sm:right-auto sm:left-[calc(50vw-min(520px,50vw-24px))] sm:w-[min(1040px,calc(100vw-48px))]"
     >
-      <button type="button" className="paper-tab paper-tab--on-strip sc" onClick={onPickUp}>
+      {/* The tab sits behind the strip, like the one on the paper. */}
+      <button type="button" className="paper-tab sc" onClick={onPickUp}>
         Pick the paper up
       </button>
-      <div className="ribbon !h-1.5" />
-      <div className="flex flex-col gap-x-8 gap-y-1 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))] sm:px-7 sm:pt-2.5 sm:pb-3">
-        <div className="flex flex-col gap-x-8 gap-y-2 sm:flex-row sm:flex-wrap sm:items-center">
-          <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Sounds</span>
-          <div role="group" aria-label="Sounds" className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
-            <SoundButton label="Fire" pressed={playing.fire} onClick={() => setPlaying((p) => ({ ...p, fire: !p.fire }))} />
-            <SoundButton label="Rain" pressed={playing.rain} onClick={() => setPlaying((p) => ({ ...p, rain: !p.rain }))} />
+      <div className="paper relative">
+        <div className="ribbon !h-1.5" />
+        <div className="flex flex-col gap-x-8 gap-y-1 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))] sm:px-7 sm:pt-2.5 sm:pb-3">
+          <div className="flex flex-col gap-x-8 gap-y-2 sm:flex-row sm:flex-wrap sm:items-center">
+            <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Sounds</span>
+            <div role="group" aria-label="Sounds" className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
+              <SoundButton label="Fire" pressed={playing.fire} onClick={() => setPlaying((p) => ({ ...p, fire: !p.fire }))} />
+              <SoundButton label="Rain" pressed={playing.rain} onClick={() => setPlaying((p) => ({ ...p, rain: !p.rain }))} />
+            </div>
+            <Slider label="Volume" value={volume} onChange={setVolume} />
+            <div className="sm:ml-auto">
+              <Pair label="Edition" a="Morning" b="Evening" isA={!evening} setA={(morning) => setEvening(!morning)} />
+            </div>
           </div>
-          <Slider label="Volume" value={volume} onChange={setVolume} />
-          <div className="sm:ml-auto">
-            <Pair label="Edition" a="Morning" b="Evening" isA={!evening} setA={(morning) => setEvening(!morning)} />
+          <div className="flex flex-col gap-x-8 gap-y-1 border-t border-[var(--rule-soft)] pt-1 sm:flex-row sm:flex-wrap sm:items-center">
+            <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Scene</span>
+            <Slider label="Snow" value={snow ? snowAmount : 0} onChange={setSnowLevel} />
+            <Slider label="Wind" value={wind} onChange={setWind} />
+            <Pair label="Snow falls" a="Behind" b="In front" isA={!snowOverPaper} setA={(behind) => setSnowOverPaper(!behind)} />
           </div>
-        </div>
-        <div className="flex flex-col gap-x-8 gap-y-1 border-t border-[var(--rule-soft)] pt-1 sm:flex-row sm:flex-wrap sm:items-center">
-          <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Scene</span>
-          <Slider label="Snow" value={snow ? snowAmount : 0} onChange={setSnowLevel} />
-          <Slider label="Wind" value={wind} onChange={setWind} />
-          <Pair label="Snow falls" a="Behind" b="In front" isA={!snowOverPaper} setA={(behind) => setSnowOverPaper(!behind)} />
         </div>
       </div>
     </div>

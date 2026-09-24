@@ -147,17 +147,6 @@
   }
 }
 
-/* The same tab on the ambience strip, sitting on top of it rather than tucked behind */
-.paper-tab--on-strip {
-  top: -40px;
-  height: 40px;
-  padding-bottom: 0;
-}
-.paper-tab--on-strip:hover {
-  top: -44px;
-  height: 44px;
-}
-
 /* Putting the paper down: it slides off the bottom of the screen with a slight tilt */
 .paper-slide {
   transition: transform 420ms cubic-bezier(0.3, 0.55, 0.5, 1);

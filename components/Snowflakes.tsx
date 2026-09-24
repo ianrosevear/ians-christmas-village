@@ -59,7 +59,7 @@ export default function Snowflakes() {
     const makeFlake = (y: number): Flake => ({
       x: Math.random() * width,
       y,
-      size: Math.random() * 10 + 4,
+      size: Math.round(Math.random() * 10 + 4),
       speed: Math.random() * 0.6 + 0.35,
       sway: Math.random() * 0.4 + 0.1,
       phase: Math.random() * Math.PI * 2,
@@ -70,6 +70,40 @@ export default function Snowflakes() {
     });
     const flakes = Array.from({ length: MAX_FLAKES }, () => makeFlake(Math.random() * height));
 
+    // Drawing text (and especially text with a shadow) every frame is slow, so each
+    // character/size/style is drawn once to a small canvas and then copied as an image.
+    const sprites = new Map<string, HTMLCanvasElement>();
+    // Spinning is done by picking one of a few pre-rotated copies: snowflakes look the same
+    // every 60° (the star every 90°), so six steps per turn of symmetry is plenty.
+    const STEPS = 6;
+    const symmetry = (char: string) => (char === "✦" ? Math.PI / 2 : char === "•" ? 0 : Math.PI / 3);
+    const sprite = (char: string, size: number, shadow: boolean, step: number) => {
+      const key = `${char}${size}${shadow ? "s" : ""}${step}`;
+      let img = sprites.get(key);
+      if (!img) {
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
+        const box = Math.ceil(size * 1.5 + 8);
+        img = document.createElement("canvas");
+        img.width = img.height = Math.ceil(box * scale);
+        const c = img.getContext("2d")!;
+        c.scale(scale, scale);
+        c.font = `${size}px serif`;
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.fillStyle = "#fff";
+        if (shadow) {
+          c.shadowColor = "rgba(30, 40, 60, 0.9)";
+          c.shadowBlur = 2.5;
+          c.shadowOffsetY = 0.5;
+        }
+        c.translate(box / 2, box / 2);
+        c.rotate((step / STEPS) * symmetry(char));
+        c.fillText(char, 0, 0);
+        sprites.set(key, img);
+      }
+      return img;
+    };
+
     let wind = windTarget.current;
     let frame = 0;
     let last = performance.now();
@@ -79,40 +113,36 @@ export default function Snowflakes() {
       last = now;
       wind += (windTarget.current - wind) * 0.02 * dt; // ease towards the target
 
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#fff";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      const dpr = canvas.width / width;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const gust = 0.6 + 0.4 * Math.sin(now * 0.0006) + 0.25 * Math.sin(now * 0.0017);
       // Squared, so the low end of the slider stays gentle and the top end is a blizzard.
       const level = Math.min(1, Math.max(0.05, amount.current));
       const shown = Math.round(MAX_FLAKES * level * level);
-      // White on cream paper needs a soft shadow to show up.
-      ctx.shadowColor = overPaper.current ? "rgba(30, 40, 60, 0.9)" : "transparent";
-      ctx.shadowBlur = overPaper.current ? 2.5 : 0;
-      ctx.shadowOffsetY = overPaper.current ? 0.5 : 0;
+      const shadow = overPaper.current;
+      const t = now * 0.001;
+      const gust = 0.6 + 0.4 * Math.sin(now * 0.0006) + 0.25 * Math.sin(now * 0.0017);
+
       for (let i = 0; i < shown; i++) {
         const f = flakes[i];
-        const t = now * 0.001;
         // Gentle side-to-side sway, plus wind: a gusting push and a swirl that curls flakes around.
-        const swirl = Math.sin(f.y * 0.012 + t * 1.3 + f.phase) * 1.4 * wind;
+        const swirl = wind > 0.001 ? Math.sin(f.y * 0.012 + t * 1.3 + f.phase) * 1.4 * wind : 0;
         f.x += (Math.sin(t * f.sway * 2 + f.phase) * 0.35 + wind * (1.5 * gust + 0.5 * f.speed) + swirl) * dt;
-        f.y += (f.speed * (1 + wind * 0.4) + Math.cos(f.x * 0.01 + t + f.phase) * 0.6 * wind) * dt;
+        f.y += (f.speed * (1 + wind * 0.4) + (wind > 0.001 ? Math.cos(f.x * 0.01 + t + f.phase) * 0.6 * wind : 0)) * dt;
         f.rotation += f.spin * (1 + wind * 4) * dt;
 
         if (f.y > height + 20) Object.assign(f, makeFlake(-20));
         if (f.x > width + 30) f.x = -30;
         if (f.x < -30) f.x = width + 30;
 
-        // Heavier snow also reads a little brighter.
-        ctx.globalAlpha = Math.min(1, f.opacity + (overPaper.current ? 0.4 : 0) + level * 0.15);
-        ctx.font = `${f.size}px serif`;
-        ctx.save();
-        ctx.translate(f.x, f.y);
-        ctx.rotate(f.rotation);
-        ctx.fillText(f.char, 0, 0);
-        ctx.restore();
+        const sym = symmetry(f.char);
+        const step = sym ? Math.round((((f.rotation % sym) + sym) % sym) / sym * STEPS) % STEPS : 0;
+        const img = sprite(f.char, f.size, shadow, step);
+        const half = img.width / 2;
+        // Heavier snow also reads a little brighter; snow in front of the paper more so.
+        ctx.globalAlpha = Math.min(1, f.opacity + (shadow ? 0.4 : 0) + level * 0.15);
+        ctx.drawImage(img, Math.round(f.x * dpr - half), Math.round(f.y * dpr - half));
       }
       frame = requestAnimationFrame(tick);
     };
