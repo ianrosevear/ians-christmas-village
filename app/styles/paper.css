@@ -207,3 +207,11 @@
 .text-toggle[aria-pressed="false"] {
   color: var(--ink-soft);
 }
+
+/* Scrollable without showing scrollbars (the phone scene with the paper down) */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

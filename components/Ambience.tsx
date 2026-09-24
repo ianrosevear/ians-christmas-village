@@ -167,7 +167,7 @@ export function AmbienceScene() {
       <div className="scene hidden sm:block" aria-hidden="true" />
       <div
         ref={panRef}
-        className="fixed inset-0 z-0 overflow-auto overscroll-contain bg-[var(--sky)] sm:hidden"
+        className="no-scrollbar fixed inset-0 z-0 overflow-auto overscroll-contain bg-[var(--sky)] sm:hidden"
         onTouchStart={onUserPan}
         onPointerDown={onUserPan}
         onWheel={onUserPan}
