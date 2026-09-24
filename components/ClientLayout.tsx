@@ -6,9 +6,12 @@ import { SitePrefsProvider, useSitePrefs } from "./SitePrefs";
 import Snowflakes from "./Snowflakes";
 import Footer from "./masthead/Footer";
 import { AmbienceControls, AmbienceScene } from "./Ambience";
+import { SoundsProvider, useSounds } from "./Sounds";
 
 /** How long the paper takes to slide away or come back. Matches .paper-slide in paper.css. */
-const SLIDE_MS = 420;
+function slideMs() {
+  return window.matchMedia("(max-width: 639px)").matches ? 560 : 420;
+}
 
 type Phase = "up" | "lowering" | "down" | "raising";
 
@@ -18,6 +21,7 @@ function prefersReducedMotion() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   const { evening, snow, paperDown, setPaperDown } = useSitePrefs();
+  const { keepPlaying, stopAll } = useSounds();
   const pathname = usePathname();
   const wide = pathname.startsWith("/crossword/");
 
@@ -35,21 +39,21 @@ function Shell({ children }: { children: React.ReactNode }) {
     const reduced = prefersReducedMotion();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let frame: number | undefined;
-    /* eslint-disable react-hooks/set-state-in-effect -- stepping through the slide animation */
     if (paperDown) {
       setFullScene(true);
       if (reduced) setPhase("down");
       else {
         setPhase("lowering");
-        timer = setTimeout(() => setPhase("down"), SLIDE_MS);
+        timer = setTimeout(() => setPhase("down"), slideMs());
       }
     } else if (phaseRef.current !== "up") {
       window.scrollTo({ top: 0 });
+      if (!keepPlaying) stopAll();
       if (reduced) {
         setPhase("up");
         setFullScene(false);
       } else {
-        timer = setTimeout(() => setFullScene(false), SLIDE_MS + 50);
+        timer = setTimeout(() => setFullScene(false), slideMs() + 50);
         // Put it back on the page off-screen, then let it slide up on the next frames.
         setPhase("raising");
         frame = requestAnimationFrame(() => {
@@ -57,11 +61,12 @@ function Shell({ children }: { children: React.ReactNode }) {
         });
       }
     }
-    /* eslint-enable react-hooks/set-state-in-effect */
     return () => {
       if (timer) clearTimeout(timer);
       if (frame) cancelAnimationFrame(frame);
     };
+    // Only reacting to the paper going up or down.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paperDown]);
 
   const paperAway = phase !== "up";
@@ -102,7 +107,9 @@ function Shell({ children }: { children: React.ReactNode }) {
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <SitePrefsProvider>
-      <Shell>{children}</Shell>
+      <SoundsProvider>
+        <Shell>{children}</Shell>
+      </SoundsProvider>
     </SitePrefsProvider>
   );
 }
