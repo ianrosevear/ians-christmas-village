@@ -5,7 +5,7 @@ import { useSitePrefs } from "./SitePrefs";
 
 const CHARS = ["❄", "❅", "❆", "•", "•", "✦"];
 /** Flakes at full snow; the snow amount draws a share of them. */
-const MAX_FLAKES = 130;
+const MAX_FLAKES = 520;
 
 type Flake = {
   x: number;
@@ -29,11 +29,13 @@ export default function Snowflakes() {
   const { wind: windSetting, snowAmount, snowOverPaper } = useSitePrefs();
   const windTarget = useRef(windSetting);
   const amount = useRef(snowAmount);
+  const overPaper = useRef(snowOverPaper);
 
   useEffect(() => {
     windTarget.current = windSetting;
     amount.current = snowAmount;
-  }, [windSetting, snowAmount]);
+    overPaper.current = snowOverPaper;
+  }, [windSetting, snowAmount, snowOverPaper]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -83,7 +85,13 @@ export default function Snowflakes() {
       ctx.textBaseline = "middle";
 
       const gust = 0.6 + 0.4 * Math.sin(now * 0.0006) + 0.25 * Math.sin(now * 0.0017);
-      const shown = Math.round(MAX_FLAKES * Math.min(1, Math.max(0.05, amount.current)));
+      // Squared, so the low end of the slider stays gentle and the top end is a blizzard.
+      const level = Math.min(1, Math.max(0.05, amount.current));
+      const shown = Math.round(MAX_FLAKES * level * level);
+      // White on cream paper needs a soft shadow to show up.
+      ctx.shadowColor = overPaper.current ? "rgba(30, 40, 60, 0.9)" : "transparent";
+      ctx.shadowBlur = overPaper.current ? 2.5 : 0;
+      ctx.shadowOffsetY = overPaper.current ? 0.5 : 0;
       for (let i = 0; i < shown; i++) {
         const f = flakes[i];
         const t = now * 0.001;
@@ -97,7 +105,8 @@ export default function Snowflakes() {
         if (f.x > width + 30) f.x = -30;
         if (f.x < -30) f.x = width + 30;
 
-        ctx.globalAlpha = f.opacity;
+        // Heavier snow also reads a little brighter.
+        ctx.globalAlpha = Math.min(1, f.opacity + (overPaper.current ? 0.4 : 0) + level * 0.15);
         ctx.font = `${f.size}px serif`;
         ctx.save();
         ctx.translate(f.x, f.y);
