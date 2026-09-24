@@ -10,7 +10,8 @@
   --color-snow: #f5f0eb;
   --color-dark: #0f1a12;
 
-  --sky: #5d87c3;
+  /* Base colour behind the art: the snow at the bottom of the picture, so any gap blends in */
+  --ground: #c2d8f6;
   --scene: url("/images/cabin-background.png");
 
   --paper: #f5f0eb;
@@ -63,7 +64,7 @@
 }
 
 .dark {
-  --sky: #001430;
+  --ground: #3c4d6f;
   --scene: url("/images/cabin-background-dark.png");
 
   --paper: #1d1b16;

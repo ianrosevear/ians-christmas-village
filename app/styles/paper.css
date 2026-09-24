@@ -5,7 +5,7 @@
   /* The paper slides off-screen when it's put down; clipping here stops that moving
      paper from making the page scrollable for a moment (a flash of scrollbar). */
   overflow: clip;
-  background: var(--sky);
+  background: var(--ground);
   color: var(--ink);
 }
 
@@ -20,7 +20,7 @@
      or not the page scrolls: a scrollbar just covers its right edge. */
   width: 100vw;
   z-index: 0;
-  background-color: var(--sky);
+  background-color: var(--ground);
   background-image: var(--scene);
   background-size: cover;
   background-position: center bottom;

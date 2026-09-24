@@ -186,7 +186,7 @@ export function AmbienceScene() {
       <div className="scene ambience-static" aria-hidden="true" />
       <div
         ref={panRef}
-        className="ambience-pan no-scrollbar fixed inset-0 z-0 cursor-grab overflow-auto overscroll-contain bg-[var(--sky)] select-none active:cursor-grabbing"
+        className="ambience-pan no-scrollbar fixed inset-0 z-0 cursor-grab overflow-auto overscroll-contain bg-[var(--ground)] select-none active:cursor-grabbing"
         onTouchStart={onUserPan}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
