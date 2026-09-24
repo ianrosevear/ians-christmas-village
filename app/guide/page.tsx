@@ -2,7 +2,26 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Def, Ind, Fod, Cha, SmallToggle } from "@/lib/crossword/annotations";
+import Folio from "@/components/masthead/Folio";
+import { Def, Ind, Fod, Cha, WordplayGlyph } from "@/lib/crossword/annotations";
+import { formatPublished } from "@/lib/crossword/puzzles";
+
+const SECTIONS: [id: string, title: string][] = [
+  ["intro", "What is a cryptic?"],
+  ["anagrams", "Anagrams"],
+  ["charades", "Charades"],
+  ["containers", "Containers"],
+  ["reversals", "Reversals"],
+  ["deletions", "Deletions"],
+  ["selections", "Selections"],
+  ["homophones", "Homophones"],
+  ["hidden-words", "Hidden words"],
+  ["positioners", "Positioners"],
+  ["double-definition", "Double definitions"],
+  ["notes", "Additional notes"],
+  ["conclusion", "Conclusion"],
+  ["credits", "Credits"],
+];
 
 function AnchorLink({ id }: { id: string }) {
   const [copied, setCopied] = useState(false);
@@ -20,57 +39,85 @@ function AnchorLink({ id }: { id: string }) {
     <button
       onClick={handleClick}
       aria-label="Copy link to section"
-      className="cursor-pointer ml-2 opacity-0 group-hover:opacity-100 transition-opacity text-[var(--color-dark)]/30 dark:text-[var(--color-snow)]/30 hover:text-[var(--color-dark)]/60 dark:hover:text-[var(--color-snow)]/60 text-base font-normal align-middle"
+      className="ml-2 align-middle text-[0.7em] font-normal text-[var(--ink-soft)] opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
     >
-      {copied ? "✓" : "#"}
+      {copied ? "copied" : "#"}
     </button>
   );
 }
 
+function Toggle({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button type="button" aria-pressed={pressed} onClick={onClick} className="text-toggle sc mr-5 inline-flex min-h-11 items-center gap-2 text-[16px]">
+      {children}
+    </button>
+  );
+}
+
+/** An example clue with its wordplay colours and working, each switched on separately. */
 function Clue({
   children,
   length,
   diagram,
+  initiallyShown = false,
 }: {
   children: (show: boolean) => React.ReactNode;
   length: string;
   diagram: string;
+  initiallyShown?: boolean;
 }) {
-  const [showColors, setShowColors] = useState(false);
-  const [showDiagram, setShowDiagram] = useState(false);
+  const [showColors, setShowColors] = useState(initiallyShown);
+  const [showDiagram, setShowDiagram] = useState(initiallyShown);
 
   return (
-    <div className="my-4 ml-6">
-      <div className="flex items-baseline gap-3">
-        <p className="font-bold">{children(showColors)} ({length})</p>
-        <div className="flex gap-1.5 shrink-0">
-          <SmallToggle label="colors" active={showColors} onClick={() => setShowColors(!showColors)} />
-          <SmallToggle label="diagram" active={showDiagram} onClick={() => setShowDiagram(!showDiagram)} />
-        </div>
+    <div className="-mx-4 my-6 bg-[var(--tint)] px-4 pt-4 pb-1 sm:mx-0 sm:px-[22px]">
+      <p className="text-[21px] leading-normal font-semibold sm:text-[22px]">
+        {children(showColors)} ({length})
+      </p>
+      {showDiagram && <p className="mt-2 text-[16px] tracking-[0.02em] text-[var(--ink-body)] sm:text-[17px]">{diagram}</p>}
+      <div className="mt-1">
+        <Toggle pressed={showColors} onClick={() => setShowColors(!showColors)}>
+          <WordplayGlyph on={showColors} size={16} />
+          Wordplay
+        </Toggle>
+        <Toggle pressed={showDiagram} onClick={() => setShowDiagram(!showDiagram)}>
+          Working
+        </Toggle>
       </div>
-      {showDiagram && (
-        <p className="text-sm text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50 mt-0.5">
-          {diagram}
-        </p>
-      )}
     </div>
   );
 }
 
 export default function GuidePage() {
   return (
-    <div className="font-raleway">
-      <h2 className="text-3xl italic text-[var(--color-dark)] dark:text-[var(--color-snow)] mb-1">
-        How to Solve Cryptic Crosswords
-      </h2>
+    <>
+      <Folio current="writing" />
+      <article className="mx-auto max-w-[720px]">
+        <header className="pt-9 pb-6 text-center sm:pt-12">
+          <h1 className="text-[40px] leading-none font-semibold tracking-[-0.02em] sm:text-[64px]">How to Solve Cryptic Crosswords</h1>
+          <p className="mt-3.5 text-[17px] text-[var(--ink-soft)] sm:text-[18px]">
+            <span className="italic">by Ian Rosevear</span> &middot; {formatPublished("2026-03")}
+          </p>
+        </header>
 
-      <hr className="border-[var(--color-dark)]/15 dark:border-[var(--color-snow)]/15 mb-6" />
+        <nav aria-label="Contents" className="mb-10 border-t-[3px] border-b border-[var(--rule)] pt-3 pb-2.5">
+          <p className="sc mb-1.5 text-[16px] font-bold">In this piece &middot; {SECTIONS.length} sections</p>
+          <ol className="list-inside list-decimal gap-x-7 leading-snug marker:text-[var(--ink-soft)] columns-2 text-[16px] sm:columns-3 sm:text-[17px]">
+            {SECTIONS.map(([id, title]) => (
+              <li key={id} className="break-inside-avoid py-1">
+                <a href={`#${id}`} className="plain">
+                  {title}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
 
-      <div className="space-y-6 text-[var(--color-dark)] dark:text-[var(--color-snow)] leading-relaxed">
+        <div className="space-y-12 text-[19px] leading-[1.62] sm:text-[20px]">
         {/* Intro */}
-        <section id="intro" className="space-y-3">
-          <h3 className="group text-xl font-bold">What is a cryptic crossword?<AnchorLink id="intro" /></h3>
-          <p>
+        <section id="intro" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">What is a cryptic crossword?<AnchorLink id="intro" /></h2>
+          <p className="drop-cap">
             A cryptic crossword is a special type of crossword in which each clue is itself a
             little wordplay puzzle. Unlike a regular crossword clue, which just gives you a
             definition, a cryptic clue contains two paths to the same answer: a straightforward
@@ -82,17 +129,13 @@ export default function GuidePage() {
             through it.
           </p>
 
-          <div className="my-4 ml-6">
-            <p className="font-bold">
-              <Def show>Christmas carol</Def>{" "}
-              <Ind show>uniquely</Ind>{" "}
-              <Fod show>lent insight</Fod>{" "}
-              (6,5)
-            </p>
-            <p className="text-sm text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50 mt-0.5">
-              LENT INSIGHT (anagram) → SILENT NIGHT
-            </p>
-          </div>
+          <Clue length="6,5" diagram="LENT INSIGHT (anagram) → SILENT NIGHT" initiallyShown>
+            {(show) => (
+              <>
+                <Def show={show}>Christmas carol</Def> <Ind show={show}>uniquely</Ind> <Fod show={show}>lent insight</Fod>
+              </>
+            )}
+          </Clue>
 
           <p>
             The &ldquo;surface&rdquo; of the clue is the straightforward reading of the phrase.
@@ -102,7 +145,7 @@ export default function GuidePage() {
           <p>
             We&rsquo;re looking for a phrase made of a six and five letter word (the number at
             the end of the clue tells us the length of the answer). The{" "}
-            <span className="rounded px-1 bg-blue-200/60 dark:bg-blue-500/30 font-semibold">
+            <span className="hl hl-def font-semibold">
               definition
             </span>{" "}
             is &ldquo;Christmas carol&rdquo;&mdash;that&rsquo;s the straightforward part of the
@@ -112,7 +155,7 @@ export default function GuidePage() {
           </p>
           <p>
             Next, &ldquo;uniquely&rdquo; is an{" "}
-            <span className="rounded px-1 bg-pink-200/70 dark:bg-pink-400/30 font-semibold">
+            <span className="hl hl-ind font-semibold">
               indicator
             </span>
             &mdash;a word or phrase that directs you to modify adjacent fodder in some way.
@@ -121,7 +164,7 @@ export default function GuidePage() {
           </p>
           <p>
             That tells us to anagram the adjacent{" "}
-            <span className="rounded px-1 bg-amber-200/70 dark:bg-amber-400/30 font-semibold">
+            <span className="hl hl-fod font-semibold">
               fodder
             </span>{" "}
             &ldquo;lent insight&rdquo;. If the clue is a recipe, fodder are ingredients&mdash;the
@@ -130,31 +173,31 @@ export default function GuidePage() {
             Carol&rdquo;, so we can confirm that&rsquo;s our answer!
           </p>
 
-          <div className="ml-6 space-y-2 text-sm">
-            <p className="font-bold text-base mb-1">The four components of cryptic wordplay</p>
+          <div className="border-t-[3px] border-b border-[var(--rule)] pt-3.5 pb-2 text-[18px] leading-normal [&>p+p]:mt-3">
+            <p className="sc text-[17px] font-bold">The four components of cryptic wordplay</p>
             <p>
-              <span className="rounded px-1 bg-blue-200/60 dark:bg-blue-500/30 font-semibold">
+              <span className="hl hl-def font-semibold">
                 Definition
               </span>{" "}
               &mdash; the straightforward definition of the answer. Almost always at the front
               or end of the clue.
             </p>
             <p>
-              <span className="rounded px-1 bg-pink-200/70 dark:bg-pink-400/30 font-semibold">
+              <span className="hl hl-ind font-semibold">
                 Indicator
               </span>{" "}
               &mdash; a word or phrase that directs you to modify adjacent fodder in some way.
               We&apos;ll cover several types of indicator later in the guide.
             </p>
             <p>
-              <span className="rounded px-1 bg-amber-200/70 dark:bg-amber-400/30 font-semibold">
+              <span className="hl hl-fod font-semibold">
                 Fodder
               </span>{" "}
               &mdash; words that are modified by indicators. If the clue is a recipe, fodder
               are ingredients.
             </p>
             <p>
-              <span className="rounded px-1 bg-orange-200/70 dark:bg-orange-400/30 font-semibold">
+              <span className="hl hl-cha font-semibold">
                 Charade
               </span>{" "}
               &mdash; words substituted with a synonym or abbreviation to build the answer.
@@ -170,7 +213,7 @@ export default function GuidePage() {
             conventions and rules of cryptic crossword solving.
           </p>
           <p>There are 10 important clue types to be aware of:</p>
-          <ol className="list-decimal ml-8 space-y-0.5">
+          <ol className="ml-8 list-decimal space-y-0.5 !mt-3">
             <li>Anagrams</li>
             <li>Charades</li>
             <li>Containers</li>
@@ -185,8 +228,8 @@ export default function GuidePage() {
         </section>
 
         {/* Anagrams */}
-        <section id="anagrams" className="space-y-3">
-          <h3 className="group text-xl font-bold">Anagrams<AnchorLink id="anagrams" /></h3>
+        <section id="anagrams" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Anagrams<AnchorLink id="anagrams" /></h2>
           <p>
             Anagrams are a very common kind of clue. An indicator word will clue to anagram an
             adjacent word or phrase. Anagram indicators can be very broad. Any word that suggests
@@ -226,8 +269,8 @@ export default function GuidePage() {
         </section>
 
         {/* Charades */}
-        <section id="charades" className="space-y-3">
-          <h3 className="group text-xl font-bold">Charades<AnchorLink id="charades" /></h3>
+        <section id="charades" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Charades<AnchorLink id="charades" /></h2>
           <p>
             Charades are perhaps the most common kind of clue, and are often encountered
             alongside other types of clues. A charade clue is much like the party game it is
@@ -287,8 +330,8 @@ export default function GuidePage() {
         </section>
 
         {/* Containers */}
-        <section id="containers" className="space-y-3">
-          <h3 className="group text-xl font-bold">Containers<AnchorLink id="containers" /></h3>
+        <section id="containers" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Containers<AnchorLink id="containers" /></h2>
           <p>
             Containers are a type of clue in which a word is placed inside another word. This can
             be clued either via one word surrounding another (with words like &ldquo;around&rdquo;,
@@ -311,8 +354,8 @@ export default function GuidePage() {
         </section>
 
         {/* Reversals */}
-        <section id="reversals" className="space-y-3">
-          <h3 className="group text-xl font-bold">Reversals<AnchorLink id="reversals" /></h3>
+        <section id="reversals" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Reversals<AnchorLink id="reversals" /></h2>
           <p>
             Reversals are a self explanatory kind of clue where a word or phrase is read
             backwards. Indicators for a reversal suggest changing direction or retreating. Look
@@ -335,8 +378,8 @@ export default function GuidePage() {
         </section>
 
         {/* Deletions */}
-        <section id="deletions" className="space-y-3">
-          <h3 className="group text-xl font-bold">Deletions<AnchorLink id="deletions" /></h3>
+        <section id="deletions" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Deletions<AnchorLink id="deletions" /></h2>
           <p>
             Deletions remove one or more letters from fodder to create a new word. Deletion
             indicators will often not only indicate a removal, but also what to remove or where
@@ -390,8 +433,8 @@ export default function GuidePage() {
         </section>
 
         {/* Selections */}
-        <section id="selections" className="space-y-3">
-          <h3 className="group text-xl font-bold">Selections<AnchorLink id="selections" /></h3>
+        <section id="selections" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Selections<AnchorLink id="selections" /></h2>
           <p>
             Selections are a natural complement to deletions. Deletions indicate to remove a
             word, while selections indicate to use a specific subset of a word for constructing
@@ -438,8 +481,8 @@ export default function GuidePage() {
         </section>
 
         {/* Homophones */}
-        <section id="homophones" className="space-y-3">
-          <h3 className="group text-xl font-bold">Homophones<AnchorLink id="homophones" /></h3>
+        <section id="homophones" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Homophones<AnchorLink id="homophones" /></h2>
           <p>
             Homophones are a fairly rare type of indicator, and usually aren&rsquo;t too
             difficult to spot. They indicate to treat a word or phrase as spoken or heard.
@@ -463,8 +506,8 @@ export default function GuidePage() {
         </section>
 
         {/* Hidden Words */}
-        <section id="hidden-words" className="space-y-3">
-          <h3 className="group text-xl font-bold">Hidden Words<AnchorLink id="hidden-words" /></h3>
+        <section id="hidden-words" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Hidden Words<AnchorLink id="hidden-words" /></h2>
           <p>
             Hidden words can be some of the easiest wordplay devices to spot, but can be
             maddening if you miss them. A hidden words indicator tells you to look for a word or
@@ -487,8 +530,8 @@ export default function GuidePage() {
         </section>
 
         {/* Positioners */}
-        <section id="positioners" className="space-y-3">
-          <h3 className="group text-xl font-bold">Positioners<AnchorLink id="positioners" /></h3>
+        <section id="positioners" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Positioners<AnchorLink id="positioners" /></h2>
           <p>
             While almost never used alone, positioners are a powerful tool for constructors to
             improve the surface of their clues. The recipe of wordplay is always done in order,
@@ -513,8 +556,8 @@ export default function GuidePage() {
         </section>
 
         {/* Double Definition */}
-        <section id="double-definition" className="space-y-3">
-          <h3 className="group text-xl font-bold">Double Definition<AnchorLink id="double-definition" /></h3>
+        <section id="double-definition" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Double Definition<AnchorLink id="double-definition" /></h2>
           <p>
             Double definition clues break the mold by eschewing the standard framework of fodder
             and indicators for&mdash;you guessed it&mdash;two definitions!
@@ -540,8 +583,8 @@ export default function GuidePage() {
         </section>
 
         {/* Additional Notes */}
-        <section id="notes" className="space-y-3">
-          <h3 className="group text-xl font-bold">Additional Notes<AnchorLink id="notes" /></h3>
+        <section id="notes" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="group mb-3.5 text-[28px] leading-tight font-semibold tracking-[-0.01em] sm:text-[32px]">Additional Notes<AnchorLink id="notes" /></h2>
           <p>
             You may have noticed the occasional word that wasn&rsquo;t highlighted and
             didn&rsquo;t seem to contribute to the solving recipe or the definition. These are
@@ -550,7 +593,7 @@ export default function GuidePage() {
             surface. Link words can&rsquo;t just be any old word, they must imply some sort of
             construction or equivalence:
           </p>
-          <ul className="list-disc ml-8 space-y-0.5">
+          <ul className="ml-8 list-disc space-y-0.5 !mt-3">
             <li>
               <strong>Equality:</strong> is, being, and, or, &rsquo;s (apostrophe s)
             </li>
@@ -585,14 +628,11 @@ export default function GuidePage() {
         </section>
 
         {/* Conclusion */}
-        <section id="conclusion" className="space-y-3">
-          <h3 className="text-xl font-bold">Conclusion</h3>
+        <section id="conclusion" className="scroll-mt-4 space-y-[18px]">
+          <h2 className="mb-3.5 text-[28px] leading-tight font-semibold sm:text-[32px]">Conclusion</h2>
           <p>
             You should now be ready to start solving cryptic crosswords! I recommend trying{" "}
-            <Link
-              href="/crossword/beginner-cryptic"
-              className="text-[var(--color-cranberry)] dark:text-[var(--color-gold)] underline"
-            >
+            <Link href="/crossword/beginner-cryptic">
               the beginner crossword on this site
             </Link>{" "}
             to help you get your feet wet. Once you solve that, check out
@@ -601,34 +641,40 @@ export default function GuidePage() {
         </section>
 
         {/* Credits */}
-        <section id="credits" className="pt-2 border-t border-[var(--color-dark)]/10 dark:border-[var(--color-snow)]/10">
-          <h3 className="text-xl font-bold mb-2">Credits</h3>
-          <ul className="space-y-1 text-sm text-[var(--color-dark)]/60 dark:text-[var(--color-snow)]/50">
+        <section id="credits" className="scroll-mt-4 border-t border-[var(--rule-soft)] pt-3">
+          <h2 className="sc mb-2 text-[18px] font-bold">Credits</h2>
+          <ul className="space-y-1 text-[16px] text-[var(--ink-soft)]">
             <li>
               Guide inspired by{" "}
-              <a href="https://chesterley.github.io/howto.htm" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-dark)] dark:hover:text-[var(--color-snow)]">
+              <a href="https://chesterley.github.io/howto.htm" target="_blank" rel="noopener noreferrer">
                 Tony Chesterly
               </a>
             </li>
             <li>
               Colors inspired by{" "}
-              <a href="https://www.minutecryptic.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-dark)] dark:hover:text-[var(--color-snow)]">
+              <a href="https://www.minutecryptic.com/" target="_blank" rel="noopener noreferrer">
                 Minute Cryptic
               </a>
             </li>
             <li>
               Other references:{" "}
-              <a href="https://crypticcrosswordbook.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-dark)] dark:hover:text-[var(--color-snow)]">
+              <a href="https://crypticcrosswordbook.com/" target="_blank" rel="noopener noreferrer">
                 Cryptic Crossword Book
               </a>
               ,{" "}
-              <a href="https://www.crosswordunclued.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[var(--color-dark)] dark:hover:text-[var(--color-snow)]">
+              <a href="https://www.crosswordunclued.com/" target="_blank" rel="noopener noreferrer">
                 Crossword Unclued
               </a>
             </li>
           </ul>
         </section>
-      </div>
-    </div>
+        </div>
+
+        <div className="mt-10 flex flex-col justify-between gap-2 border-t border-[var(--rule)] pt-3.5 text-[18px] sm:flex-row">
+          <a href="#intro">Back to the top</a>
+          <Link href="/crossword/beginner-cryptic">Try it: Beginner Cryptic</Link>
+        </div>
+      </article>
+    </>
   );
 }
