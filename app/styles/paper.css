@@ -2,6 +2,9 @@
 
 .site {
   min-height: 100dvh;
+  /* The paper slides off-screen when it's put down; clipping here stops that moving
+     paper from making the page scrollable for a moment (a flash of scrollbar). */
+  overflow: clip;
   background: var(--sky);
   color: var(--ink);
 }
