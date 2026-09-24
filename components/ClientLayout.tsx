@@ -8,7 +8,7 @@ import Footer from "./masthead/Footer";
 import { AmbienceControls, AmbienceScene } from "./Ambience";
 
 /** How long the paper takes to slide away or come back. Matches .paper-slide in paper.css. */
-const SLIDE_MS = 650;
+const SLIDE_MS = 420;
 
 type Phase = "up" | "lowering" | "down" | "raising";
 

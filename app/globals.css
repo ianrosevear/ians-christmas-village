@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "./styles/theme.css";
 @import "./styles/paper.css";
-@import "./styles/animations.css";
 @import "./styles/crossword.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -12,9 +11,6 @@
 
 html {
   background: #5d87c3;
-  /* Keep room for the scrollbar even when there's nothing to scroll (e.g. with the
-     paper put down), so the scene doesn't shift sideways. */
-  scrollbar-gutter: stable;
 }
 
 body {

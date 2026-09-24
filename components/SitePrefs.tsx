@@ -42,6 +42,9 @@ type SitePrefs = {
   setSnow: (snow: boolean) => void;
   paperDown: boolean;
   setPaperDown: (down: boolean) => void;
+  /** The Wind sound is playing: the snow blows sideways. */
+  windy: boolean;
+  setWindy: (windy: boolean) => void;
 };
 
 const SitePrefsContext = createContext<SitePrefs | null>(null);
@@ -51,9 +54,10 @@ export function SitePrefsProvider({ children }: { children: React.ReactNode }) {
   const [evening, setEvening] = useStoredBoolean("darkMode", false);
   const [snow, setSnow] = useStoredBoolean("snowEnabled", true);
   const [paperDown, setPaperDown] = useState(false);
+  const [windy, setWindy] = useState(false);
 
   return (
-    <SitePrefsContext.Provider value={{ evening, setEvening, snow, setSnow, paperDown, setPaperDown }}>
+    <SitePrefsContext.Provider value={{ evening, setEvening, snow, setSnow, paperDown, setPaperDown, windy, setWindy }}>
       {children}
     </SitePrefsContext.Provider>
   );

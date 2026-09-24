@@ -37,7 +37,7 @@ function SoundButton({ label, pressed, onClick }: { label: string; pressed: bool
 
 /** The paper folded down to a strip: ambient sounds, snow, and a way back. */
 export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
-  const { snow, setSnow } = useSitePrefs();
+  const { snow, setSnow, setWindy } = useSitePrefs();
   const [playing, setPlaying] = useState<Record<SoundKey, boolean>>({ fire: false, wind: false, rain: false });
   // Starts silent: sounds only play once the volume is turned up.
   const [volume, setVolume] = useState(0);
@@ -46,6 +46,7 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
   const toggle = (key: SoundKey, src: string) => {
     const on = !playing[key];
     setPlaying((p) => ({ ...p, [key]: on }));
+    if (key === "wind") setWindy(on);
     let el = audio.current[key];
     if (!el) {
       el = new Audio(src);
@@ -66,8 +67,9 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
     const sounds = audio.current;
     return () => {
       for (const el of Object.values(sounds)) el?.pause();
+      setWindy(false);
     };
-  }, []);
+  }, [setWindy]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
