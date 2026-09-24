@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef } from "react";
+import { useStored } from "@/lib/localStore";
 
 /** Ambient sounds, looped, at the Volume slider's level. */
 const SOUNDS = {
@@ -9,9 +10,12 @@ const SOUNDS = {
 } as const;
 
 export type SoundKey = keyof typeof SOUNDS;
+type Playing = Record<SoundKey, boolean>;
+
+const NONE: Playing = { fire: false, wind: false };
 
 type Sounds = {
-  playing: Record<SoundKey, boolean>;
+  playing: Playing;
   toggle: (key: SoundKey) => void;
   anyPlaying: boolean;
   stopAll: () => void;
@@ -24,55 +28,57 @@ type Sounds = {
 
 const SoundsContext = createContext<Sounds | null>(null);
 
-function useStoredKeepPlaying(): [boolean, (keep: boolean) => void] {
-  const value = useSyncExternalStore(
-    (callback) => {
-      window.addEventListener("storage", callback);
-      return () => window.removeEventListener("storage", callback);
-    },
-    () => {
-      try {
-        return localStorage.getItem("soundsKeepPlaying") === "true";
-      } catch {
-        return false;
-      }
-    },
-    () => false,
-  );
-  const set = useCallback((keep: boolean) => {
-    try {
-      localStorage.setItem("soundsKeepPlaying", String(keep));
-    } catch {
-      // Storage unavailable: the choice just won't stick.
-    }
-    window.dispatchEvent(new Event("storage"));
-  }, []);
-  return [value, set];
-}
-
-/** Owns the audio, so sounds can carry on while the paper is up and pages change. */
+/**
+ * Owns the audio, so sounds can carry on while the paper is up and pages change.
+ * Which sounds are on, the volume and "keep playing" are remembered between visits.
+ * Browsers only allow sound after the visitor has interacted with the page, so on a return
+ * visit remembered sounds start with the first click or key press.
+ */
 export function SoundsProvider({ children }: { children: React.ReactNode }) {
-  const [playing, setPlaying] = useState<Record<SoundKey, boolean>>({ fire: false, wind: false });
-  // Starts silent: nothing is heard until the volume is turned up.
-  const [volume, setVolume] = useState(0);
-  const [keepPlaying, setKeepPlaying] = useStoredKeepPlaying();
+  const [playing, setPlaying] = useStored<Playing>("soundsPlaying", NONE);
+  // Volume starts at zero, so nothing is ever heard until it's turned up.
+  const [volume, setVolume] = useStored<number>("soundsVolume", 0);
+  const [keepPlaying, setKeepPlaying] = useStored<boolean>("soundsKeepPlaying", true);
   const audio = useRef<Partial<Record<SoundKey, HTMLAudioElement>>>({});
 
   // Keep every sound at the right loudness as the controls change.
   useEffect(() => {
-    for (const key of Object.keys(SOUNDS) as SoundKey[]) {
-      const level = playing[key] ? volume : 0;
-      let el = audio.current[key];
-      if (!el && level === 0) continue;
-      if (!el) {
-        el = new Audio(SOUNDS[key]);
-        el.loop = true;
-        audio.current[key] = el;
+    let blocked = false;
+    const apply = () => {
+      for (const key of Object.keys(SOUNDS) as SoundKey[]) {
+        const level = playing[key] ? volume : 0;
+        let el = audio.current[key];
+        if (!el && level === 0) continue;
+        if (!el) {
+          el = new Audio(SOUNDS[key]);
+          el.loop = true;
+          audio.current[key] = el;
+        }
+        el.volume = Math.min(1, Math.max(0, level));
+        if (level > 0 && el.paused) {
+          el.play().catch(() => {
+            // Autoplay blocked until the visitor interacts: try again then.
+            if (!blocked) {
+              blocked = true;
+              window.addEventListener("pointerdown", retry, { once: true });
+              window.addEventListener("keydown", retry, { once: true });
+            }
+          });
+        }
+        if (level === 0 && !el.paused) el.pause();
       }
-      el.volume = Math.min(1, Math.max(0, level));
-      if (level > 0 && el.paused) el.play().catch(() => {});
-      if (level === 0 && !el.paused) el.pause();
-    }
+    };
+    const retry = () => {
+      blocked = false;
+      window.removeEventListener("pointerdown", retry);
+      window.removeEventListener("keydown", retry);
+      apply();
+    };
+    apply();
+    return () => {
+      window.removeEventListener("pointerdown", retry);
+      window.removeEventListener("keydown", retry);
+    };
   }, [playing, volume]);
 
   useEffect(() => {
@@ -82,8 +88,8 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const toggle = useCallback((key: SoundKey) => setPlaying((p) => ({ ...p, [key]: !p[key] })), []);
-  const stopAll = useCallback(() => setPlaying({ fire: false, wind: false }), []);
+  const toggle = useCallback((key: SoundKey) => setPlaying({ ...playing, [key]: !playing[key] }), [playing, setPlaying]);
+  const stopAll = useCallback(() => setPlaying(NONE), [setPlaying]);
   const anyPlaying = volume > 0 && Object.values(playing).some(Boolean);
 
   return (

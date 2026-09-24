@@ -1,4 +1,7 @@
 import { CrosswordState, Direction } from "./types";
+import { readStored, writeStored } from "@/lib/localStore";
+
+// Crossword progress is remembered through the same store as the site's settings.
 
 interface StoredProgress {
   entries: string[][];
@@ -17,23 +20,13 @@ export function loadProgress(
   height: number,
   width: number,
 ): CrosswordState {
-  try {
-    const raw = localStorage.getItem(storageKey(slug));
-    if (raw) {
-      const stored: StoredProgress = JSON.parse(raw);
-      if (
-        stored.entries.length === height &&
-        stored.entries[0]?.length === width
-      ) {
-        return {
-          entries: stored.entries,
-          cursor: stored.cursor,
-          direction: stored.direction,
-        };
-      }
-    }
-  } catch {
-    // Ignore corrupt data
+  const stored = readStored<StoredProgress | null>(storageKey(slug), null);
+  if (stored && stored.entries?.length === height && stored.entries[0]?.length === width) {
+    return {
+      entries: stored.entries,
+      cursor: stored.cursor,
+      direction: stored.direction,
+    };
   }
   return emptyState(height, width);
 }
@@ -45,24 +38,15 @@ export function saveProgress(slug: string, state: CrosswordState, solved = false
     direction: state.direction,
     solved,
   };
-  try {
-    localStorage.setItem(storageKey(slug), JSON.stringify(stored));
-  } catch {
-    // Storage unavailable: progress just won't be kept.
-  }
+  writeStored(storageKey(slug), stored);
 }
 
 /** For the archive: has this puzzle been started or solved in this browser? */
 export function readProgressStatus(slug: string): "solved" | "started" | null {
-  try {
-    const raw = localStorage.getItem(storageKey(slug));
-    if (!raw) return null;
-    const stored: StoredProgress = JSON.parse(raw);
-    if (stored.solved) return "solved";
-    return stored.entries.some((row) => row.some((letter) => letter !== "")) ? "started" : null;
-  } catch {
-    return null;
-  }
+  const stored = readStored<StoredProgress | null>(storageKey(slug), null);
+  if (!stored) return null;
+  if (stored.solved) return "solved";
+  return stored.entries?.some((row) => row.some((letter) => letter !== "")) ? "started" : null;
 }
 
 export function emptyState(height: number, width: number): CrosswordState {

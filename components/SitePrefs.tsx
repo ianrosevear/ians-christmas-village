@@ -1,39 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState, useSyncExternalStore } from "react";
-
-/** A value stored in localStorage as JSON, shared across components and tabs. */
-function useStored<T extends boolean | number>(key: string, defaultValue: T): [T, (next: T) => void] {
-  const value = useSyncExternalStore(
-    (callback) => {
-      window.addEventListener("storage", callback);
-      return () => window.removeEventListener("storage", callback);
-    },
-    () => {
-      try {
-        const saved = localStorage.getItem(key);
-        return saved !== null ? (JSON.parse(saved) as T) : defaultValue;
-      } catch {
-        return defaultValue;
-      }
-    },
-    () => defaultValue,
-  );
-
-  const set = useCallback(
-    (next: T) => {
-      try {
-        localStorage.setItem(key, JSON.stringify(next));
-      } catch {
-        // Storage unavailable (private mode etc.): the change just won't stick.
-      }
-      window.dispatchEvent(new Event("storage"));
-    },
-    [key],
-  );
-
-  return [value, set];
-}
+import { createContext, useContext, useState } from "react";
+import { useStored } from "@/lib/localStore";
 
 type SitePrefs = {
   evening: boolean;
@@ -47,7 +15,7 @@ type SitePrefs = {
   /** Draw the snow in front of the paper instead of behind it. */
   snowOverPaper: boolean;
   setSnowOverPaper: (over: boolean) => void;
-  /** Wind strength, 0–1. Blows the snow sideways; lasts for the visit. */
+  /** Wind strength, 0–1. Blows the snow sideways. */
   wind: number;
   setWind: (wind: number) => void;
   paperDown: boolean;
@@ -57,12 +25,15 @@ type SitePrefs = {
 const SitePrefsContext = createContext<SitePrefs | null>(null);
 
 export function SitePrefsProvider({ children }: { children: React.ReactNode }) {
-  // "darkMode" and "snowEnabled" are kept from the previous design so returning visitors keep their settings.
-  const [evening, setEvening] = useStored<boolean>("darkMode", false);
-  const [snow, setSnow] = useStored<boolean>("snowEnabled", true);
-  const [snowAmount, setSnowAmount] = useStored<number>("snowAmount", 0.5);
+  // Remembered between visits. "darkMode" and "snowEnabled" are the keys the old design
+  // used, kept so returning visitors keep their settings.
+  // First visit: the edition follows the system's light/dark setting, and snow starts off
+  // for anyone who has asked their system for reduced motion.
+  const [evening, setEvening] = useStored<boolean>("darkMode", () => window.matchMedia("(prefers-color-scheme: dark)").matches, false);
+  const [snow, setSnow] = useStored<boolean>("snowEnabled", () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches, true);
+  const [snowAmount, setSnowAmount] = useStored<number>("snowAmount", 0.25);
   const [snowOverPaper, setSnowOverPaper] = useStored<boolean>("snowOverPaper", false);
-  const [wind, setWind] = useState(0);
+  const [wind, setWind] = useStored<number>("wind", 0.25);
   const [paperDown, setPaperDown] = useState(false);
 
   return (

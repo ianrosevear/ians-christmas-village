@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSitePrefs } from "./SitePrefs";
 import { useSounds } from "./Sounds";
 
-function SoundButton({ label, pressed, onClick }: { label: string; pressed: boolean; onClick: () => void }) {
+function SoundButton({ label, color, pressed, onClick }: { label: string; color: string; pressed: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -12,7 +12,11 @@ function SoundButton({ label, pressed, onClick }: { label: string; pressed: bool
       onClick={onClick}
       className="group sc flex min-h-11 items-center justify-center gap-2.5 border border-[var(--rule-soft)] px-3.5 text-[18px] text-[var(--ink-soft)] aria-pressed:border-[var(--rule)] aria-pressed:text-[var(--ink)] sm:border-0 sm:px-2"
     >
-      <span className="size-[9px] shrink-0 rounded-full border-[1.5px] border-current group-aria-pressed:border-[var(--accent)] group-aria-pressed:bg-[var(--accent)]" />
+      {/* Outlined in the sound's colour; filled while it's playing */}
+      <span
+        className="size-[9px] shrink-0 rounded-full border-[1.5px]"
+        style={{ borderColor: color, backgroundColor: pressed ? color : "transparent" }}
+      />
       {label}
     </button>
   );
@@ -105,8 +109,8 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
           <div className="flex flex-col gap-x-6 gap-y-2 sm:flex-row sm:flex-wrap sm:items-center">
             <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Sounds</span>
             <div role="group" aria-label="Sounds" className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
-              <SoundButton label="Fire" pressed={playing.fire} onClick={() => toggle("fire")} />
-              <SoundButton label="Wind" pressed={playing.wind} onClick={() => toggle("wind")} />
+              <SoundButton label="Fire" color="#ff4500" pressed={playing.fire} onClick={() => toggle("fire")} />
+              <SoundButton label="Wind" color="#3b82f6" pressed={playing.wind} onClick={() => toggle("wind")} />
             </div>
             <Slider label="Volume" value={volume} onChange={setVolume} />
             <Pair label="Keep playing" a="On" b="Off" isA={keepPlaying} setA={setKeepPlaying} />
