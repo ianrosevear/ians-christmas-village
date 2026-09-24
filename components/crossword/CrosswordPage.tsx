@@ -267,16 +267,26 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
       <div className="mt-3 mb-3 flex items-center justify-between gap-6 md:mt-7 md:mb-5 md:items-end">
         <div className="min-w-0">
           <h1 className="text-[26px] leading-none font-semibold tracking-[-0.015em] md:text-[52px]">{info.title}</h1>
-          <p className="mt-2 hidden text-[17px] text-[var(--ink-soft)] md:block">
-            <span className="italic">by {puzzle.author || "Ian Rosevear"}</span> &middot; {info.kind} &middot; {puzzle.width} &times;{" "}
-            {puzzle.height} &middot; {info.level}
+          <div className="mt-2.5 hidden flex-wrap gap-x-6 gap-y-1 text-[17px] md:flex">
+            <span className="text-[var(--ink-soft)] italic">by {puzzle.author || "Ian Rosevear"}</span>
+            {(
+              [
+                ["Type", info.kind],
+                ["Size", `${puzzle.width}\u00a0×\u00a0${puzzle.height}`],
+                ["Level", info.level],
+              ] as const
+            ).map(([label, value]) => (
+              <span key={label} className="whitespace-nowrap">
+                <span className="sc mr-1.5 text-[var(--ink-soft)]">{label}</span>
+                {value}
+              </span>
+            ))}
             {info.type === "cryptic" || info.mixedCryptic ? (
-              <>
-                {" "}
-                &middot; New to cryptics? <Link href="/guide">Read the guide</Link>
-              </>
+              <span>
+                New to cryptics? <Link href="/guide">Read the guide</Link>
+              </span>
             ) : null}
-          </p>
+          </div>
         </div>
         <div className="hidden shrink-0 md:block">
           <Toolbar {...toolProps} />

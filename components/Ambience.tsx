@@ -36,10 +36,11 @@ function SoundButton({ label, pressed, onClick }: { label: string; pressed: bool
 }
 
 /** The paper folded down to a strip: ambient sounds, snow, and a way back. */
-export function AmbienceControls() {
-  const { snow, setSnow, setPaperDown } = useSitePrefs();
+export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
+  const { snow, setSnow } = useSitePrefs();
   const [playing, setPlaying] = useState<Record<SoundKey, boolean>>({ fire: false, wind: false, rain: false });
-  const [volume, setVolume] = useState(0.6);
+  // Starts silent: sounds only play once the volume is turned up.
+  const [volume, setVolume] = useState(0);
   const audio = useRef<Partial<Record<SoundKey, HTMLAudioElement>>>({});
 
   const toggle = (key: SoundKey, src: string) => {
@@ -70,18 +71,21 @@ export function AmbienceControls() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setPaperDown(false);
+      if (e.key === "Escape") onPickUp();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [setPaperDown]);
+  }, [onPickUp]);
 
   return (
     <div
       role="region"
       aria-label="Ambience"
-      className="paper fixed inset-x-0 bottom-0 z-20 mx-auto w-full sm:w-[min(1040px,calc(100%-48px))]"
+      className="paper rise-in fixed inset-x-0 bottom-0 z-20 mx-auto w-full sm:w-[min(1040px,calc(100%-48px))]"
     >
+      <button type="button" className="paper-tab paper-tab--on-strip sc" onClick={onPickUp}>
+        Pick the paper up
+      </button>
       <div className="ribbon !h-1.5" />
       <div className="flex flex-col gap-3 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))] sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-7 sm:py-2.5">
         <div className="hidden text-[22px] font-semibold tracking-[-0.01em] whitespace-nowrap lg:block">Ian&rsquo;s Christmas Village</div>
@@ -106,13 +110,6 @@ export function AmbienceControls() {
           />
         </label>
 
-        <button
-          type="button"
-          onClick={() => setPaperDown(false)}
-          className="sc min-h-12 bg-[var(--ink)] px-5 text-[18px] text-[var(--paper)] sm:min-h-11 sm:bg-transparent sm:px-0 sm:text-[var(--ink)] sm:underline sm:underline-offset-4"
-        >
-          Pick the paper up
-        </button>
       </div>
     </div>
   );

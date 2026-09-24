@@ -15,6 +15,8 @@ export type PuzzleInfo = {
   published: string;
   /** Optional line on the archive page. Only when there's something worth saying. */
   note?: string;
+  /** Marked "New" on the front page and archive. */
+  isNew?: boolean;
   /** Standard crossword with a few cryptic clues mixed in. */
   mixedCryptic?: boolean;
 };
@@ -57,11 +59,12 @@ const puzzles: PuzzleInfo[] = [
     file: "Yule Jewel.ipuz",
     description: "A regular crossword with a few cryptic clues mixed in",
     type: "standard",
-    kind: "Standard, some cryptic clues",
+    kind: "Standard, some cryptic",
     level: "Moderate",
     published: "2026-08",
     note: "A regular crossword with a few cryptic clues mixed in.",
     mixedCryptic: true,
+    isNew: true,
   },
 ];
 

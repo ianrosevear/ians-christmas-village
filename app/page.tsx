@@ -1,6 +1,7 @@
 import Link from "next/link";
 import FrontMasthead from "@/components/masthead/FrontMasthead";
 import GridThumbnail from "@/components/GridThumbnail";
+import { NewTag, PuzzleDetails } from "@/components/PuzzleDetails";
 import { getPuzzlesByDate } from "@/lib/crossword/puzzles";
 import { loadGridShape } from "@/lib/crossword/thumbnail";
 import { posts } from "@/lib/writing";
@@ -33,10 +34,11 @@ export default function FrontPage() {
                     <GridThumbnail shape={p.shape} size={160} />
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-[24px] leading-tight font-semibold sm:text-[28px]">{p.title}</span>
-                    <span className="mt-1 block text-[15px] text-[var(--ink-soft)] sm:text-[16px]">
-                      {p.kind} &middot; {p.shape.width} &times; {p.shape.height} &middot; {p.level}
+                    <span className="mb-1 block text-[24px] leading-tight font-semibold sm:text-[28px]">
+                      {p.title}
+                      {p.isNew && <NewTag />}
                     </span>
+                    <PuzzleDetails kind={p.kind} width={p.shape.width} height={p.shape.height} level={p.level} />
                   </span>
                 </Link>
               </li>

@@ -12,6 +12,9 @@
 
 html {
   background: #5d87c3;
+  /* Keep room for the scrollbar even when there's nothing to scroll (e.g. with the
+     paper put down), so the scene doesn't shift sideways. */
+  scrollbar-gutter: stable;
 }
 
 body {

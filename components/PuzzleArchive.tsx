@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import GridThumbnail from "./GridThumbnail";
+import { NewTag, PuzzleDetails } from "./PuzzleDetails";
 import type { PuzzleInfo, PuzzleType } from "@/lib/crossword/puzzles";
 import type { GridShape } from "@/lib/crossword/thumbnail";
 import { readProgressStatus } from "@/lib/crossword/storage";
@@ -59,10 +60,11 @@ export default function PuzzleArchive({ puzzles, children }: { puzzles: ArchiveP
                   </span>
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[24px] leading-tight font-semibold sm:text-[32px]">{p.title}</span>
-                  <span className="mt-1.5 block text-[15px] text-[var(--ink-soft)] sm:text-[17px]">
-                    {p.kind} &middot; {p.shape.width} &times; {p.shape.height} &middot; {p.level} &middot; {p.date}
+                  <span className="mb-1.5 block text-[24px] leading-tight font-semibold sm:text-[32px]">
+                    {p.title}
+                    {p.isNew && <NewTag />}
                   </span>
+                  <PuzzleDetails kind={p.kind} width={p.shape.width} height={p.shape.height} level={p.level} published={p.date} />
                   {p.note && <span className="mt-2 block text-[17px] text-[var(--ink-body)] italic sm:text-[18px]">{p.note}</span>}
                   {s && (
                     <span className={`sc mt-1 block text-[16px] sm:hidden ${s === "solved" ? "text-[var(--success)]" : "text-[var(--accent)]"}`}>
