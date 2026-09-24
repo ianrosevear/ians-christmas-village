@@ -4,15 +4,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CrosswordPuzzle, CrosswordState, ClueDef, Direction } from "@/lib/crossword/types";
 import { getActiveClue } from "@/lib/crossword/navigation";
 import { getReferencedClues } from "@/lib/crossword/clueReferences";
-import { SmallToggle, ANNOTATION_COLORS } from "@/lib/crossword/annotations";
+import { SmallToggle, ANNOTATION_CLASSES } from "@/lib/crossword/annotations";
 
 type AnnotationMap = Record<string, (show: boolean) => React.ReactNode>;
 
 const LEGEND_ITEMS = [
-  { key: "definition", label: "Definition", className: ANNOTATION_COLORS.def, desc: "The straightforward definition of the answer. Almost always at the front or end of the clue." },
-  { key: "indicator", label: "Indicator", className: ANNOTATION_COLORS.ind, desc: "A word or phrase that directs you to modify adjacent fodder in some way." },
-  { key: "fodder", label: "Fodder", className: ANNOTATION_COLORS.fod, desc: "Words that are modified by indicators. If the clue is a recipe, fodder are ingredients." },
-  { key: "charade", label: "Charade", className: ANNOTATION_COLORS.cha, desc: "Words substituted with a synonym or abbreviation to build the answer." },
+  { key: "definition", label: "Definition", className: ANNOTATION_CLASSES.def, desc: "The straightforward definition of the answer. Almost always at the front or end of the clue." },
+  { key: "indicator", label: "Indicator", className: ANNOTATION_CLASSES.ind, desc: "A word or phrase that directs you to modify adjacent fodder in some way." },
+  { key: "fodder", label: "Fodder", className: ANNOTATION_CLASSES.fod, desc: "Words that are modified by indicators. If the clue is a recipe, fodder are ingredients." },
+  { key: "charade", label: "Charade", className: ANNOTATION_CLASSES.cha, desc: "Words substituted with a synonym or abbreviation to build the answer." },
 ] as const;
 
 type LegendKey = typeof LEGEND_ITEMS[number]["key"];

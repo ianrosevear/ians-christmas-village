@@ -1,7 +1,7 @@
 "use client";
 
 import { countdownLabel, useEditionDate } from "@/lib/useEditionDate";
-import { EditionToggle, SnowToggle } from "./EditionToggles";
+import { CompactToggles, EditionToggle, SnowToggle } from "./EditionToggles";
 import Snowflake from "./Snowflake";
 
 /** The full masthead, used on the front page only. */
@@ -10,12 +10,15 @@ export default function FrontMasthead() {
 
   return (
     <header>
-      <div className="flex flex-wrap items-center justify-between gap-x-4 text-[16px]">
+      <div className="sm:hidden">
+        <CompactToggles />
+      </div>
+      <div className="hidden items-center justify-between gap-x-4 text-[16px] sm:flex">
         <EditionToggle />
         <SnowToggle />
       </div>
 
-      <h1 className="mt-1 mb-4 text-center text-[44px] leading-none font-semibold tracking-[-0.015em] sm:text-[72px] lg:text-[92px]">
+      <h1 className="mt-1 mb-4 text-center text-[44px] leading-none font-semibold tracking-[-0.015em] sm:text-[64px] lg:text-[82px]">
         Ian&rsquo;s Christmas Village
       </h1>
 

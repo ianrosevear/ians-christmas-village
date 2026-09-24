@@ -20,6 +20,15 @@
   image-rendering: pixelated;
 }
 
+/* On phones only a strip of the scene shows above the paper: frame the cabin in it. */
+@media (max-width: 639px) {
+  .scene {
+    background-size: auto 230px;
+    background-position: 14% -58px;
+    background-repeat: repeat-x;
+  }
+}
+
 .paper {
   background-color: var(--paper);
   background-image: var(--paper-grain);

@@ -5,6 +5,5 @@ export type Favorite = {
   note?: string;
 };
 
-export const favorites: Favorite[] = [
-  { category: "In Progress", name: "Coming soon" }
-];
+// Empty for now; the page and front-page column say "Coming soon." until something is added.
+export const favorites: Favorite[] = [];

@@ -1,65 +1,96 @@
 import Link from "next/link";
+import FrontMasthead from "@/components/masthead/FrontMasthead";
+import GridThumbnail from "@/components/GridThumbnail";
+import { getPuzzlesByDate } from "@/lib/crossword/puzzles";
+import { loadGridShape } from "@/lib/crossword/thumbnail";
+import { posts } from "@/lib/writing";
+import { favorites } from "@/lib/favorites";
+import { Def, Fod, Ind } from "@/lib/crossword/annotations";
 
-const items = [
-  {
-    href: "/crossword/beginner-cryptic",
-    title: "Crossword: Beginner Cryptic",
-    description: "A beginner-friendly cryptic crossword",
-  },
-  {
-    href: "/crossword/solid-start",
-    title: "Crossword: Solid Start",
-    description: "A cryptic crossword puzzle",
-  },
-  {
-    href: "/crossword/little-ice-age",
-    title: "Crossword: Little Ice Age",
-    description: "A more difficult cryptic crossword puzzle",
-  },
-  {
-    href: "/crossword/yule-jewel",
-    title: "Crossword: Yule Jewel",
-    description: "A regular crossword with a few cryptic clues mixed in",
-  },
-  {
-    href: "/guide",
-    title: "How to Solve Cryptic Crosswords",
-    description: "A beginner's guide",
-  },
-  {
-    href: "/favorites",
-    title: "Stuff I Like",
-    description: "I think you should check this stuff out",
-  },
-];
+export default function FrontPage() {
+  const puzzles = getPuzzlesByDate()
+    .slice(0, 4)
+    .map((p) => ({ ...p, shape: loadGridShape(p.file) }));
+  const lead = posts[0];
 
-export default function Home() {
   return (
-    <div className="font-raleway">
-      <h2 className="text-3xl italic text-[var(--color-dark)] dark:text-[var(--color-snow)] mb-1">
-        A collection of gifts from me to you
-      </h2>
+    <>
+      <FrontMasthead />
 
-      <hr className="border-[var(--color-dark)]/15 dark:border-[var(--color-snow)]/15 mb-6" />
+      <div className="mt-8 grid grid-cols-1 gap-y-10 md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+        <section className="md:pr-10">
+          <h2 className="section-head">Puzzles</h2>
 
-      <ul className="space-y-5">
-        {items.map(({ href, title, description }) => (
-          <li key={title}>
-            {href ? (
-              <Link href={href} className="text-lg text-[var(--color-cranberry)] dark:text-[var(--color-gold)] hover:underline">
-                {title}
+          {/* Phone: compact rows. Larger screens: two-by-two thumbnails. */}
+          <ul className="sm:grid sm:grid-cols-2 sm:gap-9">
+            {puzzles.map((p) => (
+              <li key={p.slug} className="border-b border-[var(--rule-soft)] sm:border-0">
+                <Link href={`/crossword/${p.slug}`} className="plain flex items-center gap-4 py-4 sm:flex-col sm:items-start sm:gap-3 sm:py-0">
+                  <span className="flex size-[84px] shrink-0 items-center justify-center sm:hidden">
+                    <GridThumbnail shape={p.shape} size={82} />
+                  </span>
+                  <span className="hidden h-[168px] items-end sm:flex">
+                    <GridThumbnail shape={p.shape} size={160} />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[24px] leading-tight font-semibold sm:text-[28px]">{p.title}</span>
+                    <span className="mt-1 block text-[15px] text-[var(--ink-soft)] sm:text-[16px]">
+                      {p.kind} &middot; {p.shape.width} &times; {p.shape.height} &middot; {p.level}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-[17px] sm:mt-7">
+            <Link href="/crossword">The full archive</Link>
+          </p>
+        </section>
+
+        <aside className="flex flex-col gap-10 md:border-l md:border-[var(--rule)] md:pl-10">
+          <section>
+            <h2 className="section-head">Writing</h2>
+            <h3 className="mb-2.5 text-[28px] leading-[1.1] font-semibold sm:text-[30px]">
+              <Link href={lead.href} className="plain">
+                {lead.title}
               </Link>
-            ) : (
-              <span className="text-lg text-[var(--color-dark)]/30 dark:text-[var(--color-snow)]/30">
-                {title}
-              </span>
-            )}
-            <p className="text-sm text-[var(--color-dark)]/45 dark:text-[var(--color-snow)]/40 mt-0.5 ml-4">
-              {description}
+            </h3>
+            <p className="mb-4 text-[18px] leading-normal">{lead.dek}</p>
+            <div className="bg-[var(--tint)] px-4 py-4 sm:px-[18px]">
+              <p className="text-[20px] leading-normal font-semibold">
+                <Def show>Christmas carol</Def> <Ind show>uniquely</Ind> <Fod show>lent insight</Fod> (6,5)
+              </p>
+              <p className="mt-2 text-[15px] leading-relaxed text-[var(--ink-soft)]">
+                <Def show>definition</Def> &middot; <Ind show>indicator</Ind> &middot; <Fod show>fodder</Fod>
+              </p>
+            </div>
+            <p className="mt-4 text-[17px]">
+              <Link href={lead.href}>Read the guide</Link>
             </p>
-          </li>
-        ))}
-      </ul>
-    </div>
+          </section>
+
+          <section>
+            <h2 className="section-head">Stuff I Like</h2>
+            {favorites.length === 0 ? (
+              <p className="text-[18px] text-[var(--ink-soft)] italic">Coming soon.</p>
+            ) : (
+              <>
+                <ul>
+                  {favorites.slice(0, 3).map((f) => (
+                    <li key={f.name} className="border-t border-[var(--rule-soft)] py-2 text-[18px] first:border-0">
+                      {f.name}
+                      {f.note && <span className="text-[var(--ink-soft)] italic"> &mdash; {f.note}</span>}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-[17px]">
+                  <Link href="/favorites">The whole list</Link>
+                </p>
+              </>
+            )}
+          </section>
+        </aside>
+      </div>
+    </>
   );
 }

@@ -10,6 +10,21 @@ function Choice({ label, pressed, onClick }: { label: string; pressed: boolean; 
   );
 }
 
+/** Single-button versions for narrow screens: tap to switch. */
+export function CompactToggles() {
+  const { evening, setEvening, snow, setSnow } = useSitePrefs();
+  return (
+    <div className="sc flex items-center justify-between text-[16px] text-[var(--ink-soft)]">
+      <button type="button" className="min-h-11" onClick={() => setEvening(!evening)} aria-label={`Edition: ${evening ? "evening" : "morning"}. Switch edition`}>
+        Edition: <span className="text-[var(--ink)] underline underline-offset-4">{evening ? "Evening" : "Morning"}</span>
+      </button>
+      <button type="button" className="min-h-11" onClick={() => setSnow(!snow)} aria-label={`Snow ${snow ? "on" : "off"}. Toggle snow`}>
+        Snow: <span className="text-[var(--ink)] underline underline-offset-4">{snow ? "On" : "Off"}</span>
+      </button>
+    </div>
+  );
+}
+
 export function EditionToggle() {
   const { evening, setEvening } = useSitePrefs();
   return (
