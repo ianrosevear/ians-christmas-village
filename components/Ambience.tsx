@@ -4,13 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useSitePrefs } from "./SitePrefs";
 
 /**
- * Ambient sounds. Drop looping audio files at these paths in /public and they start
- * working; until then a missing file just stays silent. Wind's loudness follows the
- * Wind slider, so the sound matches what the snow is doing.
+ * Ambient sounds, looped. Wind plays louder as the Wind slider goes up, but is still
+ * audible with the wind calm, so the toggle always does something.
  */
 const SOUNDS = {
-  fire: "/sounds/fire.mp3",
-  rain: "/sounds/rain.mp3",
+  fire: "/sounds/fireplace.mp3",
   wind: "/sounds/wind.mp3",
 } as const;
 
@@ -70,7 +68,7 @@ function Pair({ label, a, b, isA, setA }: { label: string; a: string; b: string;
 export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
   const prefs = useSitePrefs();
   const { snow, snowAmount, wind, setWind, evening, setEvening, snowOverPaper, setSnowOverPaper } = prefs;
-  const [playing, setPlaying] = useState({ fire: false, rain: false });
+  const [playing, setPlaying] = useState({ fire: false, wind: false });
   // Starts silent: nothing is heard until the volume is turned up.
   const [volume, setVolume] = useState(0);
   const audio = useRef<Partial<Record<SoundKey, HTMLAudioElement>>>({});
@@ -95,8 +93,7 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
   // Keep every sound at the right loudness as the controls change.
   useEffect(() => {
     if (playing.fire || audio.current.fire) setSound("fire", playing.fire ? volume : 0);
-    if (playing.rain || audio.current.rain) setSound("rain", playing.rain ? volume : 0);
-    if (wind > 0 || audio.current.wind) setSound("wind", volume * wind);
+    if (playing.wind || audio.current.wind) setSound("wind", playing.wind ? volume * (0.4 + 0.6 * wind) : 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, volume, wind]);
 
@@ -139,7 +136,7 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
             <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Sounds</span>
             <div role="group" aria-label="Sounds" className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
               <SoundButton label="Fire" pressed={playing.fire} onClick={() => setPlaying((p) => ({ ...p, fire: !p.fire }))} />
-              <SoundButton label="Rain" pressed={playing.rain} onClick={() => setPlaying((p) => ({ ...p, rain: !p.rain }))} />
+              <SoundButton label="Wind" pressed={playing.wind} onClick={() => setPlaying((p) => ({ ...p, wind: !p.wind }))} />
             </div>
             <Slider label="Volume" value={volume} onChange={setVolume} />
             <div className="sm:ml-auto">
