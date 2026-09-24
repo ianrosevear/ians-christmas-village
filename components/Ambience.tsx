@@ -142,6 +142,25 @@ export function AmbienceScene() {
     setDragged(true);
   };
 
+  // Touch pans natively; a mouse needs click-and-drag wired up by hand.
+  const drag = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    onUserPan();
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    const el = e.currentTarget;
+    drag.current = { x: e.clientX, y: e.clientY, left: el.scrollLeft, top: el.scrollTop };
+    el.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const d = drag.current;
+    if (!d) return;
+    e.currentTarget.scrollLeft = d.left - (e.clientX - d.x);
+    e.currentTarget.scrollTop = d.top - (e.clientY - d.y);
+  };
+  const endDrag = () => {
+    drag.current = null;
+  };
+
   useEffect(() => {
     const el = panRef.current;
     if (!el) return;
@@ -164,12 +183,15 @@ export function AmbienceScene() {
 
   return (
     <>
-      <div className="scene hidden sm:block" aria-hidden="true" />
+      <div className="scene ambience-static" aria-hidden="true" />
       <div
         ref={panRef}
-        className="no-scrollbar fixed inset-0 z-0 overflow-auto overscroll-contain bg-[var(--sky)] sm:hidden"
+        className="ambience-pan no-scrollbar fixed inset-0 z-0 cursor-grab overflow-auto overscroll-contain bg-[var(--sky)] select-none active:cursor-grabbing"
         onTouchStart={onUserPan}
-        onPointerDown={onUserPan}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
         onWheel={onUserPan}
         role="img"
         aria-label="The village: a cabin, pine trees and a snowman in the snow. Drag to look around."
@@ -187,7 +209,7 @@ export function AmbienceScene() {
       </div>
       <p
         aria-hidden="true"
-        className={`sc pointer-events-none fixed top-4 left-1/2 z-10 -translate-x-1/2 bg-[color-mix(in_srgb,var(--paper)_90%,transparent)] px-3 py-1.5 text-[15px] whitespace-nowrap text-[var(--ink)] transition-opacity duration-500 sm:hidden ${
+        className={`sc pointer-events-none fixed top-4 left-1/2 z-10 -translate-x-1/2 bg-[color-mix(in_srgb,var(--paper)_90%,transparent)] px-3 py-1.5 text-[15px] whitespace-nowrap text-[var(--ink)] transition-opacity duration-500 ambience-pan ${
           dragged ? "opacity-0" : "opacity-100"
         }`}
       >

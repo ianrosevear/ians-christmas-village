@@ -215,3 +215,18 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Paper down: on tall or narrow windows (phones, or a desktop window made phone-shaped)
+   the art is shown larger than the window and can be dragged around; otherwise it just
+   fills the window. */
+.ambience-pan {
+  display: none;
+}
+@media (max-aspect-ratio: 5/4) {
+  .ambience-pan {
+    display: block;
+  }
+  .ambience-static {
+    display: none;
+  }
+}
