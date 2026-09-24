@@ -45,7 +45,7 @@ export default function FrontPage() {
             ))}
           </ul>
           <p className="mt-4 text-[17px] sm:mt-7">
-            <Link href="/crossword">The full archive</Link>
+            <Link href="/crossword">Full archive</Link>
           </p>
         </section>
 
