@@ -4,7 +4,8 @@ import { useEffect, useRef } from "react";
 import { useSitePrefs } from "./SitePrefs";
 
 const CHARS = ["❄", "❅", "❆", "•", "•", "✦"];
-const COUNT = 60;
+/** Flakes at full snow; the snow amount draws a share of them. */
+const MAX_FLAKES = 130;
 
 type Flake = {
   x: number;
@@ -25,12 +26,14 @@ type Flake = {
  */
 export default function Snowflakes() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { windy } = useSitePrefs();
-  const windTarget = useRef(0);
+  const { wind: windSetting, snowAmount, snowOverPaper } = useSitePrefs();
+  const windTarget = useRef(windSetting);
+  const amount = useRef(snowAmount);
 
   useEffect(() => {
-    windTarget.current = windy ? 1 : 0;
-  }, [windy]);
+    windTarget.current = windSetting;
+    amount.current = snowAmount;
+  }, [windSetting, snowAmount]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -63,7 +66,7 @@ export default function Snowflakes() {
       rotation: Math.random() * Math.PI * 2,
       spin: (Math.random() - 0.5) * 0.02,
     });
-    const flakes = Array.from({ length: COUNT }, () => makeFlake(Math.random() * height));
+    const flakes = Array.from({ length: MAX_FLAKES }, () => makeFlake(Math.random() * height));
 
     let wind = windTarget.current;
     let frame = 0;
@@ -80,7 +83,9 @@ export default function Snowflakes() {
       ctx.textBaseline = "middle";
 
       const gust = 0.6 + 0.4 * Math.sin(now * 0.0006) + 0.25 * Math.sin(now * 0.0017);
-      for (const f of flakes) {
+      const shown = Math.round(MAX_FLAKES * Math.min(1, Math.max(0.05, amount.current)));
+      for (let i = 0; i < shown; i++) {
+        const f = flakes[i];
         const t = now * 0.001;
         // Gentle side-to-side sway, plus wind: a gusting push and a swirl that curls flakes around.
         const swirl = Math.sin(f.y * 0.012 + t * 1.3 + f.phase) * 1.4 * wind;
@@ -110,5 +115,11 @@ export default function Snowflakes() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0 z-[5] h-dvh w-screen" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className={`pointer-events-none fixed top-0 left-0 h-dvh w-screen ${snowOverPaper ? "z-[25]" : "z-[5]"}`}
+    />
+  );
 }

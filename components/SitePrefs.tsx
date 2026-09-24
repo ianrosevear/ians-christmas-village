@@ -2,8 +2,8 @@
 
 import { createContext, useCallback, useContext, useState, useSyncExternalStore } from "react";
 
-/** A boolean stored in localStorage, shared across components and tabs. */
-function useStoredBoolean(key: string, defaultValue: boolean): [boolean, (next: boolean) => void] {
+/** A value stored in localStorage as JSON, shared across components and tabs. */
+function useStored<T extends boolean | number>(key: string, defaultValue: T): [T, (next: T) => void] {
   const value = useSyncExternalStore(
     (callback) => {
       window.addEventListener("storage", callback);
@@ -12,7 +12,7 @@ function useStoredBoolean(key: string, defaultValue: boolean): [boolean, (next: 
     () => {
       try {
         const saved = localStorage.getItem(key);
-        return saved !== null ? (JSON.parse(saved) as boolean) : defaultValue;
+        return saved !== null ? (JSON.parse(saved) as T) : defaultValue;
       } catch {
         return defaultValue;
       }
@@ -21,7 +21,7 @@ function useStoredBoolean(key: string, defaultValue: boolean): [boolean, (next: 
   );
 
   const set = useCallback(
-    (next: boolean) => {
+    (next: T) => {
       try {
         localStorage.setItem(key, JSON.stringify(next));
       } catch {
@@ -38,26 +38,50 @@ function useStoredBoolean(key: string, defaultValue: boolean): [boolean, (next: 
 type SitePrefs = {
   evening: boolean;
   setEvening: (evening: boolean) => void;
+  /** Snow on or off (the masthead toggle). */
   snow: boolean;
   setSnow: (snow: boolean) => void;
+  /** How heavy the snow is when it's on, 0.1–1. */
+  snowAmount: number;
+  setSnowAmount: (amount: number) => void;
+  /** Draw the snow in front of the paper instead of behind it. */
+  snowOverPaper: boolean;
+  setSnowOverPaper: (over: boolean) => void;
+  /** Wind strength, 0–1. Blows the snow sideways; lasts for the visit. */
+  wind: number;
+  setWind: (wind: number) => void;
   paperDown: boolean;
   setPaperDown: (down: boolean) => void;
-  /** The Wind sound is playing: the snow blows sideways. */
-  windy: boolean;
-  setWindy: (windy: boolean) => void;
 };
 
 const SitePrefsContext = createContext<SitePrefs | null>(null);
 
 export function SitePrefsProvider({ children }: { children: React.ReactNode }) {
-  // Keys kept from the previous design so returning visitors keep their settings.
-  const [evening, setEvening] = useStoredBoolean("darkMode", false);
-  const [snow, setSnow] = useStoredBoolean("snowEnabled", true);
+  // "darkMode" and "snowEnabled" are kept from the previous design so returning visitors keep their settings.
+  const [evening, setEvening] = useStored<boolean>("darkMode", false);
+  const [snow, setSnow] = useStored<boolean>("snowEnabled", true);
+  const [snowAmount, setSnowAmount] = useStored<number>("snowAmount", 0.5);
+  const [snowOverPaper, setSnowOverPaper] = useStored<boolean>("snowOverPaper", false);
+  const [wind, setWind] = useState(0);
   const [paperDown, setPaperDown] = useState(false);
-  const [windy, setWindy] = useState(false);
 
   return (
-    <SitePrefsContext.Provider value={{ evening, setEvening, snow, setSnow, paperDown, setPaperDown, windy, setWindy }}>
+    <SitePrefsContext.Provider
+      value={{
+        evening,
+        setEvening,
+        snow,
+        setSnow,
+        snowAmount,
+        setSnowAmount,
+        snowOverPaper,
+        setSnowOverPaper,
+        wind,
+        setWind,
+        paperDown,
+        setPaperDown,
+      }}
+    >
       {children}
     </SitePrefsContext.Provider>
   );

@@ -4,22 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { useSitePrefs } from "./SitePrefs";
 
 /**
- * Ambient sounds. Drop looping audio files at these paths in /public and the buttons
- * start working; until then a missing file just stays silent.
+ * Ambient sounds. Drop looping audio files at these paths in /public and they start
+ * working; until then a missing file just stays silent. Wind's loudness follows the
+ * Wind slider, so the sound matches what the snow is doing.
  */
-const SOUNDS = [
-  { key: "fire", label: "Fire", src: "/sounds/fire.mp3" },
-  { key: "wind", label: "Wind", src: "/sounds/wind.mp3" },
-  { key: "rain", label: "Rain", src: "/sounds/rain.mp3" },
-] as const;
+const SOUNDS = {
+  fire: "/sounds/fire.mp3",
+  rain: "/sounds/rain.mp3",
+  wind: "/sounds/wind.mp3",
+} as const;
 
-type SoundKey = (typeof SOUNDS)[number]["key"];
-
-function Dot() {
-  return (
-    <span className="size-[9px] shrink-0 rounded-full border-[1.5px] border-current group-aria-pressed:border-[var(--accent)] group-aria-pressed:bg-[var(--accent)]" />
-  );
-}
+type SoundKey = keyof typeof SOUNDS;
 
 function SoundButton({ label, pressed, onClick }: { label: string; pressed: boolean; onClick: () => void }) {
   return (
@@ -27,49 +22,91 @@ function SoundButton({ label, pressed, onClick }: { label: string; pressed: bool
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className="group sc flex min-h-12 items-center justify-center gap-2.5 border border-[var(--rule-soft)] px-3.5 text-[18px] text-[var(--ink-soft)] aria-pressed:border-[var(--rule)] aria-pressed:text-[var(--ink)] sm:min-h-11 sm:border-0"
+      className="group sc flex min-h-11 items-center justify-center gap-2.5 border border-[var(--rule-soft)] px-3.5 text-[18px] text-[var(--ink-soft)] aria-pressed:border-[var(--rule)] aria-pressed:text-[var(--ink)] sm:border-0 sm:px-2"
     >
-      <Dot />
+      <span className="size-[9px] shrink-0 rounded-full border-[1.5px] border-current group-aria-pressed:border-[var(--accent)] group-aria-pressed:bg-[var(--accent)]" />
       {label}
     </button>
   );
 }
 
-/** The paper folded down to a strip: ambient sounds, snow, and a way back. */
+function Slider({ label, value, onChange }: { label: string; value: number; onChange: (value: number) => void }) {
+  return (
+    <label className="sc flex min-h-10 items-center gap-3 text-[17px] text-[var(--ink-soft)]">
+      <span className="w-24 shrink-0 sm:w-auto">{label}</span>
+      <input
+        type="range"
+        min={0}
+        max={1}
+        step={0.05}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="grow accent-[var(--ink)] sm:w-28 sm:grow-0"
+      />
+    </label>
+  );
+}
+
+function Choice({ label, pressed, onClick }: { label: string; pressed: boolean; onClick: () => void }) {
+  return (
+    <button type="button" aria-pressed={pressed} onClick={onClick} className="text-toggle min-h-10 px-1">
+      {label}
+    </button>
+  );
+}
+
+function Pair({ label, a, b, isA, setA }: { label: string; a: string; b: string; isA: boolean; setA: (isA: boolean) => void }) {
+  return (
+    <div role="group" aria-label={label} className="sc flex items-center gap-1.5 text-[17px] text-[var(--ink-soft)]">
+      <span className="w-24 shrink-0 sm:w-auto">{label}:</span>
+      <Choice label={a} pressed={isA} onClick={() => setA(true)} />
+      <span aria-hidden="true">/</span>
+      <Choice label={b} pressed={!isA} onClick={() => setA(false)} />
+    </div>
+  );
+}
+
+/** The paper folded down to a strip: sounds, weather, edition, and a way back. */
 export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
-  const { snow, setSnow, setWindy } = useSitePrefs();
-  const [playing, setPlaying] = useState<Record<SoundKey, boolean>>({ fire: false, wind: false, rain: false });
-  // Starts silent: sounds only play once the volume is turned up.
+  const prefs = useSitePrefs();
+  const { snow, snowAmount, wind, setWind, evening, setEvening, snowOverPaper, setSnowOverPaper } = prefs;
+  const [playing, setPlaying] = useState({ fire: false, rain: false });
+  // Starts silent: nothing is heard until the volume is turned up.
   const [volume, setVolume] = useState(0);
   const audio = useRef<Partial<Record<SoundKey, HTMLAudioElement>>>({});
 
-  const toggle = (key: SoundKey, src: string) => {
-    const on = !playing[key];
-    setPlaying((p) => ({ ...p, [key]: on }));
-    if (key === "wind") setWindy(on);
+  const element = (key: SoundKey) => {
     let el = audio.current[key];
     if (!el) {
-      el = new Audio(src);
+      el = new Audio(SOUNDS[key]);
       el.loop = true;
       audio.current[key] = el;
     }
-    el.volume = volume;
-    if (on) el.play().catch(() => {});
-    else el.pause();
+    return el;
   };
 
-  useEffect(() => {
-    for (const el of Object.values(audio.current)) if (el) el.volume = volume;
-  }, [volume]);
+  const setSound = (key: SoundKey, level: number) => {
+    const el = element(key);
+    el.volume = Math.min(1, Math.max(0, level));
+    if (level > 0 && el.paused) el.play().catch(() => {});
+    if (level === 0 && !el.paused) el.pause();
+  };
 
-  // Stop everything when the paper is picked back up.
+  // Keep every sound at the right loudness as the controls change.
+  useEffect(() => {
+    if (playing.fire || audio.current.fire) setSound("fire", playing.fire ? volume : 0);
+    if (playing.rain || audio.current.rain) setSound("rain", playing.rain ? volume : 0);
+    if (wind > 0 || audio.current.wind) setSound("wind", volume * wind);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playing, volume, wind]);
+
+  // Sounds stop when the paper is picked back up (the snow and wind carry on).
   useEffect(() => {
     const sounds = audio.current;
     return () => {
       for (const el of Object.values(sounds)) el?.pause();
-      setWindy(false);
     };
-  }, [setWindy]);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -79,39 +116,40 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onPickUp]);
 
+  const setSnowLevel = (value: number) => {
+    prefs.setSnow(value > 0);
+    if (value > 0) prefs.setSnowAmount(value);
+  };
+
   return (
     <div
       role="region"
       aria-label="Ambience"
-      className="paper rise-in fixed inset-x-0 bottom-0 z-20 mx-auto w-full sm:w-[min(1040px,calc(100%-48px))]"
+      // Positioned against the full window width (vw), so it doesn't shift when the scrollbar goes away.
+      className="paper rise-in fixed inset-x-0 bottom-0 z-20 w-full sm:right-auto sm:left-[calc(50vw-min(520px,50vw-24px))] sm:w-[min(1040px,calc(100vw-48px))]"
     >
       <button type="button" className="paper-tab paper-tab--on-strip sc" onClick={onPickUp}>
         Pick the paper up
       </button>
       <div className="ribbon !h-1.5" />
-      <div className="flex flex-col gap-3 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))] sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-7 sm:py-2.5">
-        <div className="hidden text-[22px] font-semibold tracking-[-0.01em] whitespace-nowrap lg:block">Ian&rsquo;s Christmas Village</div>
-
-        <div role="group" aria-label="Sounds" className="grid grid-cols-4 gap-2 sm:flex sm:items-center sm:gap-0">
-          {SOUNDS.map((s) => (
-            <SoundButton key={s.key} label={s.label} pressed={playing[s.key]} onClick={() => toggle(s.key, s.src)} />
-          ))}
-          <SoundButton label="Snow" pressed={snow} onClick={() => setSnow(!snow)} />
+      <div className="flex flex-col gap-x-8 gap-y-1 px-4 pt-3 pb-[max(20px,env(safe-area-inset-bottom))] sm:px-7 sm:pt-2.5 sm:pb-3">
+        <div className="flex flex-col gap-x-8 gap-y-2 sm:flex-row sm:flex-wrap sm:items-center">
+          <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Sounds</span>
+          <div role="group" aria-label="Sounds" className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
+            <SoundButton label="Fire" pressed={playing.fire} onClick={() => setPlaying((p) => ({ ...p, fire: !p.fire }))} />
+            <SoundButton label="Rain" pressed={playing.rain} onClick={() => setPlaying((p) => ({ ...p, rain: !p.rain }))} />
+          </div>
+          <Slider label="Volume" value={volume} onChange={setVolume} />
+          <div className="sm:ml-auto">
+            <Pair label="Edition" a="Morning" b="Evening" isA={!evening} setA={(morning) => setEvening(!morning)} />
+          </div>
         </div>
-
-        <label className="sc flex min-h-10 items-center gap-3 text-[17px] text-[var(--ink-soft)] sm:border-l sm:border-[var(--rule-soft)] sm:pl-4">
-          Volume
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.05}
-            value={volume}
-            onChange={(e) => setVolume(Number(e.target.value))}
-            className="grow accent-[var(--ink)] sm:w-28 sm:grow-0"
-          />
-        </label>
-
+        <div className="flex flex-col gap-x-8 gap-y-1 border-t border-[var(--rule-soft)] pt-1 sm:flex-row sm:flex-wrap sm:items-center">
+          <span className="sc hidden w-[88px] text-[15px] font-bold sm:block">Scene</span>
+          <Slider label="Snow" value={snow ? snowAmount : 0} onChange={setSnowLevel} />
+          <Slider label="Wind" value={wind} onChange={setWind} />
+          <Pair label="Snow falls" a="Behind" b="In front" isA={!snowOverPaper} setA={(behind) => setSnowOverPaper(!behind)} />
+        </div>
       </div>
     </div>
   );

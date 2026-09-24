@@ -22,7 +22,7 @@
   --rule-soft: rgba(28, 26, 20, 0.22);
   --accent: #9b1b30;
   --accent-hover: #6e1322;
-  /* The "New" tag: cranberry in both editions */
+  /* The "New" tag */
   --new: #9b1b30;
   --tint: rgba(120, 100, 60, 0.09);
   --tint-strong: #ebe4d8;
@@ -75,7 +75,7 @@
   --rule-soft: rgba(236, 229, 216, 0.22);
   --accent: #d4a843;
   --accent-hover: #e8c46a;
-  --new: #f07384;
+  --new: #d4a843;
   --tint: rgba(236, 229, 216, 0.06);
   --tint-strong: #2a2720;
   --tab: #34302a;
