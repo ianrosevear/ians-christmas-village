@@ -8,7 +8,7 @@ export type PuzzleInfo = {
   description: string;
   /** Filter group on the archive page. */
   type: PuzzleType;
-  /** Shown in the puzzle's detail line, e.g. "Cryptic, barred grid". */
+  /** Shown in the puzzle's detail line, e.g. "Cryptic". */
   kind: string;
   level: "Gentle" | "Moderate" | "Tough";
   /** Month published, "YYYY-MM". */
@@ -28,7 +28,7 @@ const puzzles: PuzzleInfo[] = [
     file: "Solid Start.ipuz",
     description: "A cryptic crossword puzzle",
     type: "cryptic",
-    kind: "Cryptic, barred grid",
+    kind: "Cryptic",
     level: "Moderate",
     published: "2026-03",
   },
