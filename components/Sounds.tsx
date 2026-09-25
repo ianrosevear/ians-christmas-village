@@ -2,6 +2,12 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
+/** How loud to play at a Volume slider position (0–1). Hearing is logarithmic, so the slider
+    follows a curve to keep its low end quiet, and it tops out at 70% of full volume. */
+function loudness(slider: number) {
+  return 0.7 * slider * slider;
+}
+
 /** Ambient sounds, looped, at the Volume slider's level. */
 const SOUNDS = {
   fire: "/sounds/fireplace.mp3",
@@ -44,7 +50,7 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
     let blocked = false;
     const apply = () => {
       for (const key of Object.keys(SOUNDS) as SoundKey[]) {
-        const level = playing[key] ? volume : 0;
+        const level = playing[key] ? loudness(volume) : 0;
         let el = audio.current[key];
         if (!el && level === 0) continue;
         if (!el) {
