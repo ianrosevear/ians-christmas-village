@@ -48,13 +48,13 @@ function AnchorLink({ id }: { id: string }) {
 
 function Toggle({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" aria-pressed={pressed} onClick={onClick} className="text-toggle sc mr-5 inline-flex min-h-11 items-center gap-2 text-[16px]">
+    <button type="button" aria-pressed={pressed} onClick={onClick} className="text-toggle sc inline-flex min-h-11 items-center gap-2 text-[16px]">
       {children}
     </button>
   );
 }
 
-/** An example clue with its wordplay colours and working, each switched on separately. */
+/** An example clue with its wordplay colours and diagram, each switched on separately. */
 function Clue({
   children,
   length,
@@ -75,13 +75,13 @@ function Clue({
         {children(showColors)} ({length})
       </p>
       {showDiagram && <p className="mt-2 text-[16px] tracking-[0.02em] text-[var(--ink-body)] sm:text-[17px]">{diagram}</p>}
-      <div className="mt-1">
+      <div className="mt-1 flex flex-wrap items-center gap-x-5">
         <Toggle pressed={showColors} onClick={() => setShowColors(!showColors)}>
           <WordplayGlyph on={showColors} size={16} />
           Wordplay
         </Toggle>
         <Toggle pressed={showDiagram} onClick={() => setShowDiagram(!showDiagram)}>
-          Working
+          Diagram
         </Toggle>
       </div>
     </div>
