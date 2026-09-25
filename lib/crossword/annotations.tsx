@@ -33,15 +33,20 @@ export const WORDPLAY_KEY = [
   { key: "cha", label: "Charade", desc: "Words substituted with a synonym or abbreviation to build the answer." },
 ] as const;
 
-/** Four stacked bars: the wordplay key in miniature. Coloured when on, grey when off. */
+/** A highlighter over its stroke: the stroke shows the four wordplay colours when on, grey when off. */
 export function WordplayGlyph({ on, size = 18 }: { on: boolean; size?: number }) {
   const fills = on
     ? ["var(--wp-def)", "var(--wp-ind)", "var(--wp-fod)", "var(--wp-cha)"]
     : ["var(--wp-off)", "var(--wp-off)", "var(--wp-off)", "var(--wp-off)"];
   return (
-    <svg width={size} height={(size * 16) / 18} viewBox="0 0 18 16" aria-hidden="true" className="shrink-0">
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden="true" className="shrink-0">
+      {/* The pen, leaning left, its chisel tip resting on the stroke */}
+      <g transform="translate(0.5 3.9) rotate(40 10 7.5)" className={on ? "text-[var(--ink)]" : "text-[var(--ink-soft)]"}>
+        <rect x="7.5" y="0" width="5" height="8.5" rx="1" fill="none" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M7.9 9.5h4.2l-1.1 3.3H9z" fill="currentColor" />
+      </g>
       {fills.map((fill, i) => (
-        <rect key={i} x="1" y={0.5 + i * 4.2} width="16" height="2.8" rx="1.3" style={{ fill }} />
+        <rect key={i} x={1 + i * 4.5} y="16" width="4.5" height="3" style={{ fill }} />
       ))}
     </svg>
   );
