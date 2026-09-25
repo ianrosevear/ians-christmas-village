@@ -31,10 +31,6 @@ export default function Footer() {
       )}
       <div className="flex flex-col gap-1 pt-2 sm:flex-row sm:justify-between">
         <span>Made by Ian Rosevear</span>
-        {/* Freepik attribution, required by the favicon's license */}
-        <a href="http://www.freepik.com" target="_blank" rel="noopener noreferrer" className="!text-[var(--ink-soft)]">
-          Favicon by Freepik
-        </a>
       </div>
     </footer>
   );
