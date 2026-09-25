@@ -55,9 +55,9 @@ export function Toolbar({ onCheck, onReveal, onClear }: ToolbarProps) {
   return (
     <div className="flex items-center gap-7 text-[17px]">
       <ScopeMenu label="Check" onPick={onCheck} puzzleLabel="Puzzle" />
-      <ScopeMenu label="Reveal" onPick={onReveal} puzzleLabel="Puzzle…" />
+      <ScopeMenu label="Reveal" onPick={onReveal} puzzleLabel="Puzzle" />
       <button type="button" className="sc min-h-11 text-[var(--ink-soft)] hover:text-[var(--ink)]" onClick={onClear}>
-        Clear…
+        Clear
       </button>
     </div>
   );
@@ -93,7 +93,7 @@ export function ToolsMenu({ onCheck, onReveal, onClear, showAll }: ToolbarProps)
             <MenuItem key={scope}>
               <button type="button" className={itemClass} onClick={() => onReveal(scope)}>
                 Reveal {label}
-                {scope === "puzzle" ? "…" : ""}
+                {scope === "puzzle" ? "..." : ""}
               </button>
             </MenuItem>
           ))}
@@ -108,7 +108,7 @@ export function ToolsMenu({ onCheck, onReveal, onClear, showAll }: ToolbarProps)
         )}
         <MenuItem>
           <button type="button" className={itemClass} onClick={onClear}>
-            Clear puzzle…
+            Clear puzzle
           </button>
         </MenuItem>
       </MenuItems>
