@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { useSitePrefs } from "./SitePrefs";
 
-const CHARS = ["❄", "❅", "❆", "•", "•", "✦"];
+// U+FE0E asks for the plain text glyph: phones otherwise draw ❄ as a blue emoji.
+const CHARS = ["❄︎", "❅", "❆", "•", "•", "✦"];
+/** The Wind slider at full goes past a stiff breeze into a blizzard. */
+const WIND_MAX = 1.5;
 /** Flakes at full snow; the snow amount draws a share of them. */
 const MAX_FLAKES = 520;
 
@@ -90,15 +93,27 @@ export default function Snowflakes() {
         c.font = `${size}px serif`;
         c.textAlign = "center";
         c.textBaseline = "middle";
-        c.fillStyle = "#fff";
-        if (shadow) {
-          c.shadowColor = "rgba(30, 40, 60, 0.9)";
-          c.shadowBlur = 2.5;
-          c.shadowOffsetY = 0.5;
-        }
         c.translate(box / 2, box / 2);
         c.rotate((step / STEPS) * symmetry(char));
         c.fillText(char, 0, 0);
+        // Paint over the glyph in white, in case the font drew it in colour anyway (emoji).
+        c.setTransform(1, 0, 0, 1, 0, 0);
+        c.globalCompositeOperation = "source-in";
+        c.fillStyle = "#fff";
+        c.fillRect(0, 0, img.width, img.height);
+        if (shadow) {
+          // Redraw the white flake over a copy of itself with a shadow, a little way below:
+          // the flake floats just above the paper.
+          const flake = document.createElement("canvas");
+          flake.width = flake.height = img.width;
+          flake.getContext("2d")!.drawImage(img, 0, 0);
+          c.globalCompositeOperation = "source-over";
+          c.clearRect(0, 0, img.width, img.height);
+          c.shadowColor = "rgba(30, 40, 60, 0.75)";
+          c.shadowBlur = 3 * scale;
+          c.shadowOffsetY = 1.25 * scale;
+          c.drawImage(flake, 0, 0);
+        }
         sprites.set(key, img);
       }
       return img;
@@ -111,14 +126,14 @@ export default function Snowflakes() {
     const onPaper = (x: number, y: number) =>
       paperRects.some((r) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
 
-    let wind = windTarget.current;
+    let wind = windTarget.current * WIND_MAX;
     let frame = 0;
     let last = performance.now();
 
     const tick = (now: number) => {
       const dt = Math.min((now - last) / 16.7, 3); // in 60fps frames
       last = now;
-      wind += (windTarget.current - wind) * 0.02 * dt; // ease towards the target
+      wind += (windTarget.current * WIND_MAX - wind) * 0.02 * dt; // ease towards the target
 
       const dpr = canvas.width / width;
       ctx.setTransform(1, 0, 0, 1, 0, 0);

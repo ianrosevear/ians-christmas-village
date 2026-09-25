@@ -6,7 +6,7 @@ import { SitePrefsProvider, useSitePrefs } from "./SitePrefs";
 import Snowflakes from "./Snowflakes";
 import Footer from "./masthead/Footer";
 import { AmbienceControls, AmbienceScene } from "./Ambience";
-import { SoundsProvider, useSounds } from "./Sounds";
+import { SoundsProvider } from "./Sounds";
 
 /** How long the paper takes to slide away or come back. Matches .paper-slide in paper.css. */
 function slideMs() {
@@ -21,7 +21,6 @@ function prefersReducedMotion() {
 
 function Shell({ children }: { children: React.ReactNode }) {
   const { evening, snow, paperDown, setPaperDown } = useSitePrefs();
-  const { keepPlaying, stopAll } = useSounds();
   const pathname = usePathname();
   const wide = pathname.startsWith("/crossword/");
 
@@ -48,7 +47,6 @@ function Shell({ children }: { children: React.ReactNode }) {
       }
     } else if (phaseRef.current !== "up") {
       window.scrollTo({ top: 0 });
-      if (!keepPlaying) stopAll();
       if (reduced) {
         setPhase("up");
         setFullScene(false);

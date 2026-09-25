@@ -26,9 +26,6 @@ type Sounds = {
   stopAll: () => void;
   volume: number;
   setVolume: (volume: number) => void;
-  /** Keep the sounds going after the paper is picked back up. */
-  keepPlaying: boolean;
-  setKeepPlaying: (keep: boolean) => void;
 };
 
 const SoundsContext = createContext<Sounds | null>(null);
@@ -42,7 +39,6 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
   const [playing, setPlaying] = useState<Playing>(NONE);
   // Volume starts at zero, so nothing is ever heard until it's turned up.
   const [volume, setVolume] = useState(0);
-  const [keepPlaying, setKeepPlaying] = useState(true);
   const audio = useRef<Partial<Record<SoundKey, HTMLAudioElement>>>({});
 
   // Keep every sound at the right loudness as the controls change.
@@ -97,7 +93,7 @@ export function SoundsProvider({ children }: { children: React.ReactNode }) {
   const anyPlaying = volume > 0 && Object.values(playing).some(Boolean);
 
   return (
-    <SoundsContext.Provider value={{ playing, toggle, anyPlaying, stopAll, volume, setVolume, keepPlaying, setKeepPlaying }}>
+    <SoundsContext.Provider value={{ playing, toggle, anyPlaying, stopAll, volume, setVolume }}>
       {children}
     </SoundsContext.Provider>
   );

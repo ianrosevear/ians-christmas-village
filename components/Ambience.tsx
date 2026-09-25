@@ -62,7 +62,7 @@ function Pair({ label, a, b, isA, setA }: { label: string; a: string; b: string;
 export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
   const prefs = useSitePrefs();
   const { snow, snowAmount, wind, setWind, evening, setEvening, snowOverPaper, setSnowOverPaper } = prefs;
-  const { playing, toggle, volume, setVolume, keepPlaying, setKeepPlaying } = useSounds();
+  const { playing, toggle, volume, setVolume } = useSounds();
 
   // Tell the phone scene how tall this panel is, so the art can be dragged clear of it.
   const panelRef = useRef<HTMLDivElement>(null);
@@ -113,7 +113,6 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
               <SoundButton label="Wind" color="#3b82f6" pressed={playing.wind} onClick={() => toggle("wind")} />
             </div>
             <Slider label="Volume" value={volume} onChange={setVolume} />
-            <Pair label="Keep playing" a="On" b="Off" isA={keepPlaying} setA={setKeepPlaying} />
             <div className="sm:ml-auto">
               <Pair label="Edition" a="Morning" b="Evening" isA={!evening} setA={(morning) => setEvening(!morning)} />
             </div>
