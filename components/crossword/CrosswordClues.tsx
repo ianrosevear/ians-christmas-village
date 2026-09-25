@@ -7,26 +7,29 @@ import { getReferencedClues } from "@/lib/crossword/clueReferences";
 import { ANNOTATION_CLASSES, WORDPLAY_KEY } from "@/lib/crossword/annotations";
 import { ClueText, WordplayButton, clueKey, type AnnotationMap } from "./ClueText";
 
-/** The four highlighter colours; tap one to read what it means. */
-function WordplayKey() {
+/** The four highlighter colours; tap one to read what it means. `children` sit at the end of the row. */
+function WordplayKey({ children }: { children?: React.ReactNode }) {
   const [active, setActive] = useState<string | null>(null);
   const item = WORDPLAY_KEY.find((k) => k.key === active);
 
   return (
-    <div>
-      <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 text-[16px]">
-        <span className="sc text-[var(--ink-soft)]">Key</span>
-        {WORDPLAY_KEY.map((k) => (
-          <button
-            key={k.key}
-            type="button"
-            aria-expanded={active === k.key}
-            onClick={() => setActive(active === k.key ? null : k.key)}
-            className={`${ANNOTATION_CLASSES[k.key]} min-h-8 ${active === k.key ? "underline underline-offset-4" : ""}`}
-          >
-            {k.label}
-          </button>
-        ))}
+    <div className="mb-3.5 border-b border-[var(--rule)] pb-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-4">
+        <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 text-[16px]">
+          <span className="sc text-[var(--ink-soft)]">Key</span>
+          {WORDPLAY_KEY.map((k) => (
+            <button
+              key={k.key}
+              type="button"
+              aria-expanded={active === k.key}
+              onClick={() => setActive(active === k.key ? null : k.key)}
+              className={`${ANNOTATION_CLASSES[k.key]} min-h-8 ${active === k.key ? "underline underline-offset-4" : ""}`}
+            >
+              {k.label}
+            </button>
+          ))}
+        </div>
+        {children}
       </div>
       {item && <p className="mt-1 text-[16px] text-[var(--ink-soft)]">{item.desc}</p>}
     </div>
@@ -95,10 +98,9 @@ export default function CrosswordClues({
   return (
     <div>
       {annotations && (
-        <div className="mb-3.5 flex flex-wrap items-center justify-between gap-x-4 border-b border-[var(--rule)] pb-2">
-          <WordplayKey />
+        <WordplayKey>
           <ShowAllSwitch on={showAll} onChange={setShowAll} />
-        </div>
+        </WordplayKey>
       )}
 
       <div className={`grid grid-cols-1 gap-x-9 gap-y-6 ${columnsClass}`}>
