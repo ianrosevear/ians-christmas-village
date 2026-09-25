@@ -315,6 +315,8 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
           <div ref={clueBarRef} className={`order-2 scroll-mb-[200px] sm:order-1 ${layout.bar}`}>
             <ClueBar
               clue={activeClue}
+              allClues={puzzle.clues}
+              hasWordplay={!!annotations && Object.keys(annotations).length > 0}
               annotation={activeAnnotation}
               wordplayOn={activeWordplayOn}
               onToggleWordplay={() => activeClue && toggleWordplay(clueKey(activeClue))}

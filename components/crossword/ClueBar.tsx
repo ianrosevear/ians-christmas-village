@@ -12,8 +12,25 @@ function Arrow({ dir }: { dir: "prev" | "next" }) {
 }
 
 /** The current clue, with previous/next buttons. Tapping the clue switches direction. */
+function labelFor(clue: ClueDef) {
+  return `${clue.number} ${clue.direction === "across" ? "Across" : "Down"}`;
+}
+
+function ClueLine({ clue, children }: { clue: ClueDef | null; children?: React.ReactNode }) {
+  return (
+    <span className="flex min-w-0 flex-col justify-center gap-0.5 self-center py-2 md:flex-row md:items-baseline md:gap-3">
+      <span className="sc shrink-0 text-[14px] font-bold text-[var(--ink-soft)] md:text-[16px] md:text-[var(--ink)]">
+        {clue ? labelFor(clue) : ""}
+      </span>
+      <span className="text-[18px] leading-snug md:text-[20px]">{children}</span>
+    </span>
+  );
+}
+
 export default function ClueBar({
   clue,
+  allClues,
+  hasWordplay,
   annotation,
   wordplayOn,
   onToggleWordplay,
@@ -23,6 +40,10 @@ export default function ClueBar({
   solved,
 }: {
   clue: ClueDef | null;
+  /** Every clue in the puzzle: the bar is sized to fit the longest, so it never changes height. */
+  allClues: ClueDef[];
+  /** Whether any clue has a wordplay button: if so its space is kept for every clue. */
+  hasWordplay: boolean;
   annotation?: Annotation;
   wordplayOn: boolean;
   onToggleWordplay: () => void;
@@ -40,7 +61,7 @@ export default function ClueBar({
     );
   }
 
-  const label = clue ? `${clue.number} ${clue.direction === "across" ? "Across" : "Down"}` : "";
+  const label = clue ? labelFor(clue) : "";
 
   return (
     <div className="flex min-h-[76px] items-stretch bg-[var(--tint-strong)] md:min-h-16" aria-live="polite">
@@ -51,15 +72,21 @@ export default function ClueBar({
         type="button"
         onClick={onSwitchDirection}
         aria-label={`${label}. Switch direction`}
-        className="flex min-w-0 grow flex-col justify-center gap-0.5 py-2 text-left md:flex-row md:items-baseline md:gap-3"
+        // Every clue is laid out invisibly in the same grid cell as the current one, so the bar
+        // is always as tall as the longest clue and the grid below never moves.
+        className="grid min-w-0 grow text-left [&>*]:[grid-area:1/1]"
       >
-        <span className="sc shrink-0 text-[14px] font-bold text-[var(--ink-soft)] md:text-[16px] md:text-[var(--ink)]">{label}</span>
-        <span className="text-[18px] leading-snug md:text-[20px]">
-          {clue && <ClueText clue={clue} annotation={annotation} showWordplay={wordplayOn} />}
-        </span>
+        {allClues.map((c) => (
+          <span key={`${c.number}-${c.direction}`} aria-hidden="true" className="invisible">
+            <ClueLine clue={c}>
+              <ClueText clue={c} showWordplay={false} />
+            </ClueLine>
+          </span>
+        ))}
+        <ClueLine clue={clue}>{clue && <ClueText clue={clue} annotation={annotation} showWordplay={wordplayOn} />}</ClueLine>
       </button>
-      {annotation && clue && (
-        <span className="flex items-center">
+      {hasWordplay && (
+        <span className={`flex items-center ${annotation && clue ? "" : "invisible"}`} aria-hidden={annotation && clue ? undefined : true}>
           <WordplayButton on={wordplayOn} label={label} onToggle={onToggleWordplay} size="lg" />
         </span>
       )}
