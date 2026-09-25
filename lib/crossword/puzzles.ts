@@ -59,7 +59,7 @@ const puzzles: PuzzleInfo[] = [
     file: "Yule Jewel.ipuz",
     description: "A regular crossword with a few cryptic clues mixed in",
     type: "standard",
-    kind: "Standard, some cryptic",
+    kind: "Standard (mostly)",
     level: "Moderate",
     published: "2026-08",
     note: "A regular crossword with a few cryptic clues mixed in.",

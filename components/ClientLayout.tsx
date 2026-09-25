@@ -88,7 +88,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       >
         <div className={`relative w-full ${wide ? "max-w-[1160px]" : "max-w-[1040px]"}`}>
           <button type="button" className="paper-tab sc" onClick={() => setPaperDown(true)}>
-            Put the paper down
+            Admire the scenery
           </button>
           <div
             className={`paper relative px-4 pt-2 pb-8 sm:min-h-0 sm:px-12 sm:pt-6 sm:pb-10 lg:px-14 ${

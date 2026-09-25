@@ -101,7 +101,7 @@ export function AmbienceControls({ onPickUp }: { onPickUp: () => void }) {
     >
       {/* The tab sits behind the strip, like the one on the paper. */}
       <button type="button" className="paper-tab sc" onClick={onPickUp}>
-        Pick the paper up
+        Read the paper
       </button>
       <div className="paper relative">
         <div className="ribbon !h-1.5" />
