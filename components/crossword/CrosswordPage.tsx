@@ -284,7 +284,6 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
             {(
               [
                 ["Type", info.kind],
-                ["Size", `${puzzle.width}\u00a0×\u00a0${puzzle.height}`],
                 ["Level", info.level],
               ] as const
             ).map(([label, value]) => (

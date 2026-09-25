@@ -1,20 +1,15 @@
 /** A puzzle's facts as labelled lines, so every puzzle lays out the same way. */
 export function PuzzleDetails({
   kind,
-  width,
-  height,
   level,
   published,
 }: {
   kind: string;
-  width: number;
-  height: number;
   level: string;
   published?: string;
 }) {
   const rows: [string, string][] = [
     ["Type", kind],
-    ["Size", `${width} × ${height}`],
     ["Level", level],
   ];
   if (published) rows.push(["Published", published]);

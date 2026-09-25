@@ -38,7 +38,7 @@ export default function FrontPage() {
                       {p.title}
                       {p.isNew && <NewTag />}
                     </span>
-                    <PuzzleDetails kind={p.kind} width={p.shape.width} height={p.shape.height} level={p.level} />
+                    <PuzzleDetails kind={p.kind} level={p.level} />
                   </span>
                 </Link>
               </li>

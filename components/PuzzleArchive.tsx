@@ -64,7 +64,7 @@ export default function PuzzleArchive({ puzzles, children }: { puzzles: ArchiveP
                     {p.title}
                     {p.isNew && <NewTag />}
                   </span>
-                  <PuzzleDetails kind={p.kind} width={p.shape.width} height={p.shape.height} level={p.level} published={p.date} />
+                  <PuzzleDetails kind={p.kind} level={p.level} published={p.date} />
                   {p.note && <span className="mt-2 block text-[17px] text-[var(--ink-body)] italic sm:text-[18px]">{p.note}</span>}
                   {s && (
                     <span className={`sc mt-1 block text-[16px] sm:hidden ${s === "solved" ? "text-[var(--success)]" : "text-[var(--accent)]"}`}>
