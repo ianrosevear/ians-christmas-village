@@ -27,8 +27,8 @@ export default function Folio({ current }: { current?: string }) {
         <div className="hidden text-[16px] text-[var(--ink-soft)] sm:block">
           {date && (
             <>
-              <span className="italic">{date.short}</span> &middot;{" "}
               <span className="sc">
+                {date.short} &middot;{" "}
                 {date.daysUntilChristmas > 0 && `${date.daysUntilChristmas} `}
                 {countdownLabel(date.daysUntilChristmas)}
               </span>
