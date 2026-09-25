@@ -5,6 +5,10 @@
   /* The paper slides off-screen when it's put down; clipping here stops that moving
      paper from making the page scrollable for a moment (a flash of scrollbar). */
   overflow: clip;
+  /* When the page has a scrollbar, pad the left by the same amount, so the paper stays
+     centred on the whole window and doesn't shift sideways between pages that scroll
+     and pages that don't. (100vw includes the scrollbar; 100% doesn't.) */
+  padding-left: calc(100vw - 100%);
   background: var(--ground);
   color: var(--ink);
 }
