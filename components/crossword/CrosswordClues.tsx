@@ -142,7 +142,17 @@ export default function CrosswordClues({
                         <ClueText clue={clue} annotation={annotation} showWordplay={on} />
                       </span>
                     </button>
-                    {annotation && <WordplayButton on={on} label={`${clue.number} ${direction}`} onToggle={() => toggleWordplay(key)} />}
+                    {annotation && (
+                      <WordplayButton
+                        on={on}
+                        label={`${clue.number} ${direction}`}
+                        onToggle={() => {
+                          // Also select the clue, as clicking its text does.
+                          toggleWordplay(key);
+                          onClueClick(clue.number, clue.direction);
+                        }}
+                      />
+                    )}
                   </li>
                 );
               })}
