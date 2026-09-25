@@ -28,7 +28,7 @@ export default function FrontMasthead() {
         <SnowToggle />
       </div>
 
-      <h1 className="mt-1 mb-4 text-center text-[44px] leading-none font-semibold tracking-[-0.015em] sm:text-[64px] lg:text-[82px]">
+      <h1 className="mt-3 mb-4 text-center text-[44px] leading-none font-semibold tracking-[-0.015em] sm:text-[64px] lg:text-[82px]">
         Ian&rsquo;s Christmas Village
       </h1>
 

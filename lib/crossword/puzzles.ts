@@ -41,7 +41,6 @@ const puzzles: PuzzleInfo[] = [
     kind: "Cryptic",
     level: "Gentle",
     published: "2026-03",
-    note: "Start here. Every clue can show its wordplay in colour, one clue at a time.",
   },
   {
     slug: "little-ice-age",
@@ -62,7 +61,6 @@ const puzzles: PuzzleInfo[] = [
     kind: "Standard (mostly)",
     level: "Moderate",
     published: "2026-08",
-    note: "A regular crossword with a few cryptic clues mixed in.",
     mixedCryptic: true,
     isNew: true,
   },

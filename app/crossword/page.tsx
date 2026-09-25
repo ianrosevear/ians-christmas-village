@@ -16,7 +16,8 @@ export default function CrosswordIndex() {
       <Folio current="puzzles" />
       <PuzzleArchive puzzles={puzzles}>
         <p className="mb-5 max-w-[640px] text-[19px] leading-normal text-[var(--ink-body)]">
-          New to cryptics? Start with Beginner Cryptic, and keep <Link href="/guide">the guide</Link> open alongside it.
+          New to cryptics? <Link href="/guide">Read the guide</Link>, then try the <Link href="/crossword/beginner">Beginner Cryptic</Link>.<br />
+          Want to make your own puzzle? Visit <Link href="/crossword/workshop">Santa&rsquo;s Workshop</Link>.
         </p>
       </PuzzleArchive>
     </>

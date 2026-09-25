@@ -56,7 +56,6 @@ export default function ClueBar({
     return (
       <div className="flex min-h-[76px] items-center bg-[var(--tint-strong)] px-4 text-[20px] text-[var(--success)] md:min-h-16" role="status">
         <span className="sc mr-3 font-bold">Solved</span>
-        <span className="italic">Well done.</span>
       </div>
     );
   }

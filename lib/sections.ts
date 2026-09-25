@@ -13,3 +13,15 @@ export const sections: Section[] = [
   { key: "writing", name: "Writing", href: "/writing" },
   { key: "stuff", name: "Stuff I Like", href: "/favorites" },
 ];
+
+/**
+ * The line of links along the bottom of the front page, like the index on a real front page: everything worth finding.
+ * Add new kinds of content here as they arrive.
+ */
+export const inside: { name: string; href: string }[] = [
+  { name: "Crosswords", href: "/crossword" },
+  { name: "Cryptic guide", href: "/guide" },
+  { name: "Santa’s Workshop", href: "/crossword/workshop" },
+  { name: "Writing", href: "/writing" },
+  { name: "Stuff I Like", href: "/favorites" },
+];

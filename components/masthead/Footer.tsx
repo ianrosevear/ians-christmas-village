@@ -9,7 +9,7 @@ export default function Footer() {
   const { anyPlaying, stopAll } = useSounds();
 
   return (
-    <footer className="mt-12 border-t border-[var(--rule)] pt-2 text-[14px] text-[var(--ink-soft)]">
+    <footer className={`${isFront ? "mt-2" : "mt-12"} border-t border-[var(--rule)] pt-2 text-[14px] text-[var(--ink-soft)]`}>
       {!isFront && (
         <>
           <div className="sm:hidden">
@@ -21,16 +21,16 @@ export default function Footer() {
           </div>
         </>
       )}
-      {anyPlaying && (
-        <div className="sc flex items-center gap-2 text-[15px]">
-          <span>Sounds playing</span>
-          <button type="button" onClick={stopAll} className="min-h-11 px-1 text-[var(--ink)] underline underline-offset-4">
-            Stop
-          </button>
-        </div>
-      )}
-      <div className="flex flex-col gap-1 pt-2 sm:flex-row sm:justify-between">
+      <div className="flex flex-col gap-1 pt-2 sm:flex-row sm:items-center sm:justify-between">
         <span>Made by Ian Rosevear</span>
+        {anyPlaying && (
+          <div className="sc flex items-center gap-2 text-[15px]">
+            <span>Sounds playing</span>
+            <button type="button" onClick={stopAll} className="min-h-11 px-1 text-[var(--ink)] underline underline-offset-4">
+              Stop
+            </button>
+          </div>
+        )}
       </div>
     </footer>
   );

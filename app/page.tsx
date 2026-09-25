@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import FrontMasthead from "@/components/masthead/FrontMasthead";
 import GridThumbnail from "@/components/GridThumbnail";
@@ -5,8 +6,8 @@ import { NewTag, PuzzleDetails } from "@/components/PuzzleDetails";
 import { getPuzzlesByDate } from "@/lib/crossword/puzzles";
 import { loadGridShape } from "@/lib/crossword/thumbnail";
 import { posts } from "@/lib/writing";
-import { favorites } from "@/lib/favorites";
 import { Def, Fod, Ind } from "@/lib/crossword/annotations";
+import { inside } from "@/lib/sections";
 
 export default function FrontPage() {
   const puzzles = getPuzzlesByDate()
@@ -72,27 +73,25 @@ export default function FrontPage() {
           </section>
 
           <section>
-            <h2 className="section-head">Stuff I Like</h2>
-            {favorites.length === 0 ? (
-              <p className="text-[18px] text-[var(--ink-soft)] italic">Coming soon.</p>
-            ) : (
-              <>
-                <ul>
-                  {favorites.slice(0, 3).map((f) => (
-                    <li key={f.name} className="border-t border-[var(--rule-soft)] py-2 text-[18px] first:border-0">
-                      {f.name}
-                      {f.note && <span className="text-[var(--ink-soft)] italic"> &mdash; {f.note}</span>}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-2 text-[17px]">
-                  <Link href="/favorites">The whole list</Link>
-                </p>
-              </>
-            )}
+            <h2 className="section-head">Santa&rsquo;s Workshop</h2>
+            <p className="text-[18px] leading-normal">Want to make your own crossword? Here&rsquo;s a list of helpful tools.</p>
+            <p className="mt-4 text-[17px]">
+              <Link href="/crossword/workshop">See the list</Link>
+            </p>
           </section>
         </aside>
       </div>
+
+      <nav aria-label="Inside" className="sc mt-12 border-t-[3px] border-[var(--rule)] pt-2 text-center text-[16px] sm:text-[17px]">
+        {inside.map((item, i) => (
+          <Fragment key={item.href}>
+            {i > 0 && <span aria-hidden="true"> &middot; </span>}
+            <Link href={item.href} className="plain whitespace-nowrap">
+              {item.name}
+            </Link>
+          </Fragment>
+        ))}
+      </nav>
     </>
   );
 }
