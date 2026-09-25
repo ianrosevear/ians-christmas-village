@@ -8,12 +8,12 @@ import { ANNOTATION_CLASSES, WORDPLAY_KEY } from "@/lib/crossword/annotations";
 import { ClueText, WordplayButton, clueKey, type AnnotationMap } from "./ClueText";
 
 /** The four highlighter colours; tap one to read what it means. `children` sit at the end of the row. */
-function WordplayKey({ children }: { children?: React.ReactNode }) {
+function WordplayKey({ className = "", children }: { className?: string; children?: React.ReactNode }) {
   const [active, setActive] = useState<string | null>(null);
   const item = WORDPLAY_KEY.find((k) => k.key === active);
 
   return (
-    <div className="mb-3.5 border-b border-[var(--rule)] pb-2">
+    <div className={`mb-3.5 border-b border-[var(--rule)] pb-2 ${className}`}>
       <div className="flex flex-wrap items-center justify-between gap-x-4">
         <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 text-[16px]">
           <span className="sc text-[var(--ink-soft)]">Key</span>
@@ -58,8 +58,8 @@ interface CrosswordCluesProps {
   toggleWordplay: (key: string) => void;
   showAll: boolean;
   setShowAll: (on: boolean) => void;
-  /** Responsive column classes for the Across and Down lists. */
-  columnsClass: string;
+  /** Responsive classes for laying out the clues: the whole panel, the pair of lists, each list, and each list's scrolling box. */
+  panel: { root: string; lists: string; list: string; scroll: string };
   scrollActiveIntoView: boolean;
 }
 
@@ -72,7 +72,7 @@ export default function CrosswordClues({
   toggleWordplay,
   showAll,
   setShowAll,
-  columnsClass,
+  panel,
   scrollActiveIntoView,
 }: CrosswordCluesProps) {
   const activeClue = getActiveClue(puzzle, state.cursor.row, state.cursor.col, state.direction);
@@ -85,7 +85,16 @@ export default function CrosswordClues({
       mounted.current = true;
       return;
     }
-    if (scrollActiveIntoView) activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const row = activeRef.current;
+    if (!scrollActiveIntoView || !row) return;
+    // When the list scrolls in its own box, scroll just that box, so the page stays put.
+    const box = row.closest("ol");
+    if (box && box.scrollHeight > box.clientHeight) {
+      const r = row.getBoundingClientRect();
+      const b = box.getBoundingClientRect();
+      const by = r.top < b.top ? r.top - b.top : r.bottom > b.bottom ? r.bottom - b.bottom : 0;
+      if (by) box.scrollBy({ top: by, behavior: "smooth" });
+    } else row.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [activeClue?.number, activeClue?.direction, scrollActiveIntoView]);
 
   const referenced = useMemo(() => (activeClue ? getReferencedClues(puzzle, activeClue) : []), [puzzle, activeClue]);
@@ -96,18 +105,18 @@ export default function CrosswordClues({
   }));
 
   return (
-    <div>
+    <div className={panel.root}>
       {annotations && (
-        <WordplayKey>
+        <WordplayKey className="shrink-0">
           <ShowAllSwitch on={showAll} onChange={setShowAll} />
         </WordplayKey>
       )}
 
-      <div className={`grid grid-cols-1 gap-x-9 gap-y-6 ${columnsClass}`}>
+      <div className={`grid grid-cols-1 gap-x-9 gap-y-6 ${panel.lists}`}>
         {lists.map(({ direction, clues }) => (
-          <div key={direction}>
-            <h2 className="sc mb-1.5 text-[18px] font-bold">{direction === "across" ? "Across" : "Down"}</h2>
-            <ol>
+          <div key={direction} className={panel.list}>
+            <h2 className="sc mb-1.5 shrink-0 text-[18px] font-bold">{direction === "across" ? "Across" : "Down"}</h2>
+            <ol className={`xw-clue-scroll ${panel.scroll}`}>
               {clues.map((clue) => {
                 const key = clueKey(clue);
                 const isActive = activeClue === clue;

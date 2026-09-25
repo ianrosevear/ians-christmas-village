@@ -5,6 +5,11 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  /* Wide enough for a 15×15 grid with Across and Down in columns beside it. */
+  --breakpoint-wide: 85rem;
+}
+
 @theme inline {
   --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
 }

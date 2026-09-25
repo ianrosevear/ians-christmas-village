@@ -234,23 +234,35 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
   const cellMax = Math.max(puzzle.width, puzzle.height) <= 10 ? 64 : 38;
   const gridWidth = puzzle.width * cellMax + 4;
   // Grid and clues sit side by side once there's room; big grids need a wider screen.
+  // Side by side, the clues fill the height of the clue bar and grid, and Across and Down
+  // each scroll in their own box: stacked at first, then as columns, like a newspaper.
   const big = gridWidth > 480;
   const layout = big
     ? {
         wrap: "xl:grid xl:grid-cols-[var(--grid-w)_minmax(0,1fr)] xl:gap-12",
-        left: "xl:sticky xl:top-4 xl:gap-3.5 xl:self-start",
+        left: "xl:gap-3.5 xl:self-start",
         bar: "xl:order-1",
         grid: "xl:order-2",
-        clues: "xl:mt-0",
-        clueCols: "sm:grid-cols-2 xl:grid-cols-1",
+        clues: "xl:relative xl:mt-0",
+        panel: {
+          root: "xl:absolute xl:inset-0 xl:flex xl:flex-col",
+          lists: "sm:grid-cols-2 xl:flex xl:min-h-0 xl:flex-1 xl:flex-col wide:flex-row",
+          list: "xl:flex xl:min-h-0 xl:flex-1 xl:basis-0 xl:flex-col",
+          scroll: "xl:-mr-2 xl:-ml-2.5 xl:min-h-0 xl:flex-1 xl:overflow-y-auto xl:border-y xl:border-[var(--rule)] xl:pr-2 xl:pl-2.5",
+        },
       }
     : {
         wrap: "lg:grid lg:grid-cols-[var(--grid-w)_minmax(0,1fr)] lg:gap-12",
-        left: "lg:sticky lg:top-4 lg:gap-3.5 lg:self-start",
+        left: "lg:gap-3.5 lg:self-start",
         bar: "lg:order-1",
         grid: "lg:order-2",
-        clues: "lg:mt-0",
-        clueCols: "sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2",
+        clues: "lg:relative lg:mt-0",
+        panel: {
+          root: "lg:absolute lg:inset-0 lg:flex lg:flex-col",
+          lists: "sm:grid-cols-2 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col xl:flex-row",
+          list: "lg:flex lg:min-h-0 lg:flex-1 lg:basis-0 lg:flex-col",
+          scroll: "lg:-mr-2 lg:-ml-2.5 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:border-y lg:border-[var(--rule)] lg:pr-2 lg:pl-2.5",
+        },
       };
   const sideBySide = useMediaQuery(big ? "(min-width: 1280px)" : "(min-width: 1024px)");
   const activeAnnotation = activeClue ? annotations?.[clueKey(activeClue)] : undefined;
@@ -347,7 +359,7 @@ export default function CrosswordPage({ puzzle, info, annotations }: CrosswordPa
             toggleWordplay={toggleWordplay}
             showAll={showAll}
             setShowAll={setShowAll}
-            columnsClass={layout.clueCols}
+            panel={layout.panel}
             scrollActiveIntoView={!isTouch && sideBySide}
           />
         </div>

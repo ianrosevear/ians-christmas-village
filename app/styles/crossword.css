@@ -76,6 +76,12 @@
 }
 
 /* Clue list rows */
+/* The Across and Down boxes, when they scroll beside the grid */
+.xw-clue-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--ink) 30%, transparent) transparent;
+}
+
 .xw-clue-row {
   display: flex;
   align-items: flex-start;
